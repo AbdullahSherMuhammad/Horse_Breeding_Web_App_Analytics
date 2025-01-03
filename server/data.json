@@ -1,0 +1,327 @@
+{
+  "metadata": {
+    "processed_at": "2024-12-24T03:24:09Z",
+    "script_version": "v1.2.1",
+    "schema_version": 1.0,
+    "source_url": "https://www.worldfengur.com",
+    "notes": "Initial scrape for Forkur information"
+  },
+  "basic_info": {
+    "FEIF ID": "IS2019186817",
+    "UELN": "352002019186817",
+    "Name": "Reginn",
+    "Name of the farm (stud)": "fr\u00e1 Lunansholti III",
+    "Farm ID number": "221056",
+    "Area": "86",
+    "Colour code": "2710",
+    "Colour Description": "Jet black tobiano (piebald/skewbald)",
+    "Colour name": "Svartskj\u00f3ttur.",
+    "Date of birth": "15.06.2019",
+    "Country of current location": "IS",
+    "Export\u00b4s date": "",
+    "Fate": "Alive",
+    "Date of death": "",
+    "Castration": "",
+    "Date": "",
+    "Gender": "Stallion",
+    "Sire": "IS2010180716 - Lj\u00f3svaki fr\u00e1 Valstr\u00fdtu",
+    "Dam": "IS2009286828 - Gola fr\u00e1 Hjallanesi II",
+    "Microchip": "352098100077989",
+    "Horse owner": "Ketill Arnar Halld\u00f3rsson",
+    "Breeder": "Ketill Arnar Halld\u00f3rsson",
+    "Date of record": "14.06.2020 15:28:38.0"
+  },
+  "breeding_info": [
+    {
+      "Date": "03.06.2024",
+      "Breeding shows": "Vors\u00fdning V\u00ed\u00f0idal \u00ed Reykjav\u00edk, vikuna 3. til 7. j\u00fan\u00ed.",
+      "Rider": "Flosi \u00d3lafsson",
+      "Total": 8.44,
+      "Total w/o pace": 8.54,
+      "Assessment": {
+        "Horse": {
+          "ID": "IS2019186817",
+          "Name": "Reginn fr\u00e1 Lunansholti III"
+        },
+        "Rider": { "ID": "IS2503922149", "Name": "Flosi \u00d3lafsson" },
+        "Trainer": { "ID": "" },
+        "Show": {
+          "Name": "Vors\u00fdning V\u00ed\u00f0idal \u00ed Reykjav\u00edk, vikuna 3. til 7. j\u00fan\u00ed.",
+          "Date": { "Start": "03.06.2024", "End": "07.06.2024" },
+          "Iceland_FIZO_FEIF": { "Code": "FIZO 2020", "Ratio": "35% / 65%" }
+        },
+        "Judges": {
+          "Chief_Judge": {
+            "ID": "IS2406655819",
+            "Name": "J\u00f3n Vilmundarson"
+          },
+          "Judges_List": [
+            {
+              "ID": "IS2205814979",
+              "Name": "Hei\u00f0r\u00fan Sigur\u00f0ard\u00f3ttir"
+            },
+            { "ID": "DK0000003942", "Name": "John Siiger Hansen" }
+          ]
+        },
+        "Scores": {
+          "Linear_Measurements": {
+            "M1": 150,
+            "M2": 136,
+            "M3": 138,
+            "M4": 65,
+            "M5": 145,
+            "M6": 36,
+            "M7": 48,
+            "M8": 44,
+            "M9": 6.6,
+            "M10": 30,
+            "M11": 18.5
+          }
+        },
+        "Conformation": [
+          {
+            "Category": "Neck-Withers-Shoulders",
+            "Score": 9,
+            "Remarks": "High set - Very long neck - Good topline - Very high withers"
+          },
+          {
+            "Category": "Back and Croup",
+            "Score": 9,
+            "Remarks": "Very good backline - Well muscled back - Broad back - Even croup"
+          },
+          {
+            "Category": "Proportions",
+            "Score": 9,
+            "Remarks": "Uphill balance - Very long legs - Light built - Long body - Cylindrical body - Well proportioned"
+          },
+          {
+            "Category": "Legs",
+            "Score": 8.5,
+            "Remarks": "Well separated tendons - Dry tendons - Thick tendons"
+          },
+          {
+            "Category": "Joints",
+            "Score": 7,
+            "Remarks": "Forelegs: Narrow - Toe outHind legs: Narrow"
+          },
+          { "Category": "Hooves", "Score": 8, "Remarks": "" },
+          { "Category": "Mane and Tail", "Score": 8.5, "Remarks": "" },
+          { "Category": "Conformation", "Score": 8.61, "Remarks": "" }
+        ],
+        "Rideability": [
+          {
+            "Category": "Trot",
+            "Score": 8.5,
+            "Remarks": "Light movements - Good stridelength"
+          },
+          {
+            "Category": "Pace",
+            "Score": 7.5,
+            "Remarks": "Good stridelength - Average speed"
+          },
+          { "Category": "Gallop", "Score": 7.5, "Remarks": "" },
+          {
+            "Category": "Canter",
+            "Score": 8,
+            "Remarks": "Well balanced - Rather little suspension"
+          },
+          {
+            "Category": "Rideability",
+            "Score": 8.5,
+            "Remarks": "Willing - Cooperative"
+          },
+          {
+            "Category": "General impression",
+            "Score": 8.5,
+            "Remarks": "Uphill"
+          },
+          { "Category": "Walk", "Score": 8, "Remarks": "Average stridelength" },
+          { "Category": "Rideability", "Score": 8.35, "Remarks": "" },
+          {
+            "Category": "Slow t\u00f6lt",
+            "Score": 8,
+            "Remarks": "Light front part - Stiff"
+          }
+        ],
+        "Totals": {
+          "Conformation_Score": 8,
+          "Rideability_Score": 9,
+          "Total_Score": 8.44
+        }
+      }
+    },
+    {
+      "Date": "01.07.2024",
+      "Breeding shows": "Landsm\u00f3t hestamanna 2024, V\u00ed\u00f0idal \u00ed Reykjav\u00edk",
+      "Rider": "Flosi \u00d3lafsson",
+      "Total": 8.24,
+      "Total w/o pace": 8.43,
+      "Assessment": {
+        "Horse": {
+          "ID": "IS2019186817",
+          "Name": "Reginn fr\u00e1 Lunansholti III"
+        },
+        "Rider": { "ID": "IS2503922149", "Name": "Flosi \u00d3lafsson" },
+        "Trainer": { "ID": "" },
+        "Show": {
+          "Name": "Landsm\u00f3t hestamanna 2024, V\u00ed\u00f0idal \u00ed Reykjav\u00edk",
+          "Date": { "Start": "01.07.2024", "End": "07.07.2024" },
+          "Iceland_FIZO_FEIF": { "Code": "FIZO 2020", "Ratio": "35% / 65%" }
+        },
+        "Judges": {
+          "Chief_Judge": {
+            "ID": "IS2608775859",
+            "Name": "\u00deorvaldur Kristj\u00e1nsson"
+          },
+          "Judges_List": [
+            { "ID": "IS1611913459", "Name": "Elisabeth Trost" },
+            { "ID": "IS2707764189", "Name": "Ey\u00fe\u00f3r Einarsson" },
+            { "ID": "IS2406655819", "Name": "J\u00f3n Vilmundarson" }
+          ]
+        },
+        "Scores": {
+          "Linear_Measurements": {
+            "M1": 150,
+            "M2": 136,
+            "M3": 138,
+            "M4": 65,
+            "M5": 145,
+            "M6": 36,
+            "M7": 48,
+            "M8": 44,
+            "M9": 6.6,
+            "M10": 30,
+            "M11": 18.5
+          }
+        },
+        "Conformation": [
+          {
+            "Category": "Neck-Withers-Shoulders",
+            "Score": 9,
+            "Remarks": "High set - Very long neck - Good topline - Very high withers"
+          },
+          {
+            "Category": "Back and Croup",
+            "Score": 9,
+            "Remarks": "Very good backline - Well muscled back - Broad back - Even croup"
+          },
+          {
+            "Category": "Proportions",
+            "Score": 9,
+            "Remarks": "Uphill balance - Very long legs - Light built - Long body - Cylindrical body - Well proportioned"
+          },
+          {
+            "Category": "Legs",
+            "Score": 8.5,
+            "Remarks": "Well separated tendons - Dry tendons - Thick tendons"
+          },
+          {
+            "Category": "Joints",
+            "Score": 7,
+            "Remarks": "Forelegs: Narrow - Toe outHind legs: Narrow"
+          },
+          { "Category": "Hooves", "Score": 8, "Remarks": "" },
+          { "Category": "Mane and Tail", "Score": 8.5, "Remarks": "" },
+          { "Category": "Conformation", "Score": 8.61, "Remarks": "" }
+        ],
+        "Rideability": [
+          {
+            "Category": "Trot",
+            "Score": 8,
+            "Remarks": "Good stridelength - Clear-beated"
+          },
+          {
+            "Category": "Pace",
+            "Score": 6.5,
+            "Remarks": "Good stridelength - Four-beated"
+          },
+          {
+            "Category": "Gallop",
+            "Score": 7.5,
+            "Remarks": "Good beat - Lacking speed"
+          },
+          {
+            "Category": "Canter",
+            "Score": 8,
+            "Remarks": "Well balanced - Average suspension"
+          },
+          { "Category": "Rideability", "Score": 8.5, "Remarks": "Cooperative" },
+          {
+            "Category": "General impression",
+            "Score": 8.5,
+            "Remarks": "Good movements - Well raised"
+          },
+          {
+            "Category": "Walk",
+            "Score": 8.5,
+            "Remarks": "Supple - Good stridelength"
+          },
+          { "Category": "Rideability", "Score": 8.05, "Remarks": "" },
+          { "Category": "Slow t\u00f6lt", "Score": 8, "Remarks": "" }
+        ],
+        "Totals": {
+          "Conformation_Score": 8,
+          "Rideability_Score": 8.5,
+          "Total_Score": 8.24
+        }
+      }
+    }
+  ],
+  "competition_info": [],
+  "blup_info": {
+    "FEIF ID": "IS2019186817",
+    "Head": "107",
+    "T\u00f6lt": "114",
+    "Neck": "114",
+    "Trot": "104",
+    "Back": "109",
+    "Pace": "105",
+    "Proportions": "114",
+    "Gallop": "106",
+    "Legs": "106",
+    "Canter": "105",
+    "Joints": "94",
+    "Rideability": "113",
+    "Hooves": "91",
+    "General impression": "109",
+    "Mane and tail": "101",
+    "Walk": "108",
+    "Conformation": "113",
+    "Slow t\u00f6lt": "105",
+    "Total score": "116",
+    "Ridden abilities w/o pace": "113",
+    "Total w/o pace": "115",
+    "Height at withers": "4,3",
+    "Accuracy (%)": "81",
+    "Standard deviation (+/-)": "6",
+    "BLUP for attendance to breeding show": "107",
+    "Number of offspring registered to date": "0",
+    "Number of fully-assessed offspring": "0",
+    "Number of daughters aged 6 yrs or older": "0",
+    "Number of assessed daughters aged 6 yrs or older": "0",
+    "Number of assessed daughters": "0",
+    "Ratio of assessed daughters aged 6 yrs or older (%)": "0",
+    "Ratio of assessed daughters (%)": "0",
+    "Inbreeding coefficient (%)": "2,7",
+    "Number of assessed parents": "2",
+    "Assessed in": "IS",
+    "Year of the assessment": "2024",
+    "Latest update": "11.09.2024 08:55:36.0"
+  },
+  "offspring_info": { "offspring_count": 0, "offspring": [] },
+  "beeder_info": [
+    {
+      "Name": "Ketill Arnar Halld\u00f3rsson",
+      "Country": "IS",
+      "Ratio (%)": "100"
+    }
+  ],
+  "owner_info": [
+    {
+      "Name": "Ketill Arnar Halld\u00f3rsson",
+      "Country": "IS",
+      "Ratio (%)": "100",
+      "Date of registration": "14.06.2020"
+    }
+  ]
+}
