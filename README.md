@@ -138,13 +138,3 @@ Ensure you have the following installed:
 5. Open your browser and navigate to `http://localhost:3000`.
 
 ---
-
-## Contributing
-
-We welcome contributions! Feel free to fork the repository and submit pull requests.
-
----
-
-## License
-
-This project is licensed under the MIT License. See the `LICENSE` file for more details.
