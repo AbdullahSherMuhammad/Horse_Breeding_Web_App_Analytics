@@ -1,6 +1,5 @@
 'use client';
-import React, { useMemo } from 'react';
-import { usePathname } from 'next/navigation';
+import React, { useEffect, useMemo, useState } from 'react';
 import { MdDashboard } from 'react-icons/md';
 import { GiHorseHead } from 'react-icons/gi';
 import { SiMicrogenetics } from 'react-icons/si';
@@ -21,7 +20,7 @@ interface PageNavigationProps {
 
 const PageNavigation: React.FC<PageNavigationProps> = ({ scrollToSection }) => {
 
-  const pathname = usePathname();
+  const [active, setActive] = useState<string | null>('Dashboard');
 
   const menuLinks: MenuLink[] = useMemo(
     () => [
@@ -36,9 +35,24 @@ const PageNavigation: React.FC<PageNavigationProps> = ({ scrollToSection }) => {
     []
   );
 
-  const handleNavigation = (sectionId: string) => {
+  const handleNavigation = (sectionId: string, activeName: string) => {
     scrollToSection(sectionId);
+    setActive(activeName);
   };
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY === 0) {
+        setActive('Dashboard');
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [])
 
 
   return (
@@ -47,11 +61,8 @@ const PageNavigation: React.FC<PageNavigationProps> = ({ scrollToSection }) => {
           {menuLinks.map((val, id) => (
             <button
               key={id}
-              // href={val.url}
-              onClick={() => handleNavigation(val.url)}
-              className={`${
-                val.url === pathname ? 'bg-gray-200 font-bold text-black' : 'text-gray-500'
-              } py-2 px-4 rounded-full hover:bg-gray-200 flex gap-2 items-center`}
+              onClick={() => handleNavigation(val.url,val.name)}
+              className={`py-2 px-4 rounded-full hover:bg-gray-200 flex gap-2 items-center ${active === val.name ? 'bg-gray-200' : 'text-gray-500'}`}
             >
               {val.icon}
               {val.name}

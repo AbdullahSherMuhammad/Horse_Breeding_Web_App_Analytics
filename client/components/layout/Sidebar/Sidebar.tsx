@@ -1,8 +1,14 @@
 'use client';
 
-import React, { useMemo } from 'react';
-import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import logo from '@/public/assets/logo.webp';
+import { RiCalendarScheduleFill } from "react-icons/ri";
+import { FaNewspaper } from "react-icons/fa6";
+import { FaBook } from "react-icons/fa6";
+import { FaShop } from "react-icons/fa6";
+import React, { useMemo } from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
 
 interface MenuLink {
   name: string;
@@ -20,10 +26,10 @@ const Sidebar: React.FC<SidebarProps> = ({ toggleSidebar }) => {
   const menuLinks: MenuLink[] = useMemo(
     () => [
 
-      { name: 'Schedule', url: '#Schedule' },
-      { name: 'Catalogue', url: '#Catalogue' },
-      { name: 'Shop', url: '#Shop' },
-      { name: 'News', url: '#News' },
+      { name: 'Schedule', url: '#Schedule' , icon: <RiCalendarScheduleFill />},
+      { name: 'Catalogue', url: '#Catalogue', icon: <FaBook /> },
+      { name: 'Shop', url: '#Shop', icon: <FaShop /> },
+      { name: 'News', url: '#News', icon: <FaNewspaper /> },
     ],
     []
   );
@@ -31,7 +37,9 @@ const Sidebar: React.FC<SidebarProps> = ({ toggleSidebar }) => {
 
   return (
     <div className="space-y-20 py-5 flex flex-col w-full">
-      <h2 className="text-lg font-semibold">Alendis Breeding</h2>
+      <div className="flex justify-center items-center space-x-2 bg-black p-2 rounded-full">
+            <Image src={logo} priority alt="Logo" />
+          </div>
       <nav className="flex flex-col gap-5 w-full">
         {menuLinks.map((val, id) => (
           <Link
@@ -40,9 +48,9 @@ const Sidebar: React.FC<SidebarProps> = ({ toggleSidebar }) => {
             onClick={toggleSidebar}
             className={`${
               val.url === pathname ? 'bg-gray-200 font-bold text-black' : 'text-gray-500'
-            } py-2 px-4 rounded hover:bg-gray-200 flex gap-2 items-center`}
+            } py-2 px-4 rounded hover:bg-gray-200 hover:text-black flex gap-2 items-center`}
           >
-            {val.icon && <span>{val.icon}</span>}
+            {val.icon && <span className='text-xl'>{val.icon}</span>}
             {val.name}
           </Link>
         ))}

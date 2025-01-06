@@ -35,7 +35,7 @@ const ScrollToTop: React.FC = () => {
       {isVisible && (
         <button
           onClick={scrollToTop}
-          className="fixed bottom-[50px] right-6 z-50 border-2 border-white bg-black text-white text-2xl p-2 rounded-full shadow-lg hover:bg-gray-600 transition-transform transform hover:scale-110"
+          className="fixed bottom-[50px] right-6 border-2 border-white bg-black text-white text-2xl p-2 rounded-full shadow-lg hover:bg-gray-600 transition-transform transform hover:scale-110"
         >
           <FaLongArrowAltUp />
         </button>

@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import Image from 'next/image';
 
 const dummyCountries = [
+  { name: "Pakistan", flag: "https://flagcdn.com/pk.svg" },
   { name: "United States", flag: "https://flagcdn.com/us.svg" },
   { name: "Canada", flag: "https://flagcdn.com/ca.svg" },
   { name: "Mexico", flag: "https://flagcdn.com/mx.svg" },
