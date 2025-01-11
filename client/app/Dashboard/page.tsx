@@ -9,6 +9,7 @@ import RadarChartComponent from "./components/RadarChart/RadarChart";
 import FilterComponent from "@/components/Filter/page";
 import PageNavigation from "@/components/layout/Navigation/Navigation";
 import CountryFilter from "@/components/CountryFilter/CountryFilter";
+import SearchBar from "./components/SearchBar/SearchBar";
 
 interface CardContentType {
   title: string;
@@ -103,21 +104,26 @@ const Dashboard: React.FC = () => {
     <div>
       {/* Page Heading */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 space-y-4 md:space-y-0">
-        <div>
-          <h1 className="text-2xl font-bold">Alendis Breeding Insights</h1>
-          <p className="text-gray-600">An overview of key metrics and performance.</p>
+        <div className="text-center md:text-start w-full">
+          <h1 className="text-xl md:text-2xl font-bold">Alendis Breeding Insights</h1>
+          <p className="text-sm sm:text-md text-gray-600">An overview of key metrics and performance.</p>
         </div>
-        <div className="flex justify-end items-center gap-5 w-full sm:w-auto">
+        <div className="flex justify-end items-center gap-5 w-full md:w-auto">
           <CountryFilter/>
           <FilterComponent/>
+          <div className="hidden lg:flex"><SearchBar /></div>
         </div>
+      </div>
+
+      <div className="w-full flex lg:hidden justify-end mb-10 lg:m-0">
+        <SearchBar/> 
       </div>
 
       <PageNavigation
          scrollToSection={scrollToSection} 
       />
 
-      <Card className="flex flex-col lg:flex-row gap-6 justify-between items-center p-6 my-5 overflow-hidden">
+      <Card className="flex flex-col lg:flex-row gap-6 justify-between items-center p-5 my-5 overflow-hidden">
         {/* Content Section */}
         <div className="chart_content flex flex-col gap-4 lg:w-1/2">
           <h1 className="font-bold text-3xl text-center lg:text-left">
