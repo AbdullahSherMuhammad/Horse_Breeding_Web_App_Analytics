@@ -84,6 +84,34 @@ const PageNavigation: React.FC<PageNavigationProps> = ({ scrollToSection }) => {
     };
   }, []);
 
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const sectionId = entry.target.id;
+            const link = menuLinks.find((link) => link.url === sectionId);
+            if (link) {
+              setActive(link.name);
+            }
+          }
+        });
+      },
+      { threshold: 0.6 }
+    );
+  
+    // Observe each section
+    menuLinks.forEach((link) => {
+      const section = document.getElementById(link.url);
+      if (section) observer.observe(section);
+    });
+  
+    return () => {
+      observer.disconnect();
+    };
+  }, [menuLinks]);
+  
+
   return (
     <div
       className={`${

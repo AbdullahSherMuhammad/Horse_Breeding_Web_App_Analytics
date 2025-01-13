@@ -50,7 +50,7 @@ const Page: React.FC = () => {
               <section
                 key={id}
                 id={id}
-                className="scroll-mt-20 md:p-5 rounded-[20px] mb-10 md:bg-[#f4f4f4]"
+                className="scroll-mt-[150px] md:p-5 rounded-[20px] mb-10 md:bg-[#f4f4f4]"
               >
                 <Component />
               </section>

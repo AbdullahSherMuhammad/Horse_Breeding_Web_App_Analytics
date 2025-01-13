@@ -1,6 +1,7 @@
 'use client';
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 // Define the type for each event in the eventsData array
 interface EventData {
@@ -54,33 +55,28 @@ const EvetnTable: React.FC = () => {
       </CardHeader>
       <CardContent>
         <div className="overflow-x-auto">
-          <table className="min-w-full border-collapse border-spacing-0">
-            <thead className="bg-muted text-muted-foreground">
-              <tr>
-                <th className="px-4 py-2 text-left text-sm font-medium">Event Name</th>
-                <th className="px-4 py-2 text-left text-sm font-medium">Avg Score</th>
-                <th className="px-4 py-2 text-left text-sm font-medium">#Horses</th>
-                <th className="px-4 py-2 text-left text-sm font-medium">Conditions</th>
-                <th className="px-4 py-2 text-left text-sm font-medium">Panels Active</th>
-              </tr>
-            </thead>
-            <tbody>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Event Name</TableHead>
+                <TableHead>Avg Score</TableHead>
+                <TableHead>#Horses</TableHead>
+                <TableHead>Conditions</TableHead>
+                <TableHead>Panels Active</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {eventsData.map((event, index) => (
-                <tr
-                  key={index}
-                  className={`${
-                    index % 2 === 0 ? "bg-muted/10" : "bg-muted/20"
-                  }`}
-                >
-                  <td className="px-4 py-2 text-sm">{event.eventName}</td>
-                  <td className="px-4 py-2 text-sm">{event.avgScore}</td>
-                  <td className="px-4 py-2 text-sm">{event.horses}</td>
-                  <td className="px-4 py-2 text-sm">{event.conditions}</td>
-                  <td className="px-4 py-2 text-sm">{event.panels}</td>
-                </tr>
+                <TableRow key={index} className={`$ {index % 2 === 0 ? "bg-muted/10" : "bg-muted/20"}`}>
+                  <TableCell>{event.eventName}</TableCell>
+                  <TableCell>{event.avgScore}</TableCell>
+                  <TableCell>{event.horses}</TableCell>
+                  <TableCell>{event.conditions}</TableCell>
+                  <TableCell>{event.panels}</TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
       </CardContent>
     </Card>

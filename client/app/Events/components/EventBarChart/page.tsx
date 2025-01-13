@@ -9,10 +9,10 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
-  ResponsiveContainer,
 } from "recharts";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ChartContainer } from "@/components/ui/chart";
 
 // Define the type for chart data
 interface ChartData {
@@ -45,6 +45,14 @@ const chartData: ChartData[] = [
   },
 ];
 
+const chartConfig = {
+  score: {
+    label: "score",
+    color: "hsl(var(--chart-1))",
+  },
+};
+
+
 const EventBarChart: React.FC = () => {
   // State typing as boolean
   const [loading, setLoading] = useState<boolean>(true);
@@ -73,8 +81,8 @@ const EventBarChart: React.FC = () => {
           </div>
         ) : (
           // Chart Component
-          <div className="w-full h-[350px]">
-            <ResponsiveContainer width="100%" height="100%">
+            <ChartContainer config={chartConfig} className="w-full h-[300px]">
+
               <BarChart
                 data={chartData}
                 margin={{ top: 20, right: 20, left: 0, bottom: 10 }}
@@ -97,8 +105,7 @@ const EventBarChart: React.FC = () => {
                   name="Rideability"
                 />
               </BarChart>
-            </ResponsiveContainer>
-          </div>
+          </ChartContainer>
         )}
       </CardContent>
     </Card>

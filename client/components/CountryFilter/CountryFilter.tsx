@@ -83,6 +83,9 @@ const CountryFilter: React.FC = () => {
                   <Checkbox
                     checked={tempSelectedCountries.includes(country.name)}
                     onCheckedChange={() => handleCountryChange(country.name)}
+                    onClick={(e)=> {
+                      e.stopPropagation()
+                    }}
                   />
                   <Image
                     src={country.flag}

@@ -1,6 +1,9 @@
 import Image from "next/image";
 import { useState, useRef, useEffect } from "react";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
+import isFlag from '@/public/flags/iceland.svg'
+import enFlag from '@/public/flags/united-kingdom.svg'
+import deFlag from '@/public/flags/germany.svg'
 
 
 type Language = {
@@ -19,17 +22,17 @@ export default function LanguageSelect() {
     {
       code: "is",
       name: "IS",
-      flag: "https://alendis-website-ten.vercel.app/iceland.svg",
+      flag: isFlag,
     },
     {
       code: "en",
       name: "EN",
-      flag: "https://alendis-website-ten.vercel.app/united-kingdom.svg",
+      flag: enFlag,
     },
     {
       code: "de",
       name: "DE",
-      flag: "https://alendis-website-ten.vercel.app/germany.svg",
+      flag: deFlag,
     },
   ];
 

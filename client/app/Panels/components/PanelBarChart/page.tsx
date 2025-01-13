@@ -8,7 +8,6 @@ import {
   YAxis,
   Tooltip,
   CartesianGrid,
-  ResponsiveContainer,
 } from "recharts";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -61,7 +60,6 @@ const BarChartComponent = () => {
         ) : (
           // Chart Component
           <ChartContainer config={chartConfig} className="w-full h-[300px]">
-            <ResponsiveContainer width="100%" height={300}>
               <BarChart data={chartData}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" />
@@ -77,7 +75,6 @@ const BarChartComponent = () => {
                   radius={[4, 4, 0, 0]}
                 />
               </BarChart>
-            </ResponsiveContainer>
           </ChartContainer>
         )}
       </CardContent>

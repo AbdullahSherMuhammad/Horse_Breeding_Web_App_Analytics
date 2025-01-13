@@ -7,6 +7,8 @@
   font-family: "Poppins", serif
 }
 
+/* Custom ScrollBar for Country filter componenet */
+
 .custom-scrollbar::-webkit-scrollbar {
   width: 8px;
 }
@@ -25,6 +27,7 @@
   scrollbar-color: #000 transparent;
 }
 
+/* Page Navigation Scrollbar Hidden */
 .scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;

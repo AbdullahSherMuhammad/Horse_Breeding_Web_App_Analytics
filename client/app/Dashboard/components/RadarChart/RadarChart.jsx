@@ -47,7 +47,7 @@ const RadarChartComponent = () => {
           </div>
         ) : (
           // Chart Component
-          <ChartContainer config={chartConfig} className="mx-auto h-[250px]">
+          <ChartContainer config={chartConfig} className="mx-auto h-[200px] md:h-[250px]">
             <RadarChart data={chartData}>
               <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
               <PolarAngleAxis dataKey="name" />
