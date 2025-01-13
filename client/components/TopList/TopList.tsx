@@ -139,6 +139,96 @@ const mockHorses: Horse[] = [
       ],
     },
   },
+  {
+    rank: 6,
+    basic_info: {
+      FEIF_ID: "56789",
+      Name: "Hrímnir frá Hellu",
+    },
+    breeding_info: {
+      Total_Score: 8.95,
+      Rider_Name: "Ása Björnsdóttir",
+      Year: 2022,
+      Rideability: [
+        { Category: "Walk", Score: 8.9 },
+        { Category: "Trot", Score: 8.9 },
+        { Category: "Canter", Score: 9 },
+        { Category: "Gallop", Score: 9 },
+      ],
+    },
+  },
+  {
+    rank: 7,
+    basic_info: {
+      FEIF_ID: "67891",
+      Name: "Sólon frá Skagaströnd",
+    },
+    breeding_info: {
+      Total_Score: 8.9,
+      Rider_Name: "Baldur Kristinsson",
+      Year: 2021,
+      Rideability: [
+        { Category: "Walk", Score: 9 },
+        { Category: "Trot", Score: 8.8 },
+        { Category: "Canter", Score: 8.9 },
+        { Category: "Gallop", Score: 9 },
+      ],
+    },
+  },
+  {
+    rank: 8,
+    basic_info: {
+      FEIF_ID: "78901",
+      Name: "Tindur frá Árbakka",
+    },
+    breeding_info: {
+      Total_Score: 8.85,
+      Rider_Name: "Kári Einarsson",
+      Year: 2021,
+      Rideability: [
+        { Category: "Walk", Score: 8.9 },
+        { Category: "Trot", Score: 8.7 },
+        { Category: "Canter", Score: 8.8 },
+        { Category: "Gallop", Score: 8.9 },
+      ],
+    },
+  },
+  {
+    rank: 9,
+    basic_info: {
+      FEIF_ID: "89012",
+      Name: "Gná frá Þjóðólfshaga",
+    },
+    breeding_info: {
+      Total_Score: 8.8,
+      Rider_Name: "Þóra Guðmundsdóttir",
+      Year: 2020,
+      Rideability: [
+        { Category: "Walk", Score: 8.8 },
+        { Category: "Trot", Score: 8.8 },
+        { Category: "Canter", Score: 8.8 },
+        { Category: "Gallop", Score: 8.8 },
+      ],
+    },
+  },
+  {
+    rank: 10,
+    basic_info: {
+      FEIF_ID: "90123",
+      Name: "Blær frá Ytra-Holt",
+    },
+    breeding_info: {
+      Total_Score: 8.75,
+      Rider_Name: "Svanur Svanbergsson",
+      Year: 2020,
+      Rideability: [
+        { Category: "Walk", Score: 8.7 },
+        { Category: "Trot", Score: 8.7 },
+        { Category: "Canter", Score: 8.8 },
+        { Category: "Gallop", Score: 8.8 },
+      ],
+    },
+  },
 ];
 
 export function TopList() {
@@ -153,7 +243,7 @@ export function TopList() {
     <div className="space-y-6 mt-5">
       <Card>
         <CardHeader>
-          <CardTitle className="text-3xl text-center">Top 10 List</CardTitle>
+          <CardTitle className="text-3xl">Top 10 List</CardTitle>
         </CardHeader>
         <CardContent>
           <Table>

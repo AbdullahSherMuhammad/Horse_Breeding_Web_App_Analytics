@@ -1,7 +1,7 @@
 import "./globals.css";
 
 export const metadata = {
-  title: "Dashboard",
+  title: "Alendis Horse Breeding - Dashboard",
 };
 
 interface RootLayoutProps {
