@@ -58,11 +58,11 @@ export default function LanguageSelect() {
   const selectedFlag = languages.find((lang) => lang.code === selectedLanguage)?.flag || "";
 
   return (
-    <div ref={dropdownRef} className="relative inline-block text-left w-[100px]">
+    <div ref={dropdownRef} className="relative inline-block text-left w-[60px] md:w-[100px]">
       {/* Dropdown Trigger */}
       <button
         onClick={toggleDropdown}
-        className="flex justify-between items-center gap-2 bg-black text-white px-2 py-1 rounded-full border-2 border-gray-700 focus:outline-none w-full"
+        className="flex justify-between items-center gap-2 bg-black text-white p-1 md:p-2 rounded-full border-2 border-gray-700 focus:outline-none w-full"
       >
         <Image
           src={selectedFlag}
@@ -73,7 +73,7 @@ export default function LanguageSelect() {
           className="w-8 h-8 rounded-full"
         />
 
-        <span className="uppercase">
+        <span className="uppercase hidden md:flex">
             {`${selectedLanguage}`}
         </span>
 
@@ -83,7 +83,7 @@ export default function LanguageSelect() {
 
       {/* Dropdown Menu */}
       {isOpen && (
-        <div className="absolute mt-1 bg-black text-white rounded-xl shadow-xl z-10 w-[100px] overflow-hidden border-2 border-gray-700">
+        <div className="absolute mt-1 bg-black text-white rounded-xl shadow-xl z-10 w-60px md:w-[100px] overflow-hidden border-2 border-gray-700">
           {languages.map((lang) => (
             <button
               key={lang.code}
@@ -99,7 +99,7 @@ export default function LanguageSelect() {
                 width={100}
                 height={100}
               />
-              <span>{lang.name}</span>
+              <span className="hidden md:flex">{lang.name}</span>
             </button>
           ))}
         </div>

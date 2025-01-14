@@ -243,7 +243,7 @@ export function TopList() {
     <div className="space-y-6 mt-5">
       <Card>
         <CardHeader>
-          <CardTitle className="text-3xl">Top 10 List</CardTitle>
+          <CardTitle className="text-xl sm:text-2xl">Top 10 List</CardTitle>
         </CardHeader>
         <CardContent>
           <Table>

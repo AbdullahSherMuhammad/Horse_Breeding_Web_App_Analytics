@@ -39,7 +39,7 @@ const RadarChartComponent = () => {
   return (
     <Card className="shadow-none border-0 flex justify-center items-center bg-transparent">
       <CardHeader className="hidden"></CardHeader>
-      <CardContent className="pb-0">
+      <CardContent className="p-0">
         {loading ? (
           // Loader Component
           <div className="flex justify-center items-center h-[250px]">
@@ -47,14 +47,14 @@ const RadarChartComponent = () => {
           </div>
         ) : (
           // Chart Component
-          <ChartContainer config={chartConfig} className="mx-auto h-[200px] md:h-[250px]">
+          <ChartContainer config={chartConfig} className="text-[10px] md:text-sm mx-auto p-0 h-[200px] md:h-[250px]">
             <RadarChart data={chartData}>
               <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
               <PolarAngleAxis dataKey="name" />
               <PolarGrid />
               <Radar
                 dataKey="horse"
-                fill="purple"
+                fill="blue"
                 fillOpacity={0.6}
                 dot={{ r: 4, fillOpacity: 1 }}
               />

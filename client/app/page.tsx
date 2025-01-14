@@ -44,19 +44,17 @@ const Page: React.FC = () => {
       >
         <Navbar toggleSidebar={toggleSidebar} />
 
-        <div className="overflow-x-hidden">
-          <main className="flex-1 py-6 px-6 md:px-10">
-            {sections.map(({ id, Component }) => (
-              <section
-                key={id}
-                id={id}
-                className="scroll-mt-[150px] md:p-5 rounded-[20px] mb-10 md:bg-[#f4f4f4]"
-              >
-                <Component />
-              </section>
-            ))}
-          </main>
-        </div>
+        <main className="flex-1 py-6 px-6 md:px-10 overflow-x-hidden">
+          {sections.map(({ id, Component }) => (
+            <section
+              key={id}
+              id={id}
+              className="scroll-mt-[150px] md:p-5 rounded-[20px] mb-10 md:bg-[#f4f4f4]"
+            >
+              <Component />
+            </section>
+          ))}
+        </main>
 
         <Footer />
       </div>

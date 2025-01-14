@@ -51,7 +51,7 @@ const BarChartComponent = () => {
           Comparison of average scores across different judging panels
         </p>
       </CardHeader>
-      <CardContent className="pb-0 w-full">
+      <CardContent className="p-0 w-full">
         {loading ? (
           // Loader Component
           <div className="flex justify-center items-center h-[300px]">
@@ -59,7 +59,7 @@ const BarChartComponent = () => {
           </div>
         ) : (
           // Chart Component
-          <ChartContainer config={chartConfig} className="w-full h-[300px]">
+          <ChartContainer config={chartConfig} className="w-full h-[300px] p-0">
               <BarChart data={chartData}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" />

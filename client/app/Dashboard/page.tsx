@@ -74,9 +74,9 @@ const Dashboard: React.FC = () => {
   ];
 
   const card = cardContent.map((value, id) => (
-    <Card key={id} className="p-4 border border-gray-200 rounded-lg shadow-sm">
+    <Card key={id} className="p-1 sm:p-4 border-2 border-gray-200 rounded-lg shadow-sm">
       <CardHeader>
-        <CardTitle className="text-lg font-semibold text-gray-700 flex justify-between items-center">
+        <CardTitle className="text-lg md:text-xl font-semibold flex justify-between items-center">
           <span>{value.title}</span>
           <span className="text-4xl transform scale-x-[-1]">{value.icons}</span>
         </CardTitle>
@@ -127,13 +127,13 @@ const Dashboard: React.FC = () => {
       <Card className="flex flex-col lg:flex-row gap-6 justify-between items-center p-5 my-5 overflow-hidden">
         {/* Content Section */}
         <div className="chart_content flex flex-col gap-4 lg:w-1/2">
-          <h1 className="font-bold text-2xl text-center lg:text-left">
+          <h1 className="font-bold text-lg sm:text-2xl text-center lg:text-left">
             Population Statistics
           </h1>
           <p className="font-medium text-lg text-center lg:text-left">
             Total Horses: <span className="font-bold">3</span>
           </p>
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2 text-[12px] sm:text-sm">
             <div className="flex justify-between lg:justify-start gap-2 lg:gap-4">
               <p>Average Inbreeding Coefficient:</p>
               <span className="font-medium text-gray-400">2.90%</span>

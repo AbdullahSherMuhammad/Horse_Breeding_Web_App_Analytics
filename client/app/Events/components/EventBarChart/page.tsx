@@ -81,7 +81,7 @@ const EventBarChart: React.FC = () => {
           </div>
         ) : (
           // Chart Component
-            <ChartContainer config={chartConfig} className="w-full h-[300px]">
+            <ChartContainer config={chartConfig} className="p-0 w-full h-[300px]">
 
               <BarChart
                 data={chartData}
