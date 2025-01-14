@@ -86,11 +86,6 @@ The backend is developed to handle robust data processing and API integrations.
 - **PostgreSQL**
 - **Prisma ORM**
 
-### Other Tools:
-- **Docker** for containerization.
-- **ESLint** and **Prettier** for code quality.
-- **Jest** for unit testing.
-
 ---
 
 ## Getting Started
