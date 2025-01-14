@@ -2,8 +2,13 @@ import React from 'react'
 import RadarChartComponent from "./components/RadarChart/RadarChart";
 import FilterComponent from "@/components/Filter/page";
 import { Card } from "@/components/ui/card";
+import { useFetch } from '@/hook/useFetch';
 
 const Genetics = () => {
+
+  const { data } = useFetch('parent_offspring_summary')
+
+
   return (
     <div className='my-5'>
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 space-y-4 md:space-y-0">
@@ -23,7 +28,10 @@ const Genetics = () => {
                   Genetic Overview
                 </h1>
                 <p className="font-medium text-lg text-center lg:text-left">
-                  Total Horses: <span className="font-bold">3</span>
+                  Total Horses: 
+                  <span className="font-bold">
+                    {/* {data} */}
+                  </span>
                 </p>
                 <div className="flex flex-col gap-2 text-[12px] sm:text-sm">
                   <div className="flex justify-between lg:justify-start gap-2 lg:gap-4">
