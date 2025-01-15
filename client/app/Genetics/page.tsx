@@ -1,13 +1,24 @@
+'use client'
 import React from 'react'
-import RadarChartComponent from "./components/RadarChart/RadarChart";
 import FilterComponent from "@/components/Filter/page";
 import { Card } from "@/components/ui/card";
 import { useFetch } from '@/hook/useFetch';
+import { TopList } from './components/TopListData/TopList';
+
+type Data = {
+  most_common_sire_name : string ;
+  max_sire_offspring_count : number ;
+  most_common_sire_feif_id : string ;
+  most_common_dam_name : string ;
+  max_dam_offspring_count : number ;
+  most_common_dam_feif_id : string ;
+  total_unique_dams : number;
+  total_unique_sires : number;
+}
 
 const Genetics = () => {
 
-  const { data } = useFetch('parent_offspring_summary')
-
+  const { data } = useFetch<Data>('parent_offspring_summary')
 
   return (
     <div className='my-5'>
@@ -21,43 +32,73 @@ const Genetics = () => {
           </div>
         </div>
 
-      <Card className="flex flex-col lg:flex-row gap-6 justify-between items-center p-6 mb-5 overflow-hidden">
-              {/* Content Section */}
-              <div className="chart_content flex flex-col gap-4 lg:w-1/2">
-                <h1 className="font-bold text-lg sm:text-2xl text-center lg:text-left">
-                  Genetic Overview
-                </h1>
-                <p className="font-medium text-lg text-center lg:text-left">
-                  Total Horses: 
-                  <span className="font-bold">
-                    {/* {data} */}
-                  </span>
-                </p>
-                <div className="flex flex-col gap-2 text-[12px] sm:text-sm">
-                  <div className="flex justify-between lg:justify-start gap-2 lg:gap-4">
-                    <p>Average Inbreeding Coefficient:</p>
-                    <span className="font-medium text-gray-400">2.90%</span>
+      {
+        data?.map((d,id) => {
+          return (
+            <div key={id} className='grid grid-cols-1 sm:grid-cols-2 gap-4 '>
+              <Card className="chart_content flex flex-col gap-4 p-6">
+                  <h1 className="font-bold text-xl sm:text-2xl text-left">
+                    Sire Overview
+                  </h1>
+                  <p className="font-medium text-md md:text-lg text-left">
+                    {d?.most_common_sire_name}
+                  </p>
+                  <div className="flex flex-col lg:flex-row justify-between md:items-center gap-2 text-[12px] sm:text-sm">
+                      <div>
+                        <div className="flex justify-between lg:justify-start gap-2 lg:gap-4">
+                          <p>Sire Children :</p>
+                          <span className="font-medium text-gray-400">{d?.max_sire_offspring_count}</span>
+                        </div>
+                        <div className="flex justify-between lg:justify-start gap-2 lg:gap-4">
+                          <p>Sire FEIF id :</p>
+                          <span className="font-medium text-gray-400">
+                            {d?.most_common_sire_feif_id}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="flex justify-between lg:justify-start gap-2 lg:gap-4">
+                        <p>Total Unique Sires :</p>
+                        <span className="font-medium text-gray-400">
+                          {d?.total_unique_sires}
+                        </span>
+                      </div>
                   </div>
-                  <div className="flex justify-between lg:justify-start gap-2 lg:gap-4">
-                    <p>Most Common Sire:</p>
-                    <span className="font-medium text-gray-400">
-                      Skýr frá Skálakoti
-                    </span>
+              </Card>
+                      
+              <Card className="chart_content flex flex-col gap-4 p-6 ">
+                  <h1 className="font-bold text-xl sm:text-2xl text-left">
+                    Dam Overview
+                  </h1>
+                  <p className="font-medium text-md md:text-lg text-left">
+                    {d?.most_common_dam_name}
+                  </p>
+                  <div className="flex flex-col lg:flex-row justify-between md:tems-center gap-2 text-[12px] sm:text-sm">
+                    <div>
+                        <div className="flex justify-between lg:justify-start gap-2 lg:gap-4">
+                          <p>Sire Children :</p>
+                          <span className="font-medium text-gray-400">{d?.max_dam_offspring_count}</span>
+                        </div>
+                        <div className="flex justify-between lg:justify-start gap-2 lg:gap-4">
+                          <p>Sire FEIF id :</p>
+                          <span className="font-medium text-gray-400">
+                            {d?.most_common_dam_feif_id}
+                          </span>
+                        </div>
+                    </div>
+                    <div className="flex justify-between lg:justify-start gap-2 lg:gap-4">
+                      <p>Total Unique Dams :</p>
+                      <span className="font-medium text-gray-400">
+                        {d?.total_unique_dams}
+                      </span>
+                    </div>
                   </div>
-                  <div className="flex justify-between lg:justify-start gap-2 lg:gap-4">
-                    <p>Most Common Dam:</p>
-                    <span className="font-medium text-gray-400">
-                      Perla frá Stóra-Hofi
-                    </span>
-                  </div>
-                </div>
-              </div>
+              </Card>
+            </div>
+          )
+        })
+      }
 
-              {/* Chart Section */}
-              <div className="flex justify-center lg:w-1/2">
-                <RadarChartComponent />
-              </div>
-      </Card>
+      <TopList/>
     </div>
   )
 }
