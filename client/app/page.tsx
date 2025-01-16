@@ -33,7 +33,7 @@ const Page: React.FC = () => {
   return (
     <div className="flex min-h-screen overflow-hidden">
       <div
-        className={`flex lg:hidden fixed top-0 left-0 z-20 h-screen w-64 bg-gray-100 p-4 transition-transform duration-300 ease-in-out ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 overflow-y-auto`}
+        className={`flex lg:hidden fixed top-0 left-0 z-[999] h-screen w-64 bg-gray-100 p-4 transition-transform duration-300 ease-in-out ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 overflow-y-auto`}
       >
         <Sidebar toggleSidebar={toggleSidebar} />
       </div>
@@ -61,7 +61,7 @@ const Page: React.FC = () => {
 
       {isSidebarOpen && (
         <div
-          className="fixed inset-0 z-10 bg-black opacity-50 lg:hidden"
+          className="fixed inset-0 z-[100] bg-black opacity-50 lg:hidden"
           onClick={() => setIsSidebarOpen(false)}
         />
       )}

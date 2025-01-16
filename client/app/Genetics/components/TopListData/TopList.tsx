@@ -21,31 +21,29 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from "recharts";
-import { useFetch } from "@/hook/useFetch";
 import { useState } from "react";
-
-type data = {
-  top_10_sires : TopListData[] ;
-  top_10_dams : TopListData[] ;
-}
 
 type TopListData = {
   rank: number;
-  parent_name: string;
-  offspring_count: number;
-  feif_id: string;
   parent_id: number;
+  parent_name: string;
+  feif_id: string;
+  offspring_count: number;
 };
 
-export function TopList() {
-  const { data } = useFetch<data>("parent_offspring_summary");
-  const List = data?.[0];
+type TopListGeneticData = {
+  top10Sires: TopListData[];
+  top10Dams: TopListData[];
+};
+
+
+export const TopListGeneticData: React.FC<TopListGeneticData> = ({ top10Sires, top10Dams }) => {
 
   const [showSire, setShowSire] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedData, setSelectedData] = useState<TopListData | null>(null);
 
-  const currentList = showSire ? List?.top_10_sires : List?.top_10_dams;
+  const currentList = showSire ? top10Sires : top10Dams;
   const currentTitle = showSire ? "Top 10 Sires" : "Top 10 Dams";
 
   // Chart Data

@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FetchApiData } from '@/app/api/Api';
 
 export function useFetch<T>(url: string) {
@@ -9,9 +9,12 @@ export function useFetch<T>(url: string) {
 
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
+      setError(null);
       try {
         const result = await FetchApiData<T>(url);
         setData(result);
+        setError(null)
       } catch (err: any) {
         setError(err.message || 'Error fetching data');
       } finally {

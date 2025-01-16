@@ -3,22 +3,52 @@ import React from 'react'
 import FilterComponent from "@/components/Filter/page";
 import { Card } from "@/components/ui/card";
 import { useFetch } from '@/hook/useFetch';
-import { TopList } from './components/TopListData/TopList';
+import { TopListGeneticData } from './components/TopListData/TopList';
+
+type TopListData = {
+  rank: number;
+  parent_id: number;
+  parent_name: string;
+  feif_id: string;
+  offspring_count: number;
+};
 
 type Data = {
-  most_common_sire_name : string ;
-  max_sire_offspring_count : number ;
-  most_common_sire_feif_id : string ;
-  most_common_dam_name : string ;
-  max_dam_offspring_count : number ;
-  most_common_dam_feif_id : string ;
-  total_unique_dams : number;
-  total_unique_sires : number;
-}
+  total_unique_sires: number;
+  total_unique_dams: number;
+  max_sire_offspring_count: number;
+  most_common_sire_id: number;
+  most_common_sire_name: string;
+  most_common_sire_feif_id: string;
+  max_dam_offspring_count: number;
+  most_common_dam_id: number;
+  most_common_dam_name: string;
+  most_common_dam_feif_id: string;
+  top_10_sires: TopListData[];
+  top_10_dams: TopListData[];
+};
+
 
 const Genetics = () => {
 
-  const { data } = useFetch<Data>('parent_offspring_summary')
+  const { data, loading, error } = useFetch<Data>('parent_offspring_summary')
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center animate-pulse bg-[#dedede99] rounded-[30px] h-screen">
+        <div className="w-16 h-16 border-4 border-dashed rounded-full animate-spin border-black mx-auto">
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex justify-center items-center">
+        <p>Error loading data. Please try again later.</p>
+      </div>
+    );
+  }
 
   return (
     <div className='my-5'>
@@ -38,7 +68,7 @@ const Genetics = () => {
             <div key={id} className='grid grid-cols-1 sm:grid-cols-2 gap-4 '>
               <Card className="chart_content flex flex-col gap-4 p-6">
                   <h1 className="font-bold text-xl sm:text-2xl text-left">
-                    Sire Overview
+                    Most Common Sire
                   </h1>
                   <p className="font-medium text-md md:text-lg text-left">
                     {d?.most_common_sire_name}
@@ -67,7 +97,7 @@ const Genetics = () => {
                       
               <Card className="chart_content flex flex-col gap-4 p-6 ">
                   <h1 className="font-bold text-xl sm:text-2xl text-left">
-                    Dam Overview
+                    Most Common Dam
                   </h1>
                   <p className="font-medium text-md md:text-lg text-left">
                     {d?.most_common_dam_name}
@@ -98,7 +128,7 @@ const Genetics = () => {
         })
       }
 
-      <TopList/>
+     {data && data[0] && <TopListGeneticData top10Sires={data[0].top_10_sires} top10Dams={data[0].top_10_dams} />}
     </div>
   )
 }
