@@ -32,19 +32,12 @@ type Data = {
 
 const Genetics = () => {
 
-  const { data, loading, error } = useFetch<Data>('parent_offspring_summary');
+  const { data, loading } = useFetch<Data>('parent_offspring_summary');
 
   if (loading) {
     return <Loader/>
   }
 
-  if (error) {
-    return (
-      <div className="flex justify-center items-center">
-        <p className="text-red-500">Error loading data. Please try again later.</p>
-      </div>
-    );
-  }
 
   return (
     <div className='my-5'>

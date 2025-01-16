@@ -30,213 +30,37 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { useFetch } from "@/hook/useFetch";
 
-type Horse = {
-  rank: number;
-  basic_info: {
-    FEIF_ID: string;
-    Name: string;
-  };
-  breeding_info: {
-    Total_Score: number;
-    Rider_Name: string;
-    Year: number;
-    Rideability: {
-      Category: string;
-      Score: number;
-    }[];
-  };
-};
 
-const mockHorses: Horse[] = [
-  {
-    rank: 1,
-    basic_info: {
-      FEIF_ID: "12345",
-      Name: "Forkur frá Breiðabólsstað",
-    },
-    breeding_info: {
-      Total_Score: 9.25,
-      Rider_Name: "Flosi Ólafsson",
-      Year: 2024,
-      Rideability: [
-        { Category: "Walk", Score: 9 },
-        { Category: "Trot", Score: 9 },
-        { Category: "Canter", Score: 9.5 },
-        { Category: "Gallop", Score: 9.5 },
-      ],
-    },
-  },
-  {
-    rank: 2,
-    basic_info: {
-      FEIF_ID: "67890",
-      Name: "Móri frá Hoftúni",
-    },
-    breeding_info: {
-      Total_Score: 9.2,
-      Rider_Name: "Jón Vilmundarson",
-      Year: 2024,
-      Rideability: [
-        { Category: "Walk", Score: 9 },
-        { Category: "Trot", Score: 9 },
-        { Category: "Canter", Score: 9.2 },
-        { Category: "Gallop", Score: 9.3 },
-      ],
-    },
-  },
-  {
-    rank: 3,
-    basic_info: {
-      FEIF_ID: "23456",
-      Name: "Leynir frá Flugumýri",
-    },
-    breeding_info: {
-      Total_Score: 9.1,
-      Rider_Name: "Elsa Alberts",
-      Year: 2023,
-      Rideability: [
-        { Category: "Walk", Score: 9 },
-        { Category: "Trot", Score: 9 },
-        { Category: "Canter", Score: 9 },
-        { Category: "Gallop", Score: 9.3 },
-      ],
-    },
-  },
-  {
-    rank: 4,
-    basic_info: {
-      FEIF_ID: "34567",
-      Name: "Fönix frá Skrúð",
-    },
-    breeding_info: {
-      Total_Score: 9.05,
-      Rider_Name: "Óðinn Örn",
-      Year: 2022,
-      Rideability: [
-        { Category: "Walk", Score: 9 },
-        { Category: "Trot", Score: 9 },
-        { Category: "Canter", Score: 9 },
-        { Category: "Gallop", Score: 9.1 },
-      ],
-    },
-  },
-  {
-    rank: 5,
-    basic_info: {
-      FEIF_ID: "45678",
-      Name: "Veröld frá Blesastöðum",
-    },
-    breeding_info: {
-      Total_Score: 9,
-      Rider_Name: "Jón Sigurðsson",
-      Year: 2023,
-      Rideability: [
-        { Category: "Walk", Score: 9 },
-        { Category: "Trot", Score: 9 },
-        { Category: "Canter", Score: 9 },
-        { Category: "Gallop", Score: 9 },
-      ],
-    },
-  },
-  {
-    rank: 6,
-    basic_info: {
-      FEIF_ID: "56789",
-      Name: "Hrímnir frá Hellu",
-    },
-    breeding_info: {
-      Total_Score: 8.95,
-      Rider_Name: "Ása Björnsdóttir",
-      Year: 2022,
-      Rideability: [
-        { Category: "Walk", Score: 8.9 },
-        { Category: "Trot", Score: 8.9 },
-        { Category: "Canter", Score: 9 },
-        { Category: "Gallop", Score: 9 },
-      ],
-    },
-  },
-  {
-    rank: 7,
-    basic_info: {
-      FEIF_ID: "67891",
-      Name: "Sólon frá Skagaströnd",
-    },
-    breeding_info: {
-      Total_Score: 8.9,
-      Rider_Name: "Baldur Kristinsson",
-      Year: 2021,
-      Rideability: [
-        { Category: "Walk", Score: 9 },
-        { Category: "Trot", Score: 8.8 },
-        { Category: "Canter", Score: 8.9 },
-        { Category: "Gallop", Score: 9 },
-      ],
-    },
-  },
-  {
-    rank: 8,
-    basic_info: {
-      FEIF_ID: "78901",
-      Name: "Tindur frá Árbakka",
-    },
-    breeding_info: {
-      Total_Score: 8.85,
-      Rider_Name: "Kári Einarsson",
-      Year: 2021,
-      Rideability: [
-        { Category: "Walk", Score: 8.9 },
-        { Category: "Trot", Score: 8.7 },
-        { Category: "Canter", Score: 8.8 },
-        { Category: "Gallop", Score: 8.9 },
-      ],
-    },
-  },
-  {
-    rank: 9,
-    basic_info: {
-      FEIF_ID: "89012",
-      Name: "Gná frá Þjóðólfshaga",
-    },
-    breeding_info: {
-      Total_Score: 8.8,
-      Rider_Name: "Þóra Guðmundsdóttir",
-      Year: 2020,
-      Rideability: [
-        { Category: "Walk", Score: 8.8 },
-        { Category: "Trot", Score: 8.8 },
-        { Category: "Canter", Score: 8.8 },
-        { Category: "Gallop", Score: 8.8 },
-      ],
-    },
-  },
-  {
-    rank: 10,
-    basic_info: {
-      FEIF_ID: "90123",
-      Name: "Blær frá Ytra-Holt",
-    },
-    breeding_info: {
-      Total_Score: 8.75,
-      Rider_Name: "Svanur Svanbergsson",
-      Year: 2020,
-      Rideability: [
-        { Category: "Walk", Score: 8.7 },
-        { Category: "Trot", Score: 8.7 },
-        { Category: "Canter", Score: 8.8 },
-        { Category: "Gallop", Score: 8.8 },
-      ],
-    },
-  },
-];
+type data = {
+  feif_id : string ;
+  horse_id : number ;
+  horse_name : string ;
+  assess_year : number ;
+  total_score : number ;
+  total_wo_pace : number ;
+  ridden_abilities_wo_pace : number ;
+  inbreeding_coefficient_percent : number ;
+  number_of_offspring_registered_to_date : number ;
+}
+
 
 export function TopList() {
-  const getRadarData = (horse: Horse) => {
-    return horse.breeding_info.Rideability.map((category) => ({
-      trait: category.Category,
-      value: category.Score,
-    }));
+
+  const { data } = useFetch<data>('top_horses_by_score')
+
+
+  const getRadarData = (horse: data) => {
+    const rideabilityScores = [
+      { trait: 'Total Score', value: horse.total_score },
+      { trait: 'Without Pace', value: horse.total_wo_pace },
+      { trait: 'Ridden Abilities', value: horse.ridden_abilities_wo_pace },
+      { trait: 'Inbreeding Coefficient', value: horse.inbreeding_coefficient_percent },
+      { trait: 'Offspring Registered', value: horse.number_of_offspring_registered_to_date },
+    ];
+  
+    return rideabilityScores;
   };
 
   return (
@@ -252,59 +76,58 @@ export function TopList() {
                 <TableHead>Rank</TableHead>
                 <TableHead>Horse Name</TableHead>
                 <TableHead>Total Score</TableHead>
-                <TableHead>Rider Name</TableHead>
+                <TableHead>FEIF ID</TableHead>
                 <TableHead>Year</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {mockHorses.map((horse) => (
-                <Dialog key={horse.basic_info.FEIF_ID}>
-                    <DialogTrigger asChild>
-                        <TableRow  className="hover:text-blue-400 hover:cursor-pointer">
-                        <TableCell>{horse.rank}</TableCell>
-                        <TableCell>{horse.basic_info.Name}</TableCell>
-                        <TableCell>{horse.breeding_info.Total_Score}</TableCell>
-                        <TableCell>{horse.breeding_info.Rider_Name}</TableCell>
-                        <TableCell>{horse.breeding_info.Year}</TableCell>
-                        </TableRow>
-                    </DialogTrigger>
-                    <DialogContent>
+              {data?.map((item,index) => (
+                <Dialog key={index}>
+                  <DialogTrigger asChild>
+                    <TableRow className="hover:text-blue-400 hover:cursor-pointer">
+                      <TableCell>{index+1}</TableCell>
+                      <TableCell>{item.horse_name}</TableCell>
+                      <TableCell>{item.total_score}</TableCell>
+                      <TableCell>{item.feif_id}</TableCell>
+                      <TableCell>{item.assess_year}</TableCell>
+                    </TableRow>
+                  </DialogTrigger>
+                  <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>{horse.basic_info.Name}</DialogTitle>
-                        <DialogDescription>
-                        FEIF ID: {horse.basic_info.FEIF_ID}
+                      <DialogTitle>{item.horse_name}</DialogTitle>
+                      <DialogDescription>
+                        FEIF ID: {item.feif_id}
                         <br />
-                        Total Score: {horse.breeding_info.Total_Score}
+                        Total Score: {item.total_score}
                         <br />
-                        Rider Name: {horse.breeding_info.Rider_Name}
-                        <br />
-                        Year: {horse.breeding_info.Year}
-                        </DialogDescription>
+                        Year: {item.assess_year}
+                      </DialogDescription>
                     </DialogHeader>
                     <div className="mt-4">
-                        <h4 className="font-semibold">Rideability Scores:</h4>
-                        <ResponsiveContainer width="100%" height={300}>
+                      <h4 className="font-semibold">Rideability Scores:</h4>
+                      <ResponsiveContainer width="100%" height={300}>
                         <RadarChart
-                            cx="50%"
-                            cy="50%"
-                            outerRadius="80%"
-                            data={getRadarData(horse)}
+                          cx="50%"
+                          cy="50%"
+                          outerRadius="80%"
+                          data={getRadarData(item)}
+                          className="text-sm"
                         >
-                            <PolarGrid />
-                            <PolarAngleAxis dataKey="trait" />
-                            <PolarRadiusAxis angle={30} domain={[0, 10]} />
-                            <Radar
+                          <PolarGrid />
+                          <PolarAngleAxis dataKey="trait" />
+                          <PolarRadiusAxis angle={30} domain={[0, 10]} />
+                          <Radar
                             name="Score"
                             dataKey="value"
                             stroke="#8884d8"
                             fill="#8884d8"
                             fillOpacity={0.6}
-                            />
+                          />
                         </RadarChart>
-                        </ResponsiveContainer>
+                      </ResponsiveContainer>
                     </div>
-                    </DialogContent>
-              </Dialog>
+                  </DialogContent>
+                </Dialog>
               ))}
             </TableBody>
           </Table>

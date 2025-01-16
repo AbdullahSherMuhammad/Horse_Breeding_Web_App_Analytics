@@ -1,8 +1,9 @@
 'use client'
+
 import { useEffect, useState } from 'react';
 import { FetchApiData } from '@/app/api/Api';
 
-export function useFetch<T>(url: string) {
+export function useFetch<T>(url: string, limit: number = 10, offset: number = 0) {
   const [data, setData] = useState<T[] | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -12,7 +13,7 @@ export function useFetch<T>(url: string) {
       setLoading(true);
       setError(null);
       try {
-        const result = await FetchApiData<T>(url);
+        const result = await FetchApiData<T>(url, limit, offset);
         setData(result);
         setError(null)
       } catch (err: any) {
@@ -23,7 +24,7 @@ export function useFetch<T>(url: string) {
     };
 
     fetchData();
-  }, [url]);
+  }, [url, limit, offset]); 
 
   return { data, loading, error };
 }
