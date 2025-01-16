@@ -1,3 +1,4 @@
+'use client'
 import React from 'react';
 import FilterComponent from "@/components/Filter/page";
 import { Card } from "@/components/ui/card";
