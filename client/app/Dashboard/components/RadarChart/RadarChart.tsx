@@ -2,31 +2,40 @@
 
 import React, { useState, useEffect } from "react";
 import { PolarAngleAxis, PolarGrid, Radar, RadarChart } from "recharts";
-
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import { useFetch } from "@/hook/useFetch";
 
-const chartData = [
-  { name: "Tölt", horse: 186 },
-  { name: "Conformation", horse: 209 },
-  { name: "Spirit", horse: 305 },
-  { name: "Pace", horse: 237 },
-  { name: "Rideability", horse: 273 },
-];
-
-const chartConfig = {
-  horse: {
-    label: "horse",
-    color: "hsl(var(--chart-1))",
-  },
-};
+type Data = {
+  avg_total_score : number ;
+  avg_total_wo_pace : number ;
+  avg_pace : number ;
+  avg_conformation : number ;
+  avg_rideability : number ;
+}
 
 const RadarChartComponent = () => {
   const [loading, setLoading] = useState(true);
+  const { data } = useFetch<Data>('total_blup');
+  
+  const chartData = [
+    { name: "Average score", horse: data?.[0]?.avg_total_score || 0 },
+    { name: "Average WO Pace", horse: data?.[0]?.avg_total_wo_pace || 0 },
+    { name: "Pace", horse: data?.[0]?.avg_pace || 0 },
+    { name: "Conformation", horse: data?.[0]?.avg_conformation || 0 },
+    { name: "Rideability", horse: data?.[0]?.avg_rideability || 0 },
+  ];
+
+  const chartConfig = {
+    horse: {
+      label: "horse",
+      color: "hsl(var(--chart-1))",
+    },
+  };
 
   useEffect(() => {
     const timer = setTimeout(() => {

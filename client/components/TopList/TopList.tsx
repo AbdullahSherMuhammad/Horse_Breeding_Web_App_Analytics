@@ -1,5 +1,5 @@
-"use client";
-
+import { useEffect, useRef, useState } from "react";
+import { MdKeyboardArrowDown } from "react-icons/md";
 import {
   Card,
   CardContent,
@@ -7,11 +7,13 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import {
-  RadarChart,
-  PolarGrid,
-  PolarAngleAxis,
-  PolarRadiusAxis,
-  Radar,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
   ResponsiveContainer,
 } from "recharts";
 import {
@@ -33,97 +35,162 @@ import {
 import { useFetch } from "@/hook/useFetch";
 
 
-type data = {
-  feif_id : string ;
-  horse_id : number ;
+type Data = {
   horse_name : string ;
-  assess_year : number ;
-  total_score : number ;
-  total_wo_pace : number ;
-  ridden_abilities_wo_pace : number ;
-  inbreeding_coefficient_percent : number ;
-  number_of_offspring_registered_to_date : number ;
+  total_score : number;
+  feif_id : number;
+  assess_year : number;
+  ridden_abilities_wo_pace : number;
+  total_wo_pace : number;
+
+  farm_name : string;
+  avg_total_score : number;
+  number_of_horses : number;
+  avg_rideability : number;
+  [key: string]: string | number;
 }
 
+const dropdownOptions = [
+  { 
+    label: "Horses by Total Score", 
+    endpoint: "top_horses_by_score", 
+    keys: ["horse_name", "total_score", "feif_id", "assess_year"], 
+    barData: ["total_score", "ridden_abilities_wo_pace", "total_wo_pace"]
+  },
+  { 
+    label: "Farms by Average Total Score", 
+    endpoint: "blup_score_by_farms", 
+    keys: ["farm_name", "avg_total_score", "number_of_horses", "avg_rideability"], 
+    barData: ["avg_total_score", "avg_rideability", "number_of_horses"]
+  },
+];
 
 export function TopList() {
+  const [isActiveDropDown, setActiveDropDown] = useState(false);
+  const [selectedOption, setSelectedOption] = useState(dropdownOptions[0]); 
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const { data } = useFetch<data>('top_horses_by_score')
+  const { data } = useFetch<Data>(selectedOption.endpoint, 10);
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setActiveDropDown(false);
+      }
+    };
 
-  const getRadarData = (horse: data) => {
-    const rideabilityScores = [
-      { trait: 'Total Score', value: horse.total_score },
-      { trait: 'Without Pace', value: horse.total_wo_pace },
-      { trait: 'Ridden Abilities', value: horse.ridden_abilities_wo_pace },
-      { trait: 'Inbreeding Coefficient', value: horse.inbreeding_coefficient_percent },
-      { trait: 'Offspring Registered', value: horse.number_of_offspring_registered_to_date },
-    ];
-  
-    return rideabilityScores;
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const getBarChartData = (item: Data) => {
+    return selectedOption.barData.map((trait) => {
+      let value = typeof item[trait] === 'number' ? item[trait] : 0;
+      value = Math.round(value * 100) / 100;
+      return {
+        trait,
+        value,
+      };
+    });
   };
 
   return (
     <div className="space-y-6 mt-5">
       <Card>
         <CardHeader>
-          <CardTitle className="text-xl sm:text-2xl">Top 10 List</CardTitle>
+          <div className="flex justify-between items-center">
+            <CardTitle className="text-xl sm:text-2xl">Top 10 {selectedOption.label}</CardTitle>
+            <div ref={dropdownRef} className="relative">
+              <button
+                className="relative bg-[#1a1a1a] p-2 rounded-lg text-white flex gap-1 items-center"
+                onClick={() => setActiveDropDown((prev) => !prev)}
+              >
+                {selectedOption.label} <MdKeyboardArrowDown />
+              </button>
+              <ul
+                className={`${
+                  isActiveDropDown ? "block" : "hidden"
+                } absolute z-10 mt-1 overflow-hidden rounded-lg min-w-[120px] bg-white border-2 border-[#f4f4f4] shadow-lg`}
+              >
+                {dropdownOptions.map((option, index) => (
+                  <li
+                    key={index}
+                    onClick={() => {
+                      setSelectedOption(option);
+                      setActiveDropDown(false);
+                    }}
+                    className="p-2 hover:bg-[#f4f4f4] cursor-pointer"
+                  >
+                    {option.label}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
                 <TableHead>Rank</TableHead>
-                <TableHead>Horse Name</TableHead>
-                <TableHead>Total Score</TableHead>
-                <TableHead>FEIF ID</TableHead>
-                <TableHead>Year</TableHead>
+                {selectedOption.keys.map((key) => (
+                  <TableHead className="capitalize" key={key}>{key.replace(/_/g, " ")}</TableHead>
+                ))}
               </TableRow>
             </TableHeader>
             <TableBody>
-              {data?.map((item,index) => (
+              {data?.map((item, index) => (
                 <Dialog key={index}>
                   <DialogTrigger asChild>
                     <TableRow className="hover:text-blue-400 hover:cursor-pointer">
-                      <TableCell>{index+1}</TableCell>
-                      <TableCell>{item.horse_name}</TableCell>
-                      <TableCell>{item.total_score}</TableCell>
-                      <TableCell>{item.feif_id}</TableCell>
-                      <TableCell>{item.assess_year}</TableCell>
+                      <TableCell>{index + 1}</TableCell>
+                      {selectedOption.keys.map((key) => (
+                        <TableCell key={key}>
+                          {typeof item[key] === "number" ? Math.round(item[key] * 100) / 100 : item[key]}
+                        </TableCell>
+                      ))}
                     </TableRow>
                   </DialogTrigger>
                   <DialogContent>
                     <DialogHeader>
-                      <DialogTitle>{item.horse_name}</DialogTitle>
+                      <DialogTitle>{selectedOption.label === "Horses by Total Score" ? item.horse_name : item.farm_name}</DialogTitle>
                       <DialogDescription>
-                        FEIF ID: {item.feif_id}
-                        <br />
-                        Total Score: {item.total_score}
-                        <br />
-                        Year: {item.assess_year}
+                        {/* Conditional Rendering for Dialog Description */}
+                        {selectedOption.label === "Horses by Total Score" ? (
+                          <>
+                            FEIF ID: {item.feif_id}
+                            <br />
+                            Total Score: {Math.round(item.total_score * 100) / 100}
+                            <br />
+                            Year: {item.assess_year}
+                          </>
+                        ) : (
+                          <>
+                            Farm ID: {item.farm_id}
+                            <br />
+                            Avg BLUP Score: {Math.round(item.avg_total_score * 100) / 100}
+                            <br />
+                            Avg Rideability: {Math.round(item.avg_rideability * 100) / 100}
+                          </>
+                        )}
                       </DialogDescription>
                     </DialogHeader>
                     <div className="mt-4">
-                      <h4 className="font-semibold">Rideability Scores:</h4>
+                      <h4 className="font-semibold">Performance Scores:</h4>
                       <ResponsiveContainer width="100%" height={300}>
-                        <RadarChart
-                          cx="50%"
-                          cy="50%"
-                          outerRadius="80%"
-                          data={getRadarData(item)}
-                          className="text-sm"
-                        >
-                          <PolarGrid />
-                          <PolarAngleAxis dataKey="trait" />
-                          <PolarRadiusAxis angle={30} domain={[0, 10]} />
-                          <Radar
-                            name="Score"
-                            dataKey="value"
-                            stroke="#8884d8"
-                            fill="#8884d8"
-                            fillOpacity={0.6}
-                          />
-                        </RadarChart>
+                        <BarChart data={getBarChartData(item)}>
+                          <CartesianGrid strokeDasharray="3 3" />
+                          <XAxis dataKey="trait" />
+                          <YAxis />
+                          <Tooltip />
+                          <Legend />
+                          <Bar dataKey="value" fill="#8884d8" />
+                        </BarChart>
                       </ResponsiveContainer>
                     </div>
                   </DialogContent>
