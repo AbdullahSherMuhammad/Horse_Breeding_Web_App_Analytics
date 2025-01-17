@@ -1,21 +1,42 @@
 const { createClient } = require("@supabase/supabase-js");
-const dotenv = require('dotenv');
-const path = require('path');
+require('dotenv').config(); 
 
-// Load environment variables from .env file
-const result = dotenv.config({ path: path.resolve(__dirname, '../.env') }); // Adjust the path if necessary
-
-
-
-const supabaseUrl = process.env.SUPABASEURL;
-const supabaseKey = process.env.SUPABASEKEY;
-
-if (!supabaseUrl || !supabaseKey) {
-  console.error('Missing SUPABASEURL or SUPABASEKEY in environment variables');
-  process.exit(1);
-}
+const supabaseUrl = process.env.SUPABASEURL
+const supabaseKey = process.env.SUPABASEKEY
 
 const supabase = createClient(supabaseUrl, supabaseKey);
-console.log("Supabase is Connected");
+// console.log(supabase, "just to  check connection");
+// start = async() => {
+// const { data: horses, error: horseError } = await supabase.from("horse").select("horse_id").eq("place_holder", true);
+// console.log(horses.length)
+// }
+// start()
 
+// async function fetchPage(viewName, pageNumber, pageSize) {
+//     const start = (pageNumber - 1) * pageSize;
+//     const end = start + pageSize - 1;
+  
+//     const { data, error, count } = await supabase
+//       .from(viewName)
+//       .select('*', { count: 'exact' }) // Include count metadata
+//       .range(start, end);
+  
+//     if (error) {
+//       console.error('Error fetching data:', error);
+//       return { error };
+//     }
+  
+//     const totalPages = Math.ceil(count / pageSize);
+  
+//     return {
+//       data,
+//      totalRecords: count,
+//        totalPages,
+//        currentPage: pageNumber,
+//     };
+//   }
+  
+  // Usage
+  // fetchPage('parent_offspring_agg', 1, 20).then((result) => console.log(result));
+  
 module.exports = { supabase };

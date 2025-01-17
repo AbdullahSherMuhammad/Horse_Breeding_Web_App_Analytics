@@ -9,4 +9,11 @@ const parseDate = (dateStr) => {
     return null;
   };
 
-  module.exports = {parseDate}
+  function parseDecimal(value) {
+    if (!value) return null;
+    const cleaned = value.replace(',', '.');
+    const parsed = parseFloat(cleaned);
+    return isNaN(parsed) ? null : parsed;
+  }
+  
+  module.exports = {parseDate, parseDecimal}

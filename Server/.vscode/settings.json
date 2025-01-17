@@ -1,0 +1,16 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Launch Program",
+            "type": "node",
+            "request": "launch",
+            "program": "${workspaceFolder}/app.js", // Replace with your entry file
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "NODE_ENV": "development"
+            }
+        }
+    ]
+}

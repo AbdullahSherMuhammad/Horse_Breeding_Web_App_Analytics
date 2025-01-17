@@ -11,6 +11,7 @@ class Breeder extends BaseModel {
    * Processes and prepares breeder data for insertion.
    * @param {object} rawData - The raw breeder data.
    * @returns {object} - The processed breeder data.
+   * 
    */
   prepareData(rawData) {
     return {
