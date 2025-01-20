@@ -34,7 +34,6 @@ const PageNavigation: React.FC<PageNavigationProps> = ({ scrollToSection }) => {
       { name: 'Panels', url: 'Panels', icon: <MdEventSeat /> },
       { name: 'Events', url: 'Events', icon: <MdEmojiEvents /> },
       { name: 'Performance', url: 'Performance', icon: <IoMdAnalytics /> },
-      { name: 'Compare', url: 'Compare', icon: <FaCodeCompare /> },
     ],
     []
   );

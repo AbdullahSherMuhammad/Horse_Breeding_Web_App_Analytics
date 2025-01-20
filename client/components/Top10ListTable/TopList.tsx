@@ -58,10 +58,16 @@ const dropdownOptions = [
     barData: ["total_score", "ridden_abilities_wo_pace", "total_wo_pace"]
   },
   { 
-    label: "Farms by Average Total Score", 
-    endpoint: "blup_score_by_farms", 
-    keys: ["farm_name", "avg_total_score", "number_of_horses", "avg_rideability"], 
-    barData: ["avg_total_score", "avg_rideability", "number_of_horses"]
+    label: "Horses by Conformation Score", 
+    endpoint: "top_10_horses_conformation_score", 
+    keys: ["horse_name", "conformation_score"], 
+    barData: ["rideability_score"]
+  },
+  { 
+    label: "Horses by Rideability Score", 
+    endpoint: "top_10_horses_rideability_score", 
+    keys: ["horse_name", "rideability_score"], 
+    barData: ["rideability_score"]
   },
 ];
 
@@ -115,7 +121,7 @@ export function TopList() {
               <ul
                 className={`${
                   isActiveDropDown ? "block" : "hidden"
-                } absolute z-10 mt-1 overflow-hidden rounded-lg min-w-[120px] bg-white border-2 border-[#f4f4f4] shadow-lg`}
+                } absolute z-10 mt-1 overflow-hidden rounded-lg min-w-[120px] bg-white border-2 shadow-lg`}
               >
                 {dropdownOptions.map((option, index) => (
                   <li
@@ -124,7 +130,7 @@ export function TopList() {
                       setSelectedOption(option);
                       setActiveDropDown(false);
                     }}
-                    className="p-2 hover:bg-[#f4f4f4] cursor-pointer"
+                    className="p-2 hover:bg-[#f4f4f4] cursor-pointer border-b-2"
                   >
                     {option.label}
                   </li>

@@ -7,7 +7,6 @@ import Navbar from '@/components/layout/Header/Navbar';
 import Performance from './Performance/page';
 import Dashboard from './Dashboard/page';
 import Genetics from './Genetics/page';
-import Compare from './Compare/page';
 import Horses from './Horses/page';
 import Panels from './Panels/page';
 import Events from './Events/page';
@@ -19,7 +18,6 @@ const sections = [
   { id: 'Panels', Component: Panels },
   { id: 'Events', Component: Events },
   { id: 'Performance', Component: Performance },
-  { id: 'Compare', Component: Compare },
 ];
 
 const Page: React.FC = () => {
