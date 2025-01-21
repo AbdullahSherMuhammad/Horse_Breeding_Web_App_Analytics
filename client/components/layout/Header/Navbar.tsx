@@ -24,6 +24,7 @@ const Navbar: React.FC<NavbarProps> = ({ toggleSidebar }) => {
 
   const menuLinks: MenuLink[] = useMemo(
     () => [
+      { name: 'Home', url: '/'},
       { name: 'Schedule', url: '#Schedule'},
       { name: 'Catalogue', url: '#Catalogue'},
       { name: 'Shop', url: '#Shop'},

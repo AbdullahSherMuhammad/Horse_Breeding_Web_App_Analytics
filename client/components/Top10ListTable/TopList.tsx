@@ -7,16 +7,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-} from "recharts";
-import {
   Table,
   TableBody,
   TableCell,
@@ -24,29 +14,18 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import { useFetch } from "@/hook/useFetch";
+import { useRouter } from "next/navigation";
 
 
 type Data = {
+  horse_id : number;
   horse_name : string ;
   total_score : number;
   feif_id : number;
   assess_year : number;
   ridden_abilities_wo_pace : number;
   total_wo_pace : number;
-
-  farm_name : string;
-  avg_total_score : number;
-  number_of_horses : number;
-  avg_rideability : number;
   [key: string]: string | number;
 }
 
@@ -75,6 +54,7 @@ export function TopList() {
   const [isActiveDropDown, setActiveDropDown] = useState(false);
   const [selectedOption, setSelectedOption] = useState(dropdownOptions[0]); 
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const router = useRouter()
 
   const { data } = useFetch<Data>(selectedOption.endpoint, 10);
 
@@ -94,16 +74,10 @@ export function TopList() {
     };
   }, []);
 
-  const getBarChartData = (item: Data) => {
-    return selectedOption.barData.map((trait) => {
-      let value = typeof item[trait] === 'number' ? item[trait] : 0;
-      value = Math.round(value * 100) / 100;
-      return {
-        trait,
-        value,
-      };
-    });
-  };
+  const clickHandler = (horseId: number) => {
+    router.push(`/TopListDetail/?name=${selectedOption.endpoint}&id=${horseId}`)
+  }
+
 
   return (
     <div className="space-y-6 mt-5">
@@ -151,56 +125,20 @@ export function TopList() {
             </TableHeader>
             <TableBody>
               {data?.map((item, index) => (
-                <Dialog key={index}>
-                  <DialogTrigger asChild>
-                    <TableRow className="hover:text-blue-400 hover:cursor-pointer">
-                      <TableCell>{index + 1}</TableCell>
-                      {selectedOption.keys.map((key) => (
-                        <TableCell key={key}>
-                          {typeof item[key] === "number" ? Math.round(item[key] * 100) / 100 : item[key]}
-                        </TableCell>
-                      ))}
-                    </TableRow>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>{selectedOption.label === "Horses by Total Score" ? item.horse_name : item.farm_name}</DialogTitle>
-                      <DialogDescription>
-                        {/* Conditional Rendering for Dialog Description */}
-                        {selectedOption.label === "Horses by Total Score" ? (
-                          <>
-                            FEIF ID: {item.feif_id}
-                            <br />
-                            Total Score: {Math.round(item.total_score * 100) / 100}
-                            <br />
-                            Year: {item.assess_year}
-                          </>
-                        ) : (
-                          <>
-                            Farm ID: {item.farm_id}
-                            <br />
-                            Avg BLUP Score: {Math.round(item.avg_total_score * 100) / 100}
-                            <br />
-                            Avg Rideability: {Math.round(item.avg_rideability * 100) / 100}
-                          </>
-                        )}
-                      </DialogDescription>
-                    </DialogHeader>
-                    <div className="mt-4">
-                      <h4 className="font-semibold">Performance Scores:</h4>
-                      <ResponsiveContainer width="100%" height={300}>
-                        <BarChart data={getBarChartData(item)}>
-                          <CartesianGrid strokeDasharray="3 3" />
-                          <XAxis dataKey="trait" />
-                          <YAxis />
-                          <Tooltip />
-                          <Legend />
-                          <Bar dataKey="value" fill="#8884d8" />
-                        </BarChart>
-                      </ResponsiveContainer>
-                    </div>
-                  </DialogContent>
-                </Dialog>
+                <TableRow 
+                  key={index} 
+                  className="hover:text-blue-400 hover:cursor-pointer"
+                  onClick={() => {
+                    clickHandler(item?.horse_id)
+                  }} 
+                >
+                  <TableCell>{index + 1}</TableCell>
+                  {selectedOption.keys.map((key) => (
+                    <TableCell key={key}>
+                      {typeof item[key] === "number" ? Math.round(item[key] * 100) / 100 : item[key]}
+                    </TableCell>
+                  ))}
+                </TableRow>
               ))}
             </TableBody>
           </Table>
@@ -209,3 +147,4 @@ export function TopList() {
     </div>
   );
 }
+

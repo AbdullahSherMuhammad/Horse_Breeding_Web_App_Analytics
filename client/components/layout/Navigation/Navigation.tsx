@@ -5,7 +5,6 @@ import { GiHorseHead } from 'react-icons/gi';
 import { SiMicrogenetics } from 'react-icons/si';
 import { MdEventSeat, MdEmojiEvents } from 'react-icons/md';
 import { IoMdAnalytics } from 'react-icons/io';
-import { FaCodeCompare } from 'react-icons/fa6';
 import { IoMdArrowDropleft } from "react-icons/io";
 import { IoMdArrowDropright } from "react-icons/io";
 

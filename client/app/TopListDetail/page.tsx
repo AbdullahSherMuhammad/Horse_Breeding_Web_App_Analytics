@@ -1,0 +1,109 @@
+'use client';
+
+import { Suspense } from 'react';
+import Navbar from '@/components/layout/Header/Navbar';
+import { Card } from '@/components/ui/card';
+import { useFetch } from '@/hook/useFetch';
+import { useSearchParams } from 'next/navigation';
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from 'recharts';
+
+type Data = {
+  horse_name: string;
+  feif_id: string;
+  assess_year: number;
+  total_score: number;
+  total_wo_pace: number;
+  ridden_abilities_wo_pace: number;
+  number_of_offspring_registered_to_date: number;
+  inbreeding_coefficient_percent: number;
+};
+
+const TopListDetailsContent = () => {
+  const query = useSearchParams();
+  const endpoint = query.get('name');
+  const id = query.get('id');
+  const { data, loading, error } = useFetch<Data>(`${endpoint}?horse_id=eq.${id}`);
+
+  if (loading) return <div className="text-center mt-10">Loading...</div>;
+  if (error || !data || data.length === 0)
+    return <div className="text-center mt-10">No data available</div>;
+
+  const item = data[0];
+
+  const barData = Object.entries(item)
+    .filter(
+      ([key, value]) =>
+        typeof value === 'number' && key !== 'horse_id' && key !== 'assess_year' && key !== 'number_of_offspring_registered_to_date'
+    )
+    .map(([key, value]) => ({
+      trait: key.replace(/_/g, ' ').replace(/^\w/, (c) => c.toUpperCase()),
+      value: value || 0,
+    }));
+
+
+  return (
+    <>
+      <Card className="bg-white shadow-md rounded-lg p-6">
+        <h1 className="text-3xl text-[#1a1a1a] capitalize font-bold text-center md:text-left mb-4">
+          {endpoint
+            ? `Detail of ${endpoint
+                .replace('top', '')
+                .replace('top_10', '')
+                .replace('horses', 'horse')
+                .replaceAll('_', ' ')}`
+            : 'Horse Details'}
+        </h1>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-lg">
+          {Object.entries(item)
+            .filter(([key]) => key !== 'horse_id')
+            .map(([key, value]) => (
+              <p key={key}>
+                <strong>{key.replace(/_/g, ' ').replace(/^\w/, (c) => c.toUpperCase())}:</strong>{' '}
+                {value !== null && value !== undefined ? value : 'N/A'}
+              </p>
+            ))}
+        </div>
+      </Card>
+
+      <Card className="bg-white shadow-md rounded-lg p-6">
+        <h2 className="text-xl font-semibold text-center mb-4">Chart</h2>
+        {barData.length > 0 ? (
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={barData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="trait" />
+              <YAxis domain={[0, 200]} />
+              <Tooltip />
+              <Legend />
+              <Bar dataKey="value" fill="#4A90E2" />
+            </BarChart>
+          </ResponsiveContainer>
+        ) : (
+          <p className="text-center text-gray-500">No chartable data available</p>
+        )}
+      </Card>
+    </>
+  );
+};
+
+const TopListDetails = () => {
+  return (
+    <div className="container mx-auto p-6 space-y-6">
+      <Navbar toggleSidebar={() => {}} />
+      <Suspense fallback={<div className="text-center mt-10">Loading page...</div>}>
+        <TopListDetailsContent />
+      </Suspense>
+    </div>
+  );
+};
+
+export default TopListDetails;
