@@ -53,7 +53,7 @@ const TopListDetailsContent = () => {
   return (
     <>
       <Card className="bg-white shadow-md rounded-lg p-6">
-        <h1 className="text-3xl text-[#1a1a1a] capitalize font-bold text-center md:text-left mb-4">
+        <h1 className="text-xl md:text-2xl text-[#333] capitalize font-bold text-center md:text-left mb-4">
           {endpoint
             ? `Detail of ${endpoint
                 .replace('top', '')
@@ -66,9 +66,11 @@ const TopListDetailsContent = () => {
           {Object.entries(item)
             .filter(([key]) => key !== 'horse_id')
             .map(([key, value]) => (
-              <p key={key}>
-                <strong>{key.replace(/_/g, ' ').replace(/^\w/, (c) => c.toUpperCase())}:</strong>{' '}
-                {value !== null && value !== undefined ? value : 'N/A'}
+              <p key={key} className='flex items-center gap-2 text-base md:text-lg p-2'>
+                <h4 className='text-[#444] font-semibold'>{key.replace(/_/g, ' ').replace(/^\w/, (c) => c.toUpperCase())}:</h4>
+                <p className='bg-[#f4f4f4] p-1 px-3 rounded-full'>
+                   {value !== null && value !== undefined ? value : 'N/A'}
+                </p>
               </p>
             ))}
         </div>

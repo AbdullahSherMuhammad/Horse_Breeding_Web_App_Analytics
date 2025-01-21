@@ -16,9 +16,9 @@ import { useFetch } from "@/hook/useFetch";
 interface CardContentType {
   title: string;
   total_txt: string;
-  total: string | number;
+  total: string | number | React.ReactNode;
   average_txt: string;
-  average: string | number;
+  average: string | number | React.ReactNode;
   icons: React.ReactNode;
 }
 
@@ -39,25 +39,32 @@ type Data = {
   most_common_dam_name: string | null;
 }
 
-const Dashboard: React.FC = () => {
+const PulseLoader = () => (
+  <span className="inline-block h-4 w-8 bg-gray-300 rounded-md animate-pulse"></span>
+);
 
-  const { data } = useFetch<Data>('total_results')
+const Dashboard: React.FC = () => {
+  const { data, loading } = useFetch<Data>('total_results');
 
   const cardContent: CardContentType[] = [
     {
       title: "Population Statistics",
       total_txt: "Total horses",
-      total: data ? data[0].total_horses : 'N/A',
+      total: loading ? <PulseLoader /> : data?.[0]?.total_horses || 'N/A',
       average_txt: "Average Inbreeding coefficient",
-      average: data ? parseFloat(data[0].avg_inbreeding_coefficient.toFixed(2)) : 'N/A', 
+      average: loading ? (
+        <PulseLoader />
+      ) : data ? parseFloat(data[0].avg_inbreeding_coefficient.toFixed(2)) : 'N/A',
       icons: <MdAnalytics />,
     },
     {
       title: "Horses Overview",
       total_txt: "Total horses",
-      total: data ? data[0].total_horses : 'N/A',
+      total: loading ? <PulseLoader /> : data?.[0]?.total_horses || 'N/A',
       average_txt: "Average total score",
-      average: data ? parseFloat(data[0].avg_total_score.toFixed(2)) : 'N/A', 
+      average: loading ? (
+        <PulseLoader />
+      ) : data ? parseFloat(data[0].avg_total_score.toFixed(2)) : 'N/A',
       icons: <GiHorseHead />,
     },
     {
@@ -65,35 +72,46 @@ const Dashboard: React.FC = () => {
       total_txt: "Total panels",
       total: "51",
       average_txt: "Average consistency score",
-      average: "121", 
+      average: "121",
       icons: <MdEventSeat />,
     },
     {
       title: "Events Overview",
       total_txt: "Total events",
-      total: data ? data[0].total_events : 'N/A',
+      total: loading ? <PulseLoader /> : data?.[0]?.total_events || 'N/A',
       average_txt: "Highest scoring event",
-      average: "Summer Show Reykjavík (8.7)", 
+      average: "Summer Show Reykjavík (8.7)",
       icons: <MdEmojiEvents />,
     },
     {
       title: "Performance Overview",
       total_txt: "Top performing trait",
-      total: data ? data[0].sorted_trait_averages[0].trait  + ` (${parseFloat(data[0].sorted_trait_averages[0].avg_score.toFixed(2))})` : 'N/A', 
+      total: loading ? (
+        <PulseLoader />
+      ) : data
+        ? `${data[0].sorted_trait_averages[0].trait} (${parseFloat(
+            data[0].sorted_trait_averages[0].avg_score.toFixed(2)
+          )})`
+        : 'N/A',
       average_txt: "Second Highest trait",
-      average:  data ? data[0].sorted_trait_averages[1].trait  + ` (${parseFloat(data[0].sorted_trait_averages[1].avg_score.toFixed(2))})` : 'N/A', 
+      average: loading ? (
+        <PulseLoader />
+      ) : data
+        ? `${data[0].sorted_trait_averages[1].trait} (${parseFloat(
+            data[0].sorted_trait_averages[1].avg_score.toFixed(2)
+          )})`
+        : 'N/A',
       icons: <IoMdAnalytics />,
     },
     {
       title: "Comparison Overview",
       total_txt: "Top 10 average score",
-      total: data ? parseFloat(data[0].avg_top_10_score.toFixed(2)) : 'N/A', 
+      total: loading ? <PulseLoader /> : data?.[0]?.avg_top_10_score || 'N/A',
       average_txt: "Bottom 10 average score",
-      average: data ? parseFloat(data[0].avg_bottom_10_score.toFixed(2)) : 'N/A',  
+      average: loading ? <PulseLoader /> : data?.[0]?.avg_bottom_10_score || 'N/A',
       icons: <FaCodeCompare />,
     },
-  ];  
-
+  ];
   const card = cardContent.map((value, id) => (
     <Card key={id} className="p-1 sm:p-4 border-2 border-gray-200 rounded-lg shadow-sm">
       <CardHeader>
@@ -154,21 +172,49 @@ const Dashboard: React.FC = () => {
           <h1 className="font-bold text-lg sm:text-2xl text-center lg:text-left">
             Population Statistics
           </h1>
-          <p className="font-medium text-lg text-center lg:text-left">
-            Total Horses: <span className="font-bold">{ data ? data[0].total_horses : 'N/A' }</span>
-          </p>
+          <div className="font-medium text-lg text-center lg:text-left flex justify-between lg:justify-start gap-2 lg:gap-4">
+            <p>Total Horses: </p>
+            <span className="font-bold">
+                { loading ? (
+                    <PulseLoader />
+                  ) :
+                  data ? data[0].total_horses : 'N/A' 
+                }
+            </span>
+          </div>
           <div className="flex flex-col gap-2 text-[12px] sm:text-sm">
             <div className="flex justify-between lg:justify-start gap-2 lg:gap-4">
               <p>Average Inbreeding Coefficient:</p>
-              <span className="font-medium text-gray-400">{ data ? parseFloat(data[0].avg_inbreeding_coefficient.toFixed(2)) : 'N/A' }</span>
+              <span className="font-medium text-gray-400">
+                { 
+                  loading ? (
+                    <PulseLoader />
+                  ) :
+                  data ? parseFloat(data[0].avg_inbreeding_coefficient.toFixed(2)) : 'N/A' 
+                }
+              </span>
             </div>
             <div className="flex justify-between lg:justify-start gap-2 lg:gap-4">
               <p>Most Common Sire:</p>
-              <span className="font-medium text-gray-400">{ data ? data[0]?.most_common_sire_name : 'N//A' }</span>
+              <span className="font-medium text-gray-400">
+                { 
+                  loading ? (
+                    <PulseLoader />
+                  ) :
+                  data ? data[0]?.most_common_sire_name : 'N//A'
+                }
+              </span>
             </div>
             <div className="flex justify-between lg:justify-start gap-2 lg:gap-4">
               <p>Most Common Dam:</p>
-              <span className="font-medium text-gray-400">{ data ? data[0]?.most_common_dam_name : 'N//A' }</span>
+              <span className="font-medium text-gray-400">
+                { 
+                  loading ? (
+                    <PulseLoader />
+                  ) :
+                  data ? data[0]?.most_common_dam_name : 'N//A' 
+                }
+              </span>
             </div>
           </div>
         </div>

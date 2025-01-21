@@ -34,19 +34,16 @@ const dropdownOptions = [
     label: "Horses by Total Score", 
     endpoint: "top_horses_by_score", 
     keys: ["horse_name", "total_score", "feif_id", "assess_year"], 
-    barData: ["total_score", "ridden_abilities_wo_pace", "total_wo_pace"]
   },
   { 
     label: "Horses by Conformation Score", 
     endpoint: "top_10_horses_conformation_score", 
     keys: ["horse_name", "conformation_score"], 
-    barData: ["rideability_score"]
   },
   { 
     label: "Horses by Rideability Score", 
     endpoint: "top_10_horses_rideability_score", 
     keys: ["horse_name", "rideability_score"], 
-    barData: ["rideability_score"]
   },
 ];
 
