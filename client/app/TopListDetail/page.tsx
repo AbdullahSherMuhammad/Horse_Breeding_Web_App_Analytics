@@ -66,12 +66,12 @@ const TopListDetailsContent = () => {
           {Object.entries(item)
             .filter(([key]) => key !== 'horse_id')
             .map(([key, value]) => (
-              <p key={key} className='flex items-center gap-2 text-base md:text-lg p-2'>
+              <div key={key} className='flex items-center gap-2 text-base md:text-lg p-2'>
                 <h4 className='text-[#444] font-semibold'>{key.replace(/_/g, ' ').replace(/^\w/, (c) => c.toUpperCase())}:</h4>
                 <p className='bg-[#f4f4f4] p-1 px-3 rounded-full'>
                    {value !== null && value !== undefined ? value : 'N/A'}
                 </p>
-              </p>
+              </div>
             ))}
         </div>
       </Card>
@@ -86,7 +86,7 @@ const TopListDetailsContent = () => {
               <YAxis domain={[0, 200]} />
               <Tooltip />
               <Legend />
-              <Bar dataKey="value" fill="#4A90E2" />
+              <Bar dataKey="value" fill="#4A90E2"  barSize={150} radius={[4, 4, 0, 0]}/>
             </BarChart>
           </ResponsiveContainer>
         ) : (

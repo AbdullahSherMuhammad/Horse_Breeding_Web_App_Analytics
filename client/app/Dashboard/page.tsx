@@ -12,6 +12,7 @@ import CountryFilter from "@/components/CountryFilter/CountryFilter";
 import SearchBar from "./components/SearchBar/SearchBar";
 import { TopList } from "@/components/Top10ListTable/TopList";
 import { useFetch } from "@/hook/useFetch";
+import TableOffSpring from "@/components/TableoffSpringPerformance/TableOffSpring";
 
 interface CardContentType {
   title: string;
@@ -226,7 +227,7 @@ const Dashboard: React.FC = () => {
       </Card>
 
       <TopList/>
-
+      <TableOffSpring/>
     </>
   );
 };
