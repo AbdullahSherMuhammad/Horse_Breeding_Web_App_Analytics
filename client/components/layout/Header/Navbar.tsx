@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { RiMenu3Fill } from "react-icons/ri";
 import { usePathname } from 'next/navigation';
-import LanguageSelect from '@/components/LanguageSelector/LanguageSelect';
+import LanguageSelect from '@/components/layout/LanguageSelector/LanguageSelect';
 
 
 

@@ -1,8 +1,8 @@
 'use client';
 import { useFetch } from '@/hook/useFetch';
 import React, { useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useRouter } from 'next/navigation';
 
 type Data = {
@@ -38,10 +38,10 @@ const TableOffSpring = () => {
     <div className="space-y-6 mt-5">
       <Card>
         <CardHeader>
-          <CardTitle className="text-xl sm:text-2xl">Top 10 Parents by Offspring Performance</CardTitle>
+          <CardTitle className="text-xl sm:text-2xl text-center md:text-left">Top 10 Parents by Offspring Performance</CardTitle>
         </CardHeader>
         <CardContent>
-        <div className={`h-[400px] relative`}>
+        <div className={`min-h-[400px] relative`}>
           {loading && (
             <div className="flex items-center justify-center h-full">
               <div className="w-8 h-8 rounded-full border-4 border-gray-300 border-t-gray-600 animate-spin"></div>

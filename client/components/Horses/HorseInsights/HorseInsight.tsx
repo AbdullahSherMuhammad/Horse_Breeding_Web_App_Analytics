@@ -37,8 +37,9 @@ type Data = {
 
 export function HorsesInsights() {
   const [currentPage, setCurrentPage] = useState(1);
+  const [visiblePages, setVisiblePages] = useState(5);
   const itemsPerPage = 10;
-  const router = useRouter()
+  const router = useRouter();
 
   const { data, loading, error } = useFetch<Data>(
     "all_horse_analysis",
@@ -46,20 +47,38 @@ export function HorsesInsights() {
     (currentPage - 1) * itemsPerPage
   );
 
-  const totalRecords = 100; 
+  const totalRecords = 100;
   const totalPages = Math.ceil(totalRecords / itemsPerPage);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 640) setVisiblePages(3);
+      else if (window.innerWidth < 1024) setVisiblePages(5);
+      else setVisiblePages(7);
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
 
-  const clickHandler = (id : number) => {
-    router.push(`HorseDetails/?id=${id}`)
-  }
+  const clickHandler = (id: number) => {
+    router.push(`HorseDetails/?id=${id}`);
+  };
 
   useEffect(() => {
     router.prefetch("HorseDetails");
   }, [router]);
+
+  const startPage = Math.max(
+    1,
+    Math.min(totalPages - visiblePages + 1, currentPage - Math.floor(visiblePages / 2))
+  );
+  const endPage = Math.min(totalPages, startPage + visiblePages - 1);
 
   return (
     <div className="space-y-6">
@@ -68,15 +87,15 @@ export function HorsesInsights() {
           <CardTitle>Horses Insights</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className={`h-96 relative`}>
+          <div className="min-h-96 relative">
             {loading && (
-              <div className="flex items-center justify-center h-full">
+              <div className="flex items-center justify-center h-96">
                 <div className="w-8 h-8 rounded-full border-4 border-gray-300 border-t-gray-600 animate-spin"></div>
               </div>
             )}
             {error && <p className="text-red-500">Error: {error}</p>}
             {!loading && data && (
-              <Table>
+              <Table className="w-full">
                 <TableHeader>
                   <TableRow>
                     <TableHead>ID</TableHead>
@@ -88,12 +107,10 @@ export function HorsesInsights() {
                 </TableHeader>
                 <TableBody>
                   {data.map((horse) => (
-                    <TableRow 
+                    <TableRow
                       key={horse?.horse_id}
                       className="hover:cursor-pointer hover:text-blue-400"
-                      onClick={() => {
-                        clickHandler(horse?.horse_id)
-                      }}
+                      onClick={() => clickHandler(horse?.horse_id)}
                     >
                       <TableCell>{horse?.horse_id}</TableCell>
                       <TableCell>{horse?.name}</TableCell>
@@ -113,27 +130,28 @@ export function HorsesInsights() {
         <PaginationContent>
           <PaginationItem>
             <PaginationPrevious
-              onClick={() =>
-                handlePageChange(Math.max(1, currentPage - 1))
-              }
+              onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
+              disabled={currentPage === 1}
             />
           </PaginationItem>
-          {Array.from({ length: totalPages }, (_, i) => (
-            <PaginationItem key={i + 1}>
+          {Array.from(
+            { length: endPage - startPage + 1 },
+            (_, i) => startPage + i
+          ).map((page) => (
+            <PaginationItem key={page}>
               <PaginationLink
-                onClick={() => handlePageChange(i + 1)}
-                className={currentPage === i + 1 ? "bg-white border-2" : ""}
+                onClick={() => handlePageChange(page)}
+                className={currentPage === page ? "bg-white border-2" : ""}
               >
-                {i + 1}
+                {page}
               </PaginationLink>
             </PaginationItem>
           ))}
-          {totalPages > 5 && <PaginationEllipsis />}
+          {endPage < totalPages && <PaginationEllipsis />}
           <PaginationItem>
             <PaginationNext
-              onClick={() =>
-                handlePageChange(Math.min(totalPages, currentPage + 1))
-              }
+              onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
+              disabled={currentPage === totalPages}
             />
           </PaginationItem>
         </PaginationContent>

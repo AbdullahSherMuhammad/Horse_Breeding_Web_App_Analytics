@@ -1,10 +1,10 @@
 'use client'
 import React from 'react';
-import FilterComponent from "@/components/Filter/page";
+import FilterComponent from "@/components/layout/Filter/page";
 import { Card } from "@/components/ui/card";
 import { useFetch } from '@/hook/useFetch';
-import { TopListGeneticData } from './components/TopListData/TopList';
-import Loader from './components/Loader/Loader';
+import { TopListGeneticData } from '@/components/Genetics/TopListData/TopList';
+import Loader from '@/components/Genetics/Loader/Loader';
 
 type TopListData = {
   rank: number;
@@ -41,7 +41,7 @@ const Genetics = () => {
 
   return (
     <div className='my-5'>
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 space-y-4 md:space-y-0">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 space-y-4 md:space-y-0 bg-[#f4f4f4] p-2 rounded-lg md:bg-transparent md:p-0 md:rounded-none">
         <div className='text-center md:text-start w-full'>
           <h1 className="text-xl md:text-3xl font-bold">Genetics Analysis</h1>
           <p className="text-sm sm:text-md text-gray-600">An overview of key metrics and performance.</p>

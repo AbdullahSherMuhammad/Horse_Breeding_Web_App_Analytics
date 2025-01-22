@@ -1,6 +1,6 @@
 'use client';
 import React, { useState } from 'react';
-import ScrollToTop from '@/components/ScrollToTop/ScrollToTop';
+import ScrollToTop from '@/components/layout/ScrollToTop/ScrollToTop';
 import Sidebar from '@/components/layout/Sidebar/Sidebar';
 import Footer from '@/components/layout/Footer/Footer';
 import Navbar from '@/components/layout/Header/Navbar';
@@ -47,7 +47,7 @@ const Page: React.FC = () => {
             <section
               key={id}
               id={id}
-              className="scroll-mt-[150px] md:p-5 rounded-[20px] mb-10 md:bg-[#f4f4f4]"
+              className="scroll-mt-[150px] sm:p-5 rounded-[20px] mb-10 sm:bg-[#f4f4f4]"
             >
               <Component />
             </section>

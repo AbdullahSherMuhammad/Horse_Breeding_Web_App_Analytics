@@ -83,7 +83,7 @@ export function TopList() {
     <div className="space-y-6 mt-5">
       <Card>
         <CardHeader>
-          <div className="flex justify-between items-center">
+          <div className="flex flex-col gap-5 md:flex-row justify-between items-center">
             <CardTitle className="text-xl sm:text-2xl">Top 10 {selectedOption.label}</CardTitle>
             <div ref={dropdownRef} className="relative">
               <button
@@ -114,7 +114,7 @@ export function TopList() {
           </div>
         </CardHeader>
         <CardContent>
-        <div className={`h-[400px] relative`}>
+        <div className={`min-h-[400px] relative`}>
           {loading && (
             <div className="flex items-center justify-center h-full">
               <div className="w-8 h-8 rounded-full border-4 border-gray-300 border-t-gray-600 animate-spin"></div>

@@ -5,14 +5,11 @@ import { GiHorseHead } from "react-icons/gi";
 import { MdEventSeat, MdEmojiEvents } from "react-icons/md";
 import { IoMdAnalytics } from "react-icons/io";
 import { FaCodeCompare } from "react-icons/fa6";
-import RadarChartComponent from "./components/RadarChart/RadarChart";
-import FilterComponent from "@/components/Filter/page";
+import RadarChartComponent from "../../components/Dashboard/RadarChart/RadarChart";
 import PageNavigation from "@/components/layout/Navigation/Navigation";
-import CountryFilter from "@/components/CountryFilter/CountryFilter";
-import SearchBar from "./components/SearchBar/SearchBar";
-import { TopList } from "@/components/Top10ListTable/TopList";
 import { useFetch } from "@/hook/useFetch";
-import TableOffSpring from "@/components/TableoffSpringPerformance/TableOffSpring";
+import { TopList } from "@/components/Dashboard/Top10ListTable/TopList";
+import TableOffSpring from "@/components/Dashboard/TableoffSpringPerformance/TableOffSpring";
 
 interface CardContentType {
   title: string;
@@ -144,19 +141,13 @@ const Dashboard: React.FC = () => {
   return (
     <>
       {/* Page Heading */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 space-y-4 md:space-y-0">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 space-y-4 md:space-y-0 bg-[#f4f4f4] p-2 rounded-lg md:bg-transparent md:p-0 md:rounded-none">
         <div className="text-center md:text-start w-full">
           <h1 className="text-xl md:text-3xl font-bold">Alendis Breeding Insights</h1>
           <p className="text-sm sm:text-md text-gray-600">An overview of key metrics and performance.</p>
         </div>
         <div className="flex justify-end items-center gap-5 w-full md:w-auto">
-          <FilterComponent/>
-          <div className="hidden lg:flex"><SearchBar /></div>
         </div>
-      </div>
-
-      <div className="w-full flex lg:hidden justify-end mb-10 lg:m-0">
-        <SearchBar/> 
       </div>
 
       <PageNavigation
