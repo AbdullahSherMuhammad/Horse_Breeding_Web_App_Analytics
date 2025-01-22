@@ -1,6 +1,5 @@
 import React from 'react'
 import { HorsesInsights } from '@/components/Horses/HorseInsights/HorseInsight'
-import SearchBar from '@/components/layout/SearchBar/SearchBar';
 
 const Horses = () => {
   return (
@@ -10,9 +9,6 @@ const Horses = () => {
           <div className='text-center md:text-start w-full'>
             <h1 className="text-xl md:text-3xl font-bold">Horse Analysis</h1>
             <p className="text-sm sm:text-md text-gray-600">An overview of key metrics and performance.</p>
-          </div>
-          <div className="flex justify-end w-full md:w-auto">
-            <SearchBar/>
           </div>
       </div>
         <HorsesInsights/>

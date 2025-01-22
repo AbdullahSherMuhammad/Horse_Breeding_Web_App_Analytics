@@ -10,6 +10,7 @@ import PageNavigation from "@/components/layout/Navigation/Navigation";
 import { useFetch } from "@/hook/useFetch";
 import { TopList } from "@/components/Dashboard/Top10ListTable/TopList";
 import TableOffSpring from "@/components/Dashboard/TableoffSpringPerformance/TableOffSpring";
+import SearchBar from "@/components/layout/SearchBar/SearchBar";
 
 interface CardContentType {
   title: string;
@@ -120,11 +121,11 @@ const Dashboard: React.FC = () => {
       </CardHeader>
       <CardContent className="flex flex-col gap-2">
         <div className="flex justify-between">
-          <h3 className="font-medium text-gray-600">{value.total_txt}:</h3>
+          <h3 className="font-medium text-gray-600">{value.total_txt}</h3>
           <p>{value.total}</p>
         </div>
         <div className="flex justify-between">
-          <h3 className="font-medium text-gray-600">{value.average_txt}:</h3>
+          <h3 className="font-medium text-gray-600">{value.average_txt}</h3>
           <p>{value.average}</p>
         </div>
       </CardContent>
@@ -147,6 +148,9 @@ const Dashboard: React.FC = () => {
           <p className="text-sm sm:text-md text-gray-600">An overview of key metrics and performance.</p>
         </div>
         <div className="flex justify-end items-center gap-5 w-full md:w-auto">
+           <div className="flex justify-end w-full md:w-auto">
+              <SearchBar/>
+            </div>
         </div>
       </div>
 

@@ -1,6 +1,5 @@
 'use client'
 import React from 'react';
-import FilterComponent from "@/components/layout/Filter/page";
 import { Card } from "@/components/ui/card";
 import { useFetch } from '@/hook/useFetch';
 import { TopListGeneticData } from '@/components/Genetics/TopListData/TopList';
@@ -47,7 +46,6 @@ const Genetics = () => {
           <p className="text-sm sm:text-md text-gray-600">An overview of key metrics and performance.</p>
         </div>
         <div className='flex justify-end w-full sm:w-auto'>
-          <FilterComponent />
         </div>
       </div>
 
