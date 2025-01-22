@@ -42,7 +42,6 @@ const TopListDetailsContent = () => {
   const endpoint = query.get('name');
   const id = query.get('id');
   
-  // Fetch data with proper type for Data[]
   const { data, loading, error } = useFetch<Data>(`${endpoint}?parent_id=eq.${id}`);
 
   if (loading) return <div className="text-center mt-10">Loading...</div>;
@@ -50,7 +49,6 @@ const TopListDetailsContent = () => {
 
   const item = data[0];
 
-  // Chart Data for averages
   const barData = [
     { trait: 'Avg BLUP Total Score', value: item.avg_offspring_blup_total_score },
     { trait: 'Avg Conformation', value: item.avg_offspring_conformation },
@@ -61,7 +59,6 @@ const TopListDetailsContent = () => {
 
   return (
     <>
-      {/* Parent Info Section */}
       <Card className="bg-white shadow-md rounded-lg p-6">
         <h1 className="text-xl md:text-2xl text-[#333] capitalize font-bold text-center md:text-left mb-4">
           Parent Details
@@ -78,7 +75,6 @@ const TopListDetailsContent = () => {
         </div>
       </Card>
 
-      {/* Offspring Details Section */}
       <Card className="bg-white shadow-md rounded-lg p-6">
         <h2 className="text-xl capitalize font-semibold text-center mb-4">Offspring Details</h2>
         <Table>
@@ -109,7 +105,6 @@ const TopListDetailsContent = () => {
         </Table>
       </Card>
 
-      {/* Performance Chart Section */}
       <Card className="bg-white shadow-md rounded-lg p-6">
         <h2 className="text-xl font-semibold text-center mb-4">Average Performance Chart</h2>
         {barData.length > 0 ? (

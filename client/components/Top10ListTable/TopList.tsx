@@ -53,7 +53,7 @@ export function TopList() {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const router = useRouter()
 
-  const { data } = useFetch<Data>(selectedOption.endpoint, 10);
+  const { data, loading } = useFetch<Data>(selectedOption.endpoint, 10);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -75,6 +75,9 @@ export function TopList() {
     router.push(`/TopListDetail/?name=${selectedOption.endpoint}&id=${horseId}`)
   }
 
+  useEffect(() => {
+    router.prefetch("TopListDetail");
+  }, [router]);
 
   return (
     <div className="space-y-6 mt-5">
@@ -111,34 +114,43 @@ export function TopList() {
           </div>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Rank</TableHead>
-                {selectedOption.keys.map((key) => (
-                  <TableHead className="capitalize" key={key}>{key.replace(/_/g, " ")}</TableHead>
-                ))}
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {data?.map((item, index) => (
-                <TableRow 
-                  key={index} 
-                  className="hover:text-blue-400 hover:cursor-pointer"
-                  onClick={() => {
-                    clickHandler(item?.horse_id)
-                  }} 
-                >
-                  <TableCell>{index + 1}</TableCell>
+        <div className={`h-[400px] relative`}>
+          {loading && (
+            <div className="flex items-center justify-center h-full">
+              <div className="w-8 h-8 rounded-full border-4 border-gray-300 border-t-gray-600 animate-spin"></div>
+            </div>
+          )}
+          {!loading && data && (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Rank</TableHead>
                   {selectedOption.keys.map((key) => (
-                    <TableCell key={key}>
-                      {typeof item[key] === "number" ? Math.round(item[key] * 100) / 100 : item[key]}
-                    </TableCell>
+                    <TableHead className="capitalize" key={key}>{key.replace(/_/g, " ")}</TableHead>
                   ))}
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {data?.map((item, index) => (
+                  <TableRow 
+                    key={index} 
+                    className="hover:text-blue-400 hover:cursor-pointer"
+                    onClick={() => {
+                      clickHandler(item?.horse_id)
+                    }} 
+                  >
+                    <TableCell>{index + 1}</TableCell>
+                    {selectedOption.keys.map((key) => (
+                      <TableCell key={key}>
+                        {typeof item[key] === "number" ? Math.round(item[key] * 100) / 100 : item[key]}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
+        </div>
         </CardContent>
       </Card>
     </div>

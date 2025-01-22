@@ -1,6 +1,6 @@
 import React from 'react'
 import { HorsesInsights } from './Components/HorseInsights/HorseInsight'
-import FilterComponent from '@/components/Filter/page'
+import FilterComponent from '@/components/Filter/page';
 
 const Horses = () => {
   return (
@@ -12,10 +12,10 @@ const Horses = () => {
             <p className="text-sm sm:text-md text-gray-600">An overview of key metrics and performance.</p>
           </div>
           <div className="flex justify-end w-full sm:w-auto">
-          <FilterComponent/>
-        </div>
+            <FilterComponent/>
+          </div>
       </div>
-      <HorsesInsights/>
+        <HorsesInsights/>
     </div>
   )
 }

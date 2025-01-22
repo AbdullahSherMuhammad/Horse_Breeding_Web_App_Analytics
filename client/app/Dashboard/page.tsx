@@ -150,7 +150,6 @@ const Dashboard: React.FC = () => {
           <p className="text-sm sm:text-md text-gray-600">An overview of key metrics and performance.</p>
         </div>
         <div className="flex justify-end items-center gap-5 w-full md:w-auto">
-          <CountryFilter/>
           <FilterComponent/>
           <div className="hidden lg:flex"><SearchBar /></div>
         </div>
