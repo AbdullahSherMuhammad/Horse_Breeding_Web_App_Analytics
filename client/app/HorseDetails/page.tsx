@@ -1,10 +1,10 @@
 'use client'
 
-import { Suspense } from 'react';
+import { Suspense, useRef } from 'react';
 import React from 'react'
 import { useFetch } from '@/hook/useFetch'
 import { useSearchParams } from 'next/navigation'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer, LineChart, Line } from 'recharts'
@@ -47,92 +47,133 @@ type HorseData = {
 
 const HorseDetailsComponenet = () => {
   const query = useSearchParams()
-  const id = query.get('id')
+  const id = query.get('query')
 
-  const { data, loading } = useFetch<HorseData>(`horse_analysis?horse_id=eq.${id}`);
+  const { data, loading } = useFetch<HorseData>(`horse_analysis?feif_id=eq.${id}`);
 
-  if (loading || !data?.length) {
-    return  (
-      <div className='w-screen h-screen flex justify-center items-center '>
-          <div className="w-8 h-8 rounded-full border-4 border-gray-300 border-t-gray-600 animate-spin"></div>
+  const tabsRef = useRef<HTMLDivElement | null>(null);
+
+  if (loading || !data) {
+    return (
+      <div className='w-full h-[80vh] flex justify-center items-center '>
+        <div className="w-8 h-8 rounded-full border-4 border-gray-300 border-t-gray-600 animate-spin"></div>
       </div>
-    )
+    );
   }
-
-  const horse = data[0]
-
+  
+  if (!data.length) {
+    return (
+      <div className='w-full h-[80vh] flex justify-center items-center'>
+        <div>
+          <h2 className="text-lg font-semibold text-gray-600">No data available for FEIF ID: {id}</h2>
+        </div>
+      </div>
+    );
+  }
+  
+  const horse = data[0];
+  const isPartialData = !horse.parents?.length || !horse.shows?.length;
+  
+  if (isPartialData) {
+    return (
+      <div className='w-full h-[80vh] flex flex-col justify-center items-center'>
+        <h2 className="text-lg font-semibold text-gray-600">
+          Partial data available for FEIF ID: {id}
+        </h2>
+        <p className="text-sm text-gray-500">
+          Some details may not be complete. Please try a different FEIF ID for full details.
+        </p>
+      </div>
+    );
+  }
+  
   return (
     <>
-      {/* Horse Information */}
-      <div className='md:bg-[#f4f4f4] md:p-5 md:rounded-xl'>
-      <Card className="border border-gray-200">
-        <CardHeader className="">
-          <CardTitle className="text-2xl font-bold">Horse Details</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div><strong>Name:</strong> {horse.horse_name}</div>
-            <div><strong>FEIF ID:</strong> {horse.feif_id}</div>
-            <div><strong>Farm Name:</strong> {horse.farm_name}</div>
-            <div><strong>Farm Number:</strong> {horse.farm_number}</div>
-          </div>
-        </CardContent>
-      </Card>
-      </div>
-
-      {/* Parent Information */}
-      <div className='md:bg-[#f4f4f4] md:p-5 md:rounded-xl'>
-      <Card className="border border-gray-200">
-        <CardHeader className="">
-          <CardTitle className="text-2xl font-bold">Parent Information</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Parent ID</TableHead>
-                <TableHead>FEIF ID</TableHead>
-                <TableHead>Relationship</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {horse.parents.map((parent) => (
-                <TableRow key={parent.Parent_ID}>
-                  <TableCell>{parent.Parent_ID}</TableCell>
-                  <TableCell>{parent.Parent_FEIF_ID}</TableCell>
-                  <TableCell>{parent.Relationship_Type}</TableCell>
+      <div className='md:bg-[#f4f4f4] md:p-5 md:rounded-xl grid grid-cols-1 md:grid-cols-2 gap-5'>
+        <Card className="border border-gray-200">
+          <CardHeader className="">
+            <CardTitle className="text-2xl font-bold">{horse.horse_name} {horse.farm_name}</CardTitle>
+            <CardDescription>
+              FEIF ID: {horse.feif_id}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div><strong>Horse Name:</strong> {horse.horse_name}</div>
+              <div><strong>FEIF ID:</strong> {horse.feif_id}</div>
+              <div><strong>Farm Name:</strong> {horse.farm_name}</div>
+              <div><strong>Farm Number:</strong> {horse.farm_number}</div>
+            </div>
+          </CardContent>
+        </Card>
+    
+        <Card className="border border-gray-200">
+          <CardHeader className="">
+            <CardTitle className="text-2xl font-bold">Parent Information</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Relationship</TableHead>
+                  <TableHead>FEIF ID</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+              </TableHeader>
+              <TableBody>
+                {horse.parents.map((parent) => (
+                  <TableRow key={parent.Parent_ID}>
+                    <TableCell>{parent.Relationship_Type}</TableCell>
+                    <TableCell>{parent.Parent_FEIF_ID}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Show Information */}
-      <div className='md:bg-[#f4f4f4] md:rounded-xl'>
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold">Show Information</CardTitle>
+      <div className='md:bg-[#f4f4f4] md:rounded-xl md:p-5'>
+        <CardHeader className='p-0'>
+          <CardTitle className="text-2xl font-bold">Shows Information</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className='p-0'>
           <Tabs defaultValue={horse.shows[0]?.show_id.toString()} className="w-full">
-            <TabsList className="flex flex-wrap  gap-5 space-x-2 p-5 h-auto">
-              {horse.shows.map((show) => (
-                <TabsTrigger
-                  key={show.show_id}
-                  value={show.show_id.toString()}
-                  className="p-2 text-sm font-medium min-w-[150px] h-[45px] bg-[#242323] text-white shadow rounded"
-                >
-                  {`${show.show_name.split(' ')[0]} ${show.end_date.split('-')[0]}`}
-                </TabsTrigger>
-              ))}
-            </TabsList>
+            <div
+              className="tabs-wrapper sticky top-0 z-50"
+              ref={tabsRef}
+            >
+              <TabsList className="flex flex-wrap gap-5 space-x-2 p-5 h-auto">
+                {horse.shows.map((show) => (
+                  <TabsTrigger
+                    key={show.show_id}
+                    value={show.show_id.toString()}
+                    className="p-2 text-sm font-medium min-w-[150px] h-[45px] bg-[#242323] text-white shadow rounded"
+                  >
+                    {`${show.show_name.split(' ')[0]} ${show.end_date.split('-')[0]}`}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+            </div>
+
             {horse.shows.map((show) => (
-              <TabsContent key={show.show_id} value={show.show_id.toString()} className="pt-4 space-y-6">
-                <h3 className="text-lg font-semibold">{show.show_name}</h3>
-                <p className="text-sm text-gray-500">
-                  {show.start_date} - {show.end_date}
-                </p>
+              <TabsContent key={show.show_id} value={show.show_id.toString()} className="space-y-6">
+                <Card className='p-5'>
+                  <CardTitle className="text-2xl font-bold">Show Name</CardTitle>
+                  <div className='mt-5 flex flex-col md:flex-row justify-between md:items-center'>
+                    <h3 className="text-lg font-semibold text-center md:text-left">{show.show_name}</h3>
+                    <div className='mt-4 md:m-0 flex gap-4 items-center'>
+                      <div className=''>
+                        <p className='text-sm text-gray-500'>Start Date</p>
+                        <p className="text-sm text-gray-700">{show.start_date} </p>
+                      </div>
+                      <div className=''>
+                        <p className='text-sm text-gray-500'>End Date</p>
+                        <p className="text-sm text-gray-700">{show.end_date}</p>
+                      </div>
+                    </div>
+                  </div>
+                </Card>
 
                 {/* Assessments */}
                 {show.show_score.map((assessment, index) => (
@@ -224,7 +265,7 @@ const HorseDetailsComponenet = () => {
 
 const HorseDetailsPage = () => {
   return (
-    <div className="p-4 space-y-6">
+    <div className="px-4 space-y-6">
       <div>
         <Navbar toggleSidebar={() => {}} />
       </div>

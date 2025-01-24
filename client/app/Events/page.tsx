@@ -1,6 +1,6 @@
-import EventBarChart from '@/components/Events/EventBarChart/page';
-import EvetnTable from '@/components/Events/EventsTabel/page'
-import FilterComponent from "@/components/layout/Filter/page";
+import EventBarChart from '@/components/Events/EventBarChart/BarChart';
+import EvetnTable from '@/components/Events/EventsTabel/EventsTable'
+import FilterComponent from "@/components/layout/Filter/Filter";
 import { Card } from '@/components/ui/card';
 import React from 'react'
 

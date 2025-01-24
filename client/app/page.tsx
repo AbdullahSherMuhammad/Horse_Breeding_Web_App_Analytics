@@ -4,7 +4,7 @@ import ScrollToTop from '@/components/layout/ScrollToTop/ScrollToTop';
 import Sidebar from '@/components/layout/Sidebar/Sidebar';
 import Footer from '@/components/layout/Footer/Footer';
 import Navbar from '@/components/layout/Header/Navbar';
-import Performance from './Performance/page';
+import TopListTable from './TopListTables/page';
 import Dashboard from './Dashboard/page';
 import Genetics from './Genetics/page';
 import Horses from './Horses/page';
@@ -13,11 +13,11 @@ import Events from './Events/page';
 
 const sections = [
   { id: 'Dashboard', Component: Dashboard },
-  { id: 'Genetics', Component: Genetics },
   { id: 'Horses', Component: Horses },
+  { id: 'Genetics', Component: Genetics },
   { id: 'Panels', Component: Panels },
   { id: 'Events', Component: Events },
-  { id: 'Performance', Component: Performance },
+  { id: 'TopListTable', Component: TopListTable },
 ];
 
 const Page: React.FC = () => {

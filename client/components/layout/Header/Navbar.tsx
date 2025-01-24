@@ -42,7 +42,7 @@ const Navbar: React.FC<NavbarProps> = ({ toggleSidebar }) => {
             <Image src={logo} priority alt="Logo" />
           </div>
         <nav className="hidden lg:flex justify-between w-full items-center gap-5">
-          <div className='flex items-center'>
+          <div className='flex gap-2 items-center'>
             {menuLinks.map((val, id) => (
               <Link
                 key={id}

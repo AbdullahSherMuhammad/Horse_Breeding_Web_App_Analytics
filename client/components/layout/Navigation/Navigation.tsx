@@ -28,11 +28,11 @@ const PageNavigation: React.FC<PageNavigationProps> = ({ scrollToSection }) => {
   const menuLinks: MenuLink[] = useMemo(
     () => [
       { name: 'Dashboard', url: 'Dashboard', icon: <MdDashboard /> },
-      { name: 'Genetics', url: 'Genetics', icon: <SiMicrogenetics /> },
       { name: 'Horses', url: 'Horses', icon: <GiHorseHead /> },
+      { name: 'Genetics', url: 'Genetics', icon: <SiMicrogenetics /> },
       { name: 'Panels', url: 'Panels', icon: <MdEventSeat /> },
       { name: 'Events', url: 'Events', icon: <MdEmojiEvents /> },
-      { name: 'Performance', url: 'Performance', icon: <IoMdAnalytics /> },
+      { name: 'Top 10 List Table', url: 'TopListTable', icon: <IoMdAnalytics /> },
     ],
     []
   );

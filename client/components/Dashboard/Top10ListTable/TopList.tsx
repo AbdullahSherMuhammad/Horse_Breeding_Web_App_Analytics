@@ -1,3 +1,4 @@
+'use client'
 import { useEffect, useRef, useState } from "react";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import {
@@ -33,7 +34,7 @@ const dropdownOptions = [
   { 
     label: "Horses by Total Score", 
     endpoint: "top_horses_by_score", 
-    keys: ["horse_name", "total_score", "feif_id", "assess_year"], 
+    keys: ["horse_name", "total_score", "total_wo_pace", "feif_id"], 
   },
   { 
     label: "Horses by Conformation Score", 
@@ -52,8 +53,8 @@ export function TopList() {
   const [selectedOption, setSelectedOption] = useState(dropdownOptions[0]); 
   const dropdownRef = useRef<HTMLDivElement>(null);
   const router = useRouter()
-
-  const { data, loading } = useFetch<Data>(selectedOption.endpoint, 10);
+  const itemsPerPage = 10 ;
+  const { data, loading } = useFetch<Data>(selectedOption.endpoint, itemsPerPage);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {

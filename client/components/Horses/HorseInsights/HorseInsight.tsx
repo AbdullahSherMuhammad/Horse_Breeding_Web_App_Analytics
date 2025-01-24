@@ -41,13 +41,8 @@ export function HorsesInsights() {
   const itemsPerPage = 10;
   const router = useRouter();
 
-  const { data, loading, error } = useFetch<Data>(
-    "all_horse_analysis",
-    itemsPerPage,
-    (currentPage - 1) * itemsPerPage
-  );
+  const { data, totalRecords, loading, error } = useFetch<Data>("all_horse_analysis", itemsPerPage,(currentPage - 1) * itemsPerPage);
 
-  const totalRecords = 100;
   const totalPages = Math.ceil(totalRecords / itemsPerPage);
 
   useEffect(() => {
@@ -66,8 +61,8 @@ export function HorsesInsights() {
     setCurrentPage(page);
   };
 
-  const clickHandler = (id: number) => {
-    router.push(`HorseDetails/?id=${id}`);
+  const clickHandler = (id: string) => {
+    router.push(`HorseDetails/?query=${id}`);
   };
 
   useEffect(() => {
@@ -98,11 +93,10 @@ export function HorsesInsights() {
               <Table className="w-full">
                 <TableHeader>
                   <TableRow>
-                    <TableHead>ID</TableHead>
                     <TableHead>Name</TableHead>
-                    <TableHead>FEIF ID</TableHead>
                     <TableHead>Date of Birth</TableHead>
                     <TableHead>Number of Shows</TableHead>
+                    <TableHead>FEIF ID</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -110,13 +104,12 @@ export function HorsesInsights() {
                     <TableRow
                       key={horse?.horse_id}
                       className="hover:cursor-pointer hover:text-blue-400"
-                      onClick={() => clickHandler(horse?.horse_id)}
+                      onClick={() => clickHandler(horse?.feif_id)}
                     >
-                      <TableCell>{horse?.horse_id}</TableCell>
                       <TableCell>{horse?.name}</TableCell>
-                      <TableCell>{horse?.feif_id}</TableCell>
                       <TableCell>{horse?.date_of_birth}</TableCell>
                       <TableCell>{horse?.number_of_shows}</TableCell>
+                      <TableCell>{horse?.feif_id}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

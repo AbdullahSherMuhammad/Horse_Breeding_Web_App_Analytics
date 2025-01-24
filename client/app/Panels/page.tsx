@@ -1,6 +1,6 @@
 import React from 'react'
-import FilterComponent from '@/components/layout/Filter/page'
-import BarChartComponent from '@/components/Panels/PanelBarChart/page'
+import FilterComponent from '@/components/layout/Filter/Filter'
+import BarChartComponent from '@/components/Panels/PanelBarChart/BarChart'
 
 const Panels = () => {
   return (

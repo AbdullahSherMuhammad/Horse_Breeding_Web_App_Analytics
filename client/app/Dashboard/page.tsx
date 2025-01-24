@@ -8,8 +8,6 @@ import { FaCodeCompare } from "react-icons/fa6";
 import RadarChartComponent from "../../components/Dashboard/RadarChart/RadarChart";
 import PageNavigation from "@/components/layout/Navigation/Navigation";
 import { useFetch } from "@/hook/useFetch";
-import { TopList } from "@/components/Dashboard/Top10ListTable/TopList";
-import TableOffSpring from "@/components/Dashboard/TableoffSpringPerformance/TableOffSpring";
 import SearchBar from "@/components/layout/SearchBar/SearchBar";
 
 interface CardContentType {
@@ -157,10 +155,7 @@ const Dashboard: React.FC = () => {
       <PageNavigation
          scrollToSection={scrollToSection} 
       />
-
-      {/* Cards Section */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-5">{card}</div>
-
+      
       <Card className="flex flex-col lg:flex-row gap-6 justify-between items-center p-5 my-5 overflow-hidden">
         {/* Content Section */}
         <div className="chart_content flex flex-col gap-4 lg:w-1/2">
@@ -220,8 +215,9 @@ const Dashboard: React.FC = () => {
         </div>
       </Card>
 
-      <TopList/>
-      <TableOffSpring/>
+      {/* Cards Section */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-5">{card}</div>
+
     </>
   );
 };

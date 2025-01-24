@@ -2,7 +2,7 @@
 
 import { Suspense } from 'react';
 import Navbar from '@/components/layout/Header/Navbar';
-import { Card } from '@/components/ui/card';
+import { Card, CardDescription } from '@/components/ui/card';
 import { useFetch } from '@/hook/useFetch';
 import { useSearchParams } from 'next/navigation';
 import {
@@ -42,7 +42,7 @@ const TopListDetailsContent = () => {
   const barData = Object.entries(item)
     .filter(
       ([key, value]) =>
-        typeof value === 'number' && key !== 'horse_id' && key !== 'assess_year' && key !== 'number_of_offspring_registered_to_date'
+        typeof value === 'number' && key !== 'horse_id' && key !== 'assess_year' && key !== 'number_of_offspring_registered_to_date' && key !== 'inbreeding_coefficient_percent'
     )
     .map(([key, value]) => ({
       trait: key.replace(/_/g, ' ').replace(/^\w/, (c) => c.toUpperCase()),
@@ -53,14 +53,16 @@ const TopListDetailsContent = () => {
   return (
     <>
       <Card className="bg-white shadow-md rounded-lg p-6">
-        <h1 className="text-xl md:text-2xl text-[#333] capitalize font-bold text-center md:text-left mb-4">
-          {endpoint
-            ? `Detail of ${endpoint
-                .replace('top', '')
-                .replace('top_10', '')
-                .replace('horses', 'horse')
-                .replaceAll('_', ' ')}`
-            : 'Horse Details'}
+        <h1 className="text-xl md:text-3xl text-[#333] capitalize font-semibold text-center md:text-left mb-4">
+          {item.horse_name}
+          {
+            endpoint === 'top_horses_by_score' ? 
+            <CardDescription>
+              FEIF ID - {item.feif_id}
+            </CardDescription> 
+            :
+            ''
+          }
         </h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-lg">
           {Object.entries(item)

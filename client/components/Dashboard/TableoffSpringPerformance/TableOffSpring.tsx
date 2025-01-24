@@ -19,11 +19,11 @@ const TableOffSpring = () => {
   const router = useRouter()
 
   const keys: (keyof Data)[] = [
-    'parent_feif_id',
     'parent_name',
     'relationship_type',
     'number_of_offspring',
     'avg_offspring_blup_total_score',
+    'parent_feif_id',
   ];
 
   const clickHandler = (parentId: number) => {

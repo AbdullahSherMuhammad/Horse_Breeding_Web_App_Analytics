@@ -11,7 +11,7 @@ const SearchBar = () => {
 
   const routeHandler = () => {
     if (searchValue.trim() !== "") {
-      router.push(`/Search?query=${searchValue}`);
+      router.push(`/HorseDetails?query=${searchValue}`);
       setErrorMessage("");
     } else {
       setErrorMessage("Enter something to search...");
