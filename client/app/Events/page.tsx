@@ -1,7 +1,4 @@
-import EventBarChart from '@/components/Events/EventBarChart/BarChart';
 import EvetnTable from '@/components/Events/EventsTabel/EventsTable'
-import FilterComponent from "@/components/layout/Filter/Filter";
-import { Card } from '@/components/ui/card';
 import React from 'react'
 
 const Events = () => {
@@ -13,13 +10,9 @@ const Events = () => {
             <p className="text-sm sm:text-md text-gray-600">An overview of key metrics and performance.</p>
           </div>
           <div className='flex justify-end w-full sm:w-auto'>
-            <FilterComponent/>
           </div>
         </div>
         <EvetnTable/>
-        <Card className="my-5">
-          <EventBarChart/>
-        </Card>
     </div>
   )
 }

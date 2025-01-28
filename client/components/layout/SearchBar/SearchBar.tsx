@@ -9,9 +9,11 @@ const SearchBar = () => {
   const [searchValue, setSearchValue] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
+  const normalizedSearchValue = searchValue.trim().toUpperCase();
+
   const routeHandler = () => {
-    if (searchValue.trim() !== "") {
-      router.push(`/HorseDetails?query=${searchValue}`);
+    if (normalizedSearchValue !== "") {
+      router.push(`/HorseDetails?query=${normalizedSearchValue}`);
       setErrorMessage("");
     } else {
       setErrorMessage("Enter something to search...");
@@ -19,7 +21,7 @@ const SearchBar = () => {
   };
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col w-full md:w-auto">
       <div
         className={`flex justify-end w-full lg:w-[350px] h-10 rounded-full overflow-hidden border border-[#1a1a1a] transition-width duration-300`}
       >

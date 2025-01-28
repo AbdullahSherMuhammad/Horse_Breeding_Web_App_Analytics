@@ -92,7 +92,7 @@ const HorseDetailsComponenet = () => {
       <div className='md:bg-[#f4f4f4] md:p-5 md:rounded-xl grid grid-cols-1 md:grid-cols-2 gap-5'>
         <Card className="border border-gray-200">
           <CardHeader className="">
-            <CardTitle className="text-2xl font-bold">{horse.horse_name} {horse.farm_name}</CardTitle>
+            <CardTitle className="text-2xl font-bold">{horse.horse_name}</CardTitle>
             <CardDescription>
               FEIF ID: {horse.feif_id}
             </CardDescription>

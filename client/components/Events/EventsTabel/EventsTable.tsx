@@ -2,49 +2,30 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { useFetch } from "@/hook/useFetch";
 
 // Define the type for each event in the eventsData array
 interface EventData {
-  eventName: string;
-  avgScore: number;
-  horses: number;
-  conditions: string;
-  panels: string;
+  show_id: number;
+  show_name: string;
+  start_date: string;
+  end_date: string;
+  horse_count: number;
+  participant_count: number;
 }
 
-// Sample events data with proper typing
-const eventsData: EventData[] = [
-  {
-    eventName: "Spring Show Hólar",
-    avgScore: 8.62,
-    horses: 50,
-    conditions: "Indoor/Sunny",
-    panels: "Th,K,A,S,O,J",
-  },
-  {
-    eventName: "Summer Breeding Meet",
-    avgScore: 8.55,
-    horses: 60,
-    conditions: "Outdoor/Cloudy",
-    panels: "B,H,M,T,K,J",
-  },
-  {
-    eventName: "Autumn Show Hella",
-    avgScore: 8.58,
-    horses: 55,
-    conditions: "Indoor/Rainy",
-    panels: "G,J,O,R,A,F",
-  },
-  {
-    eventName: "Winter Show Akureyri",
-    avgScore: 8.5,
-    horses: 45,
-    conditions: "Indoor/Snowy",
-    panels: "Th,K,M,T,O,J",
-  },
-];
+const EventTable: React.FC = () => {
 
-const EvetnTable: React.FC = () => {
+  const { data, loading, error } = useFetch<EventData>('events_analysis');
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error loading events data: {error}</div>;
+
+  const shortCleanName = (name: string): string => {
+    const cleanName = name.split(',')[0];
+    return cleanName;
+  }
+
   return (
     <Card className="">
       <CardHeader>
@@ -59,20 +40,20 @@ const EvetnTable: React.FC = () => {
             <TableHeader>
               <TableRow>
                 <TableHead>Event Name</TableHead>
-                <TableHead>Avg Score</TableHead>
+                <TableHead>Start Date</TableHead>
+                <TableHead>End Date</TableHead>
                 <TableHead>#Horses</TableHead>
-                <TableHead>Conditions</TableHead>
-                <TableHead>Panels Active</TableHead>
+                <TableHead>#Participants</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {eventsData.map((event, index) => (
-                <TableRow key={index} className={`$ {index % 2 === 0 ? "bg-muted/10" : "bg-muted/20"}`}>
-                  <TableCell>{event.eventName}</TableCell>
-                  <TableCell>{event.avgScore}</TableCell>
-                  <TableCell>{event.horses}</TableCell>
-                  <TableCell>{event.conditions}</TableCell>
-                  <TableCell>{event.panels}</TableCell>
+              {data && data.map((event: EventData, index: number) => (
+                <TableRow key={event.show_id} className={`${index % 2 === 0 ? "bg-muted/10" : "bg-muted/20"}`}>
+                  <TableCell>{shortCleanName(event?.show_name)}</TableCell>
+                  <TableCell>{event.start_date}</TableCell>
+                  <TableCell>{event.end_date}</TableCell>
+                  <TableCell>{event.horse_count}</TableCell>
+                  <TableCell>{event.participant_count}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -83,4 +64,4 @@ const EvetnTable: React.FC = () => {
   );
 };
 
-export default EvetnTable;
+export default EventTable;
