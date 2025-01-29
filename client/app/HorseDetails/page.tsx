@@ -148,7 +148,7 @@ const HorseDetailsComponenet = () => {
                   <TabsTrigger
                     key={show.show_id}
                     value={show.show_id.toString()}
-                    className="p-2 text-sm font-medium min-w-[150px] h-[45px] bg-[#242323] text-white shadow rounded"
+                    className=""
                   >
                     {`${show.show_name.split(' ')[0]} ${show.end_date.split('-')[0]}`}
                   </TabsTrigger>

@@ -66,21 +66,25 @@ export const TopListGeneticData: React.FC<TopListGeneticData> = ({ top10Sires, t
           </CardTitle>
           <div className="flex items-center space-x-4">
             <button
-              onClick={() => setShowSire(true)}
-              className={`px-4 py-2 rounded ${
-                showSire ? "bg-[#1a1a1a] text-white" : "bg-gray-200 text-gray-700"
-              }`}
-            >
-              Show Sires
-            </button>
-            <button
-              onClick={() => setShowSire(false)}
-              className={`px-4 py-2 rounded ${
-                !showSire ? "bg-[#1a1a1a] text-white" : "bg-gray-200 text-gray-700"
-              }`}
-            >
-              Show Dams
-            </button>
+                onClick={() => setShowSire(true)}
+                className={`px-4 py-2 font-medium ${
+                  showSire
+                    ? "border-b-2 border-black text-black font-bold"
+                    : "border-b-2 border-transparent text-gray-500"
+                }`}
+              >
+                Show Sires
+              </button>
+              <button
+                onClick={() => setShowSire(false)}
+                className={`px-4 py-2 font-medium ${
+                  !showSire
+                    ? "border-b-2 border-black text-black font-bold"
+                    : "border-b-2 border-transparent text-gray-500"
+                }`}
+              >
+                 Show Dams
+              </button>
           </div>
         </CardHeader>
         <CardContent>

@@ -34,6 +34,8 @@ type Data = {
   sorted_trait_averages: SortedTraitAverages[];
   most_common_sire_name: string | null;
   most_common_dam_name: string | null;
+  event_with_highest_score_name : string | null;
+  event_with_highest_score_avg: number;
 }
 
 const PulseLoader = () => (
@@ -42,6 +44,11 @@ const PulseLoader = () => (
 
 const Dashboard: React.FC = () => {
   const { data, loading } = useFetch<Data>('total_results');
+
+  const cleanName = (name: string) => {
+    const words = name.split(' ');  
+    return words.length > 1 ? `${words[0]} ${words[1]}` : words[0]; 
+  };
 
   const cardContent: CardContentType[] = [
     {
@@ -76,8 +83,15 @@ const Dashboard: React.FC = () => {
       title: "Events Overview",
       total_txt: "Total events",
       total: loading ? <PulseLoader /> : data?.[0]?.total_events || 'N/A',
-      average_txt: "Highest scoring event",
-      average: "Summer Show Reykjavík (8.7)",
+      average_txt: "Highest scoring",
+      average:  loading ? (
+        <PulseLoader />
+      ) : data
+        ? `${data[0].event_with_highest_score_name ? cleanName(data[0].event_with_highest_score_name) : 'N/A'} 
+          (${parseFloat(
+            data[0].event_with_highest_score_avg.toFixed(2)
+          )})`
+        : 'N/A',
       icons: <MdEmojiEvents />,
     },
     {
@@ -86,7 +100,8 @@ const Dashboard: React.FC = () => {
       total: loading ? (
         <PulseLoader />
       ) : data
-        ? `${data[0].sorted_trait_averages[0].trait} (${parseFloat(
+        ? `${data[0].sorted_trait_averages[0].trait} 
+          (${parseFloat(
             data[0].sorted_trait_averages[0].avg_score.toFixed(2)
           )})`
         : 'N/A',
@@ -94,7 +109,8 @@ const Dashboard: React.FC = () => {
       average: loading ? (
         <PulseLoader />
       ) : data
-        ? `${data[0].sorted_trait_averages[1].trait} (${parseFloat(
+        ? `${data[0].sorted_trait_averages[1].trait} 
+          (${parseFloat(
             data[0].sorted_trait_averages[1].avg_score.toFixed(2)
           )})`
         : 'N/A',
@@ -109,15 +125,16 @@ const Dashboard: React.FC = () => {
       icons: <FaCodeCompare />,
     },
   ];
+  
   const card = cardContent.map((value, id) => (
     <Card key={id} className="p-1 sm:p-4 border-2 border-gray-200 rounded-lg shadow-sm">
-      <CardHeader>
+      <CardHeader className="md:p-2 mb-5">
         <CardTitle className="text-lg md:text-xl font-semibold flex justify-between items-center">
           <span>{value.title}</span>
           <span className="text-4xl transform scale-x-[-1]">{value.icons}</span>
         </CardTitle>
       </CardHeader>
-      <CardContent className="flex flex-col gap-2">
+      <CardContent className="flex flex-col gap-2 md:p-2">
         <div className="flex justify-between">
           <h3 className="font-medium text-gray-600">{value.total_txt}</h3>
           <p>{value.total}</p>
@@ -156,6 +173,7 @@ const Dashboard: React.FC = () => {
          scrollToSection={scrollToSection} 
       />
       
+      {/* Population stats */}
       <Card className="flex flex-col lg:flex-row gap-6 justify-between items-center p-5 my-5 overflow-hidden">
         {/* Content Section */}
         <div className="chart_content flex flex-col gap-4 lg:w-1/2">
@@ -216,7 +234,7 @@ const Dashboard: React.FC = () => {
       </Card>
 
       {/* Cards Section */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-5">{card}</div>
+      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 mt-5">{card}</div>
 
     </>
   );
