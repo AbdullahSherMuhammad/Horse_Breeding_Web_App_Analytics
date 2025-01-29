@@ -5,40 +5,25 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import React, { useState } from 'react';
 import { useFetch } from '@/hook/useFetch';
 
+type Judge = {
+  name: string;
+  role: string;
+  short_name: string;
+};
+
 type PanelData = {
-  panel: {
-    person_name: string;
-    role_name: string;
-  }[];
+  judges: Judge[];
   show_name: string;
-  shows_with_same_panel: number[];
+  avg_score_per_panel: number;
 };
 
 const Panels = () => {
-  const { data, loading } = useFetch<PanelData>('panel_groups');
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
-  const [sortedData, setSortedData] = useState<PanelData[] | null>(null);
+  const { data, loading } = useFetch<PanelData>('panel_aggregate');
+  const [hoveredJudge, setHoveredJudge] = useState<string | null>(null);
 
-  const cleanShowName = (name: string) => {
-    const parts = name.split(",");
-    return parts[0];
+  const shortCleanName = (name: string): string => {
+    return name.split(',')[0];
   };
-
-  const sortShowsWithSamePanel = () => {
-    if (!data) return;
-
-    const sorted = [...data].sort((a, b) => {
-      const sumA = a.shows_with_same_panel.reduce((acc, num) => acc + num, 0);
-      const sumB = b.shows_with_same_panel.reduce((acc, num) => acc + num, 0);
-
-      return sortOrder === 'asc' ? sumA - sumB : sumB - sumA;
-    });
-
-    setSortedData(sorted);
-    setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
-  };
-
-  const tableData = sortedData || data;
 
   return (
     <>
@@ -46,7 +31,9 @@ const Panels = () => {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 space-y-4 md:space-y-0 bg-[#f4f4f4] p-2 rounded-lg md:bg-transparent md:p-0 md:rounded-none">
         <div className="text-center md:text-start w-full">
           <h1 className="text-xl md:text-3xl font-bold">Panels Analysis</h1>
-          <p className="text-sm sm:text-md text-gray-600">Comparison of average scores across different judging panels</p>
+          <p className="text-sm sm:text-md text-gray-600">
+            Comparison of average scores across different judging panels
+          </p>
         </div>
       </div>
 
@@ -63,44 +50,73 @@ const Panels = () => {
               <div className="flex justify-center items-center h-40">
                 <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-gray-600"></div>
               </div>
-            ) : tableData && tableData.length > 0 ? (
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Role</TableHead>
-                    <TableHead>Show Name</TableHead>
-                    <TableHead>
-                      <div className="flex items-center">
-                        <button
-                          onClick={sortShowsWithSamePanel}
-                          className="ml-2 text-gray-600 hover:text-gray-900"
-                          >
-                          Show with same panel
-                          {sortOrder === 'asc' ? '▲' : '▼'}
-                        </button>
-                      </div>
-                    </TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {tableData.map((item, index) =>
-                    item.panel.map((panelMember, panelIndex) => (
-                      <TableRow
-                        key={`${index}-${panelIndex}`}
-                        className={`${
-                          (index + panelIndex) % 2 === 0 ? "bg-muted/10" : "bg-muted/20"
-                        }`}
-                      >
-                        <TableCell>{panelMember?.person_name}</TableCell>
-                        <TableCell>{panelMember?.role_name}</TableCell>
-                        <TableCell>{cleanShowName(item?.show_name)}</TableCell>
-                        <TableCell>{item?.shows_with_same_panel.join(", ")}</TableCell>
-                      </TableRow>
-                    ))
-                  )}
-                </TableBody>
-              </Table>
+            ) : data && data.length > 0 ? (
+              <div className="overflow-x-auto max-w-[100%]">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Show Name</TableHead>
+                      <TableHead>Avg Score Per Panel</TableHead>
+                      <TableHead>
+                        <div className="flex gap-5 items-center">
+                          <div>
+                            <span>Short Names</span>
+                          </div>
+                          <span className="px-2 py-1 rounded-md bg-green-200 text-green-800"> Chief Judge </span>
+                          <span className="px-2 py-1 rounded-md bg-blue-200 text-blue-800"> Judge </span>
+                        </div>
+                      </TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {data.map((item, index) => {
+                      const sortedJudges = [...item.judges].sort((a, b) => {
+                        if (a.role === "chief_judge") return -1;
+                        if (b.role === "chief_judge") return 1;
+                        return 0;
+                      });
+
+                      return (
+                        <TableRow key={index} className={`${index % 2 === 0 ? "bg-muted/10" : "bg-muted/20"}`}>
+                          <TableCell>{shortCleanName(item.show_name)}</TableCell>
+                          <TableCell>{parseFloat(item.avg_score_per_panel.toString()).toFixed(2)}</TableCell>
+
+                          <TableCell>
+                            <div className="flex gap-2 flex-wrap">
+                              {sortedJudges.map((j, id) => {
+                                const uniqueId = `${j.short_name}-${index}-${id}`;
+                                return (
+                                  <div
+                                    key={uniqueId}
+                                    className="relative cursor-pointer"
+                                    onMouseEnter={() => setHoveredJudge(uniqueId)}
+                                    onMouseLeave={() => setHoveredJudge(null)}
+                                  >
+                                    <span
+                                      className={`px-2 py-1 rounded-md ${
+                                        j.role === "chief_judge"
+                                          ? "bg-green-100 text-green-700"
+                                          : "bg-blue-100 text-blue-700"
+                                      }`}
+                                    >
+                                      {j.short_name}
+                                    </span>
+                                    {hoveredJudge === uniqueId && (
+                                      <div className="absolute left-1/2 transform -translate-x-1/2 -top-8 bg-black text-white px-3 py-1 rounded-md text-xs shadow-md whitespace-nowrap transition-opacity duration-200">
+                                        {j.name}
+                                      </div>
+                                    )}
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+              </div>
             ) : (
               <div className="flex justify-center items-center h-40">
                 <h1 className="text-gray-500 text-lg">No Data Available</h1>

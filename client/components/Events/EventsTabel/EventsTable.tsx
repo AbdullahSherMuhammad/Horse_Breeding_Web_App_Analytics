@@ -4,12 +4,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useFetch } from "@/hook/useFetch";
 
-// Define the type for each event in the eventsData array
 interface EventData {
   show_id: number;
   show_name: string;
-  start_date: string;
-  end_date: string;
+  avg_score: number;
   horse_count: number;
   participant_count: number;
 }
@@ -40,8 +38,7 @@ const EventTable: React.FC = () => {
             <TableHeader>
               <TableRow>
                 <TableHead>Event Name</TableHead>
-                <TableHead>Start Date</TableHead>
-                <TableHead>End Date</TableHead>
+                <TableHead>Average SCore</TableHead>
                 <TableHead>#Horses</TableHead>
                 <TableHead>#Participants</TableHead>
               </TableRow>
@@ -50,8 +47,7 @@ const EventTable: React.FC = () => {
               {data && data.map((event: EventData, index: number) => (
                 <TableRow key={event.show_id} className={`${index % 2 === 0 ? "bg-muted/10" : "bg-muted/20"}`}>
                   <TableCell>{shortCleanName(event?.show_name)}</TableCell>
-                  <TableCell>{event.start_date}</TableCell>
-                  <TableCell>{event.end_date}</TableCell>
+                  <TableCell>{parseFloat(event.avg_score.toFixed(2))}</TableCell>
                   <TableCell>{event.horse_count}</TableCell>
                   <TableCell>{event.participant_count}</TableCell>
                 </TableRow>
