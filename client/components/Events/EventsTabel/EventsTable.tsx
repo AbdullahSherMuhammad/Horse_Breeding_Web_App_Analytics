@@ -38,7 +38,7 @@ const EventTable: React.FC = () => {
             <TableHeader>
               <TableRow>
                 <TableHead>Event Name</TableHead>
-                <TableHead>Average SCore</TableHead>
+                <TableHead>Average Score</TableHead>
                 <TableHead>#Horses</TableHead>
                 <TableHead>#Participants</TableHead>
               </TableRow>
