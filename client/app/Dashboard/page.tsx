@@ -8,8 +8,8 @@ import RadarChartComponent from "../../components/Dashboard/RadarChart/RadarChar
 import PageNavigation from "@/components/layout/Navigation/Navigation";
 import { useFetch } from "@/hook/useFetch";
 import SearchBar from "@/components/layout/SearchBar/SearchBar";
-import { useMemo, useState } from "react";
-import FilterComponent from "@/components/layout/Filter/Filter";
+import { useMemo } from "react";
+// import FilterComponent from "@/components/layout/Filter/Filter";
 
 
 interface SortedTraitAverages {
@@ -38,13 +38,6 @@ const PulseLoader = () => (
 
 const Dashboard: React.FC = () => {
   
-  const [filters, setFilters] = useState<{ year?: number; event?: string }>({});
-  const currentYear = new Date().getFullYear(); // Get current year
-  const availableYears = Array.from({ length: 5 }, (_, i) => currentYear - i);
-  const handleFilterChange = (newFilters: { year?: number; event?: string }) => {
-    setFilters(newFilters);
-  };
-
   const { data, loading } = useFetch<Data>('total_results');
 
   const defaultData: Data = {
@@ -184,7 +177,7 @@ const Dashboard: React.FC = () => {
         </div>
            <div className="flex flex-col-reverse sm:flex-row gap-5 items-center w-full lg:w-auto">
               <SearchBar/>
-              <FilterComponent  availableYears={availableYears} onFilterChange={handleFilterChange} />
+              {/* <FilterComponent  availableYears={availableYears} onFilterChange={handleFilterChange} /> */}
             </div>
       </div>
 
