@@ -54,7 +54,7 @@ const Genetics = () => {
           <Card className="chart_content flex flex-col gap-4 p-6">
             <h1 className="font-bold text-xl sm:text-2xl text-left">Most Common Sire</h1>
             <p className="font-medium text-md md:text-lg text-left">{d?.most_common_sire_name}</p>
-            <div className="flex flex-col lg:flex-row justify-between md:items-center gap-2 text-[12px] sm:text-sm">
+            <div className="flex flex-col lg:flex-row justify-between gap-2 text-[12px] sm:text-sm">
               <div>
                 <div className="flex justify-between lg:justify-start gap-2 lg:gap-4">
                   <p>Sire Children :</p>
@@ -75,7 +75,7 @@ const Genetics = () => {
           <Card className="chart_content flex flex-col gap-4 p-6">
             <h1 className="font-bold text-xl sm:text-2xl text-left">Most Common Dam</h1>
             <p className="font-medium text-md md:text-lg text-left">{d?.most_common_dam_name}</p>
-            <div className="flex flex-col lg:flex-row justify-between md:items-center gap-2 text-[12px] sm:text-sm">
+            <div className="flex flex-col lg:flex-row justify-between gap-2 text-[12px] sm:text-sm">
               <div>
                 <div className="flex justify-between lg:justify-start gap-2 lg:gap-4">
                   <p>Dam Children :</p>

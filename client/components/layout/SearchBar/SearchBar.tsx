@@ -50,7 +50,7 @@ const SearchBar = () => {
 
       <div
         className={`${
-          errorMessage ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-2"
+          errorMessage ? "flex translate-y-0" : "hidden -translate-y-2"
         } transition-all duration-300 ease-in-out p-2 bg-red-100 mt-2 rounded-md text-red-500 font-semibold text-sm`}
       >
         {errorMessage}
