@@ -43,12 +43,14 @@ const FilterComponent: React.FC<FilterComponentProps> = ({
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [selectedYear, setSelectedYear] = useState<number | undefined>();
   const [selectedGender, setSelectedGender] = useState<number | undefined>();
-  const [selectedShow, setSelectedShow] = useState<number | undefined>(undefined); // Default to undefined
+  const [selectedShow, setSelectedShow] = useState<number | undefined>(undefined);
   const [selectedFarm, setSelectedFarm] = useState<number | undefined>();
 
-  const toggleFilter = () => setIsOpen(!isOpen);
+  const toggleFilter = () => {
+    clearFilters();
+    setIsOpen(!isOpen);
+  };
 
-  // Apply Filters & Pass Values to Parent (Dashboard)
   const applyFilters = () => {
     onFilterChange({
       year: selectedYear,
@@ -59,7 +61,6 @@ const FilterComponent: React.FC<FilterComponentProps> = ({
     setIsOpen(false);
   };
 
-  // Clear All Filters
   const clearFilters = () => {
     onFilterChange({
       year: undefined,
@@ -69,17 +70,16 @@ const FilterComponent: React.FC<FilterComponentProps> = ({
     });
     setSelectedYear(undefined);
     setSelectedGender(undefined);
-    setSelectedShow(undefined); // Reset to undefined
+    setSelectedShow(undefined);
     setSelectedFarm(undefined);
     setIsOpen(false);
   };
 
-  // Update Show options based on selected year
   const filteredShows = useMemo(() => {
-    if (!selectedYear) return availableShows; // No filtering, return all available shows
+    if (!selectedYear) return availableShows;
     return availableShows.filter((show) => {
       const showYear = new Date(show.start_date).getFullYear();
-      return showYear === selectedYear; // Filter shows by selected year
+      return showYear === selectedYear;
     });
   }, [selectedYear, availableShows]);
 
