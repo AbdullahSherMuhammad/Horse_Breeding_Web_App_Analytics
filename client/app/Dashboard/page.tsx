@@ -1,23 +1,22 @@
 'use client';
+import { useState, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { MdAnalytics, MdEventSeat, MdEmojiEvents } from "react-icons/md";
 import { GiHorseHead } from "react-icons/gi";
 import { IoMdAnalytics } from "react-icons/io";
 import { FaCodeCompare } from "react-icons/fa6";
-import RadarChartComponent from "../../components/Dashboard/RadarChart/RadarChart";
+import RadarChartComponent from "@/components/Dashboard/RadarChart/RadarChart";
 import PageNavigation from "@/components/layout/Navigation/Navigation";
-import { useFetch } from "@/hook/useFetch";
 import SearchBar from "@/components/layout/SearchBar/SearchBar";
-import { useMemo } from "react";
-// import FilterComponent from "@/components/layout/Filter/Filter";
-
+import FilterComponent from "@/components/layout/Filter/Filter";
+import { useFetch } from "@/hook/useFetch";
 
 interface SortedTraitAverages {
   trait: string;
   avg_score: number;
 }
 
-interface Data {
+interface TotalResults {
   total_horses: number;
   avg_inbreeding_coefficient: number;
   avg_total_score: number;
@@ -31,16 +30,88 @@ interface Data {
   event_with_highest_score_avg: number;
 }
 
+interface Gender {
+  gender_id: number;
+  gender_description: string;
+}
+
+interface Farm {
+  farm_id: number;
+  farm_name: string;
+}
+
+interface Show {
+  show_id: number;
+  show_name: string;
+  start_date: string;
+}
 
 const PulseLoader = () => (
   <span className="inline-block h-4 w-8 bg-gray-300 rounded-md animate-pulse"></span>
 );
 
 const Dashboard: React.FC = () => {
-  
-  const { data, loading } = useFetch<Data>('total_results');
+  const [filters, setFilters] = useState<{
+    year?: number;
+    gender_id?: number;
+    show_id?: number;
+    farm_id?: number;
+  }>({});
 
-  const defaultData: Data = {
+  const { data: genders, loading: loadingGenders, error: errorGenders } = useFetch<Gender>({
+    url: 'gender',
+    limit: 100,
+  });
+
+  const { data: farms, loading: loadingFarms, error: errorFarms } = useFetch<Farm>({
+    url: 'farm',
+    limit: 100,
+  });
+
+  const { data: allShows, loading: loadingShows, error: errorShows } = useFetch<Show>({
+    url: 'show',
+    limit: 1000,
+  });
+
+  const availableYears: number[] = useMemo(() => {
+    if (!allShows) return [];
+    const years: number[] = allShows.map((show: Show): number => new Date(show.start_date).getFullYear());
+    return Array.from(new Set(years)).sort((a, b) => b - a);
+  }, [allShows]);
+
+  const { data: filteredShows } = useFetch<Show>({
+    url: 'show',
+    limit: 1000,
+    filters: filters.year
+      ? {
+          'start_date.gte': `${filters.year}-01-01`,
+          'start_date.lte': `${filters.year}-12-31`,
+        }
+      : {},
+  });
+  
+
+  const { data: totalResultsData, loading: loadingTotalResults, error: errorTotalResults } = useFetch<TotalResults>({
+    url: 'total_results',
+    limit: 1,
+    offset: 0,
+    filters: {
+      ...(filters.gender_id ? { gender_id: filters.gender_id } : {}),
+      ...(filters.show_id ? { show_id: filters.show_id } : {}),
+      ...(filters.farm_id ? { farm_id: filters.farm_id } : {}),
+    },
+  });
+
+  const handleFilterChange = (newFilters: {
+    year?: number;
+    gender_id?: number;
+    show_id?: number;
+    farm_id?: number;
+  }) => {
+    setFilters(newFilters);
+  };
+
+  const defaultData: TotalResults = {
     total_horses: 0,
     avg_inbreeding_coefficient: 0,
     avg_total_score: 0,
@@ -53,8 +124,10 @@ const Dashboard: React.FC = () => {
     event_with_highest_score_name: "N/A",
     event_with_highest_score_avg: 0,
   };
-  const finalData = data?.[0] || defaultData;
   
+  const finalData = totalResultsData?.[0] || defaultData;
+  
+
   const cleanName = (name: string) => {
     const words = name.split(" ");
     return words.length > 1 ? `${words[0]} ${words[1]}` : words[0];
@@ -64,127 +137,163 @@ const Dashboard: React.FC = () => {
     return text.length > maxLength ? `${text.substring(0, maxLength)}...` : text;
   };
 
-  const formatValue = (value: number | null | undefined, decimals = 2) => loading ? <PulseLoader /> : value !== undefined && value !== null ? parseFloat(value.toFixed(decimals)) : "N/A";
+  const formatValue = (
+    value: number | null | undefined,
+    decimals = 2
+  ) =>
+    (loadingTotalResults || loadingGenders || loadingFarms || loadingShows) ? (
+      <PulseLoader />
+    ) : value !== undefined && value !== null ? (
+      parseFloat(value.toFixed(decimals))
+    ) : (
+      "N/A"
+    );
 
+  const cardContent = useMemo(
+    () => [
+      {
+        title: "Population Statistics",
+        total_txt: "Total horses",
+        total: formatValue(finalData.total_horses),
+        average_txt: "Average Inbreeding coefficient",
+        average: formatValue(finalData.avg_inbreeding_coefficient),
+        icons: <MdAnalytics />,
+      },
+      {
+        title: "Horses Overview",
+        total_txt: "Total horses",
+        total: formatValue(finalData.total_horses),
+        average_txt: "Average total score",
+        average: formatValue(finalData.avg_total_score),
+        icons: <GiHorseHead />,
+      },
+      {
+        title: "Panels Overview",
+        total_txt: "Total panels",
+        total: "51",
+        average_txt: "Average consistency score",
+        average: "121",
+        icons: <MdEventSeat />,
+      },
+      {
+        title: "Events Overview",
+        total_txt: "Total events",
+        total: formatValue(finalData.total_events),
+        average_txt: "Highest scoring event",
+        average: loadingTotalResults ? (
+          <PulseLoader />
+        ) : finalData.event_with_highest_score_name ? (
+          <div className="relative group flex items-center space-x-1">
+            <span className="text-sm sm:text-md font-medium truncate">
+              {truncateText(cleanName(finalData.event_with_highest_score_name))}
+            </span>
+            <span>({formatValue(finalData.event_with_highest_score_avg)})</span>
 
-
-  const cardContent = useMemo(() => [
-    {
-      title: "Population Statistics",
-      total_txt: "Total horses",
-      total: formatValue(finalData.total_horses),
-      average_txt: "Average Inbreeding coefficient",
-      average: formatValue(finalData.avg_inbreeding_coefficient),
-      icons: <MdAnalytics />,
-    },
-    {
-      title: "Horses Overview",
-      total_txt: "Total horses",
-      total: formatValue(finalData.total_horses),
-      average_txt: "Average total score",
-      average: formatValue(finalData.avg_total_score),
-      icons: <GiHorseHead />,
-    },
-    {
-      title: "Panels Overview",
-      total_txt: "Total panels",
-      total: "51",
-      average_txt: "Average consistency score",
-      average: "121",
-      icons: <MdEventSeat />,
-    },
-    {
-      title: "Events Overview",
-      total_txt: "Total events",
-      total: formatValue(finalData.total_events),
-      average_txt: "Highest scoring event",
-      average: loading ? (
-        <PulseLoader />
-      ) : finalData.event_with_highest_score_name ? (
-        <div className="relative group flex items-center space-x-1">
-          <span className="text-sm sm:text-md font-medium truncate">
-            {truncateText(cleanName(finalData.event_with_highest_score_name))}
-          </span>
-          <span>({formatValue(finalData.event_with_highest_score_avg)})</span>
-    
-          <div className="absolute right-0 bottom-full hidden group-hover:block bg-gray-900 text-white text-xs w-[250px] px-2 py-1 rounded-md">
-            {(finalData.event_with_highest_score_name)}
+            <div className="absolute right-0 bottom-full hidden group-hover:block bg-gray-900 text-white text-xs w-[250px] px-2 py-1 rounded-md">
+              {finalData.event_with_highest_score_name}
+            </div>
           </div>
-        </div>
-      ) : (
-        "N/A"
-      ),
-      icons: <MdEmojiEvents />,
-    },
-      
-    {
-      title: "Performance Overview",
-      total_txt: "Top performing trait",
-      total: finalData.sorted_trait_averages.length
-        ? `${finalData.sorted_trait_averages[0].trait} (${formatValue(finalData.sorted_trait_averages[0].avg_score)})`
-        : "N/A",
-      average_txt: "Second Highest trait",
-      average: finalData.sorted_trait_averages.length > 1
-        ? `${finalData.sorted_trait_averages[1].trait} (${formatValue(finalData.sorted_trait_averages[1].avg_score)})`
-        : "N/A",
-      icons: <IoMdAnalytics />,
-    },
-    {
-      title: "Comparison Overview",
-      total_txt: "Top 10 average score",
-      total: formatValue(finalData.avg_top_10_score),
-      average_txt: "Bottom 10 average score",
-      average: formatValue(finalData.avg_bottom_10_score),
-      icons: <FaCodeCompare />,
-    },
-  ], [finalData, loading]);
-  
-  
-  const card = cardContent.map(({ title, total_txt, total, average_txt, average, icons }, id) => (
-    <Card key={id} className="p-1 sm:p-4 border-2 border-gray-200 rounded-lg shadow-sm">
-      <CardHeader className="md:p-2 mb-5">
-        <CardTitle className="text-lg md:text-xl font-semibold flex justify-between items-center">
-          <span>{title}</span>
-          <span className="text-4xl transform scale-x-[-1]">{icons}</span>
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="flex flex-col gap-2 md:p-2">
-        <div className="flex justify-between">
-          <h3 className="font-medium text-gray-600">{total_txt}</h3>
-          <p>{total}</p>
-        </div>
-        <div className="flex justify-between">
-          <h3 className="font-medium text-gray-600">{average_txt}</h3>
-          <p>{average}</p>
-        </div>
-      </CardContent>
-    </Card>
-  ));
+        ) : (
+          "N/A"
+        ),
+        icons: <MdEmojiEvents />,
+      },
 
+      {
+        title: "Performance Overview",
+        total_txt: "Top performing trait",
+        total: finalData.sorted_trait_averages.length
+          ? `${finalData.sorted_trait_averages[0].trait} (${formatValue(finalData.sorted_trait_averages[0].avg_score)})`
+          : "N/A",
+        average_txt: "Second Highest trait",
+        average: finalData.sorted_trait_averages.length > 1
+          ? `${finalData.sorted_trait_averages[1].trait} (${formatValue(finalData.sorted_trait_averages[1].avg_score)})`
+          : "N/A",
+        icons: <IoMdAnalytics />,
+      },
+      {
+        title: "Comparison Overview",
+        total_txt: "Top 10 average score",
+        total: formatValue(finalData.avg_top_10_score),
+        average_txt: "Bottom 10 average score",
+        average: formatValue(finalData.avg_bottom_10_score),
+        icons: <FaCodeCompare />,
+      },
+    ],
+    [finalData, loadingTotalResults]
+  );
+
+  const card = cardContent.map(
+    ({ title, total_txt, total, average_txt, average, icons }, id) => (
+      <Card
+        key={id}
+        className="p-1 sm:p-4 border-2 border-gray-200 rounded-lg shadow-sm"
+      >
+        <CardHeader className="md:p-2 mb-5">
+          <CardTitle className="text-lg md:text-xl font-semibold flex justify-between items-center">
+            <span>{title}</span>
+            <span className="text-4xl transform scale-x-[-1]">{icons}</span>
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="flex flex-col gap-2 md:p-2">
+          <div className="flex justify-between">
+            <h3 className="font-medium text-gray-600">{total_txt}</h3>
+            <p>{total}</p>
+          </div>
+          <div className="flex justify-between">
+            <h3 className="font-medium text-gray-600">{average_txt}</h3>
+            <p>{average}</p>
+          </div>
+        </CardContent>
+      </Card>
+    )
+  );
 
   const scrollToSection = (sectionId: string) => {
-    document.getElementById(sectionId)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    document
+      .getElementById(sectionId)
+      ?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
-  
 
   return (
     <>
+      {/* Error Handling */}
+      {(errorGenders || errorFarms || errorShows || errorTotalResults) && (
+        <div
+          className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4"
+          role="alert"
+        >
+          <strong className="font-bold">Error: </strong>
+          <span className="block sm:inline">
+            {errorGenders || errorFarms || errorShows || errorTotalResults}
+          </span>
+        </div>
+      )}
+
       {/* Page Heading */}
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-6 space-y-4 lg:space-y-0 bg-[#f4f4f4] p-2 rounded-lg md:bg-transparent md:p-0 md:rounded-none">
         <div className="text-center md:text-start w-full">
-          <h1 className="text-xl md:text-3xl font-bold">Alendis Breeding Insights</h1>
-          <p className="text-sm sm:text-md text-gray-600">An overview of key metrics and performance.</p>
+          <h1 className="text-xl md:text-3xl font-bold">
+            Alendis Breeding Insights
+          </h1>
+          <p className="text-sm sm:text-md text-gray-600">
+            An overview of key metrics and performance.
+          </p>
         </div>
-           <div className="flex flex-col-reverse sm:flex-row gap-5 items-center w-full lg:w-auto">
-              <SearchBar/>
-              {/* <FilterComponent  availableYears={availableYears} onFilterChange={handleFilterChange} /> */}
-            </div>
+        <div className="flex flex-col-reverse sm:flex-row gap-5 items-center w-full lg:w-auto">
+          <SearchBar />
+          <FilterComponent
+            availableYears={availableYears}
+            availableGenders={genders || []}
+            availableShows={filteredShows || []}
+            availableFarms={farms || []}
+            onFilterChange={handleFilterChange}
+          />
+        </div>
       </div>
 
-      <PageNavigation
-         scrollToSection={scrollToSection} 
-      />
-      
+      <PageNavigation scrollToSection={scrollToSection} />
+
       {/* Population stats */}
       <Card className="flex flex-col lg:flex-row gap-6 justify-between items-center p-5 my-5 overflow-hidden">
         {/* Content Section */}
@@ -195,45 +304,50 @@ const Dashboard: React.FC = () => {
           <div className="font-medium text-lg text-center lg:text-left flex justify-between lg:justify-start gap-2 lg:gap-4">
             <p>Total Horses: </p>
             <span className="font-bold">
-                { loading ? (
-                    <PulseLoader />
-                  ) :
-                  data ? data[0].total_horses : 'N/A' 
-                }
+              {loadingTotalResults ? (
+                <PulseLoader />
+              ) : totalResultsData ? (
+                finalData.total_horses
+              ) : (
+                'N/A'
+              )}
             </span>
           </div>
           <div className="flex flex-col gap-2 text-[12px] sm:text-sm">
             <div className="flex justify-between lg:justify-start gap-2 lg:gap-4">
               <p>Average Inbreeding Coefficient:</p>
               <span className="font-medium text-gray-400">
-                { 
-                  loading ? (
-                    <PulseLoader />
-                  ) :
-                  data ? parseFloat(data[0].avg_inbreeding_coefficient.toFixed(2)) : 'N/A' 
-                }
+                {loadingTotalResults ? (
+                  <PulseLoader />
+                ) : totalResultsData ? (
+                  parseFloat(finalData.avg_inbreeding_coefficient.toFixed(2))
+                ) : (
+                  'N/A'
+                )}
               </span>
             </div>
             <div className="flex justify-between lg:justify-start gap-2 lg:gap-4">
               <p>Most Common Sire:</p>
               <span className="font-medium text-gray-400">
-                { 
-                  loading ? (
-                    <PulseLoader />
-                  ) :
-                  data ? data[0]?.most_common_sire_name : 'N//A'
-                }
+                {loadingTotalResults ? (
+                  <PulseLoader />
+                ) : totalResultsData ? (
+                  finalData.most_common_sire_name
+                ) : (
+                  'N/A'
+                )}
               </span>
             </div>
             <div className="flex justify-between lg:justify-start gap-2 lg:gap-4">
               <p>Most Common Dam:</p>
               <span className="font-medium text-gray-400">
-                { 
-                  loading ? (
-                    <PulseLoader />
-                  ) :
-                  data ? data[0]?.most_common_dam_name : 'N//A' 
-                }
+                {loadingTotalResults ? (
+                  <PulseLoader />
+                ) : totalResultsData ? (
+                  finalData.most_common_dam_name
+                ) : (
+                  'N/A'
+                )}
               </span>
             </div>
           </div>
@@ -246,7 +360,9 @@ const Dashboard: React.FC = () => {
       </Card>
 
       {/* Cards Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 mt-5">{card}</div>
+      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 mt-5">
+        {card}
+      </div>
 
     </>
   );

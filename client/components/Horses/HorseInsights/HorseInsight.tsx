@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import {
   Card,
   CardContent,
@@ -24,8 +24,13 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { GoArrowUp } from "react-icons/go";
+import { GoArrowDown } from "react-icons/go";
 import { useFetch } from "@/hook/useFetch";
 import { useRouter } from "next/navigation";
+
+const UpArrow = () => <span style={{ cursor: 'pointer', marginLeft: '5px' }}><GoArrowUp /></span>;
+const DownArrow = () => <span style={{ cursor: 'pointer', marginLeft: '5px' }}><GoArrowDown /></span>;
 
 type Data = {
   horse_id: number;
@@ -33,15 +38,21 @@ type Data = {
   name: string;
   date_of_birth: number;
   number_of_shows: number;
+  blup_score: number;
 };
 
 export function HorsesInsights() {
   const [currentPage, setCurrentPage] = useState(1);
   const [visiblePages, setVisiblePages] = useState(5);
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>('desc');
   const itemsPerPage = 10;
   const router = useRouter();
 
-  const { data, totalRecords, loading, error } = useFetch<Data>("all_horse_analysis", itemsPerPage,(currentPage - 1) * itemsPerPage);
+  const { data, totalRecords, loading, error } = useFetch<Data>({
+    url: "all_horse_analysis",
+    limit: itemsPerPage,
+    offset: (currentPage - 1) * itemsPerPage
+  });
 
   const totalPages = Math.ceil(totalRecords / itemsPerPage);
 
@@ -75,6 +86,24 @@ export function HorsesInsights() {
   );
   const endPage = Math.min(totalPages, startPage + visiblePages - 1);
 
+  const sortedData = useMemo(() => {
+    if (!data) return [];
+    if (sortOrder === 'asc') {
+      return [...data].sort((a, b) => a.number_of_shows - b.number_of_shows);
+    } else if (sortOrder === 'desc') {
+      return [...data].sort((a, b) => b.number_of_shows - a.number_of_shows);
+    }
+    return data;
+  }, [data, sortOrder]);
+
+  const handleSortAsc = () => {
+    setSortOrder('asc');
+  };
+
+  const handleSortDesc = () => {
+    setSortOrder('desc');
+  };
+
   return (
     <div className="space-y-6">
       <Card>
@@ -89,18 +118,35 @@ export function HorsesInsights() {
               </div>
             )}
             {error && <p className="text-red-500">Error: {error}</p>}
-            {!loading && data && (
+            {!loading && sortedData && (
               <Table className="w-full">
                 <TableHeader>
                   <TableRow>
                     <TableHead>Name</TableHead>
                     <TableHead>Date of Birth</TableHead>
-                    <TableHead>Number of Shows</TableHead>
+                    <TableHead>
+                      <div className="flex items-center">
+                        Number of Shows
+                        <div className="flex ml-2">
+                          <button onClick={handleSortDesc} aria-label="Sort descending"
+                            className={`flex items-center text-xl ${sortOrder === 'asc' ? '' : 'text-blue-400'}`}
+                          >
+                            <UpArrow />
+                          </button>
+                          <button onClick={handleSortAsc} aria-label="Sort ascending"
+                            className={`flex items-center text-xl ${sortOrder === 'asc' ? 'text-blue-400' : ''}`}
+                          >
+                            <DownArrow />
+                          </button>
+                        </div>
+                      </div>
+                    </TableHead>
+                    <TableHead>Blup Score</TableHead>
                     <TableHead>FEIF ID</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {data.map((horse) => (
+                  {sortedData.map((horse) => (
                     <TableRow
                       key={horse?.horse_id}
                       className="hover:cursor-pointer hover:text-blue-400"
@@ -109,6 +155,7 @@ export function HorsesInsights() {
                       <TableCell>{horse?.name}</TableCell>
                       <TableCell>{horse?.date_of_birth}</TableCell>
                       <TableCell>{horse?.number_of_shows}</TableCell>
+                      <TableCell>{horse?.blup_score}</TableCell>
                       <TableCell>{horse?.feif_id}</TableCell>
                     </TableRow>
                   ))}

@@ -15,7 +15,7 @@ type Data = {
 };
 
 const TableOffSpring = () => {
-  const { data, loading } = useFetch<Data>('top_10_parents_by_offspring_performance');
+  const { data, loading } = useFetch<Data>({url: 'top_10_parents_by_offspring_performance'});
   const router = useRouter()
 
   const keys: (keyof Data)[] = [

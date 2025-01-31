@@ -14,7 +14,7 @@ interface EventData {
 
 const EventTable: React.FC = () => {
 
-  const { data, loading, error } = useFetch<EventData>('events_analysis');
+  const { data, loading, error } = useFetch<EventData>({ url: 'events_analysis' });
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error loading events data: {error}</div>;

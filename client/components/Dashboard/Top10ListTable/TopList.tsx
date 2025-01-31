@@ -54,7 +54,7 @@ export function TopList() {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const router = useRouter()
   const itemsPerPage = 10 ;
-  const { data, loading } = useFetch<Data>(selectedOption.endpoint, itemsPerPage);
+  const { data, loading } = useFetch<Data>({url: selectedOption.endpoint, limit: itemsPerPage});
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {

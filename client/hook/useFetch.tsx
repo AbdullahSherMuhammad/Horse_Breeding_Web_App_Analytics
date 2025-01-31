@@ -1,7 +1,19 @@
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FetchApiData } from '@/lib/fetchApiData';
 
-export function useFetch<T>(url: string, limit: number = 10, offset: number = 0) {
+interface UseFetchParams {
+  url: string;
+  limit?: number;
+  offset?: number;
+  filters?: { [key: string]: any };
+}
+
+export function useFetch<T>({
+  url,
+  limit = 10,
+  offset = 0,
+  filters = {},
+}: UseFetchParams) {
   const [data, setData] = useState<T[] | null>(null);
   const [totalRecords, setTotalRecords] = useState<number>(0);
   const [loading, setLoading] = useState(true);
@@ -11,8 +23,14 @@ export function useFetch<T>(url: string, limit: number = 10, offset: number = 0)
     const fetchData = async () => {
       setLoading(true);
       setError(null);
+
       try {
-        const result = await FetchApiData<T>(url, limit, offset);
+        const result = await FetchApiData<T>({
+          url,
+          limit,
+          offset,
+          filters,
+        });
         setData(result.data);
         setTotalRecords(result.totalRecords);
       } catch (err: any) {
@@ -23,7 +41,7 @@ export function useFetch<T>(url: string, limit: number = 10, offset: number = 0)
     };
 
     fetchData();
-  }, [url, limit, offset]);
+  }, [url, limit, offset, JSON.stringify(filters)]);
 
   return { data, totalRecords, loading, error };
 }

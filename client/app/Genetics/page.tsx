@@ -31,7 +31,7 @@ type Data = {
 
 const Genetics = () => {
 
-  const { data, loading } = useFetch<Data>('parent_offspring_summary');
+  const { data, loading } = useFetch<Data>({url: 'parent_offspring_summary'});
 
   if (loading) {
     return <Loader/>

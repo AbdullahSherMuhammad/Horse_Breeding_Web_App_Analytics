@@ -20,7 +20,7 @@ type Data = {
 
 const RadarChartComponent = () => {
   const [loading, setLoading] = useState(true);
-  const { data } = useFetch<Data>('total_blup');
+  const { data } = useFetch<Data>({ url: 'total_blup' });
   
   const chartData = [
     { name: "Average score", horse: data?.[0]?.avg_total_score || 0 },

@@ -18,7 +18,7 @@ type PanelData = {
 };
 
 const Panels = () => {
-  const { data, loading } = useFetch<PanelData>('panel_aggregate');
+  const { data, loading } = useFetch<PanelData>({url: 'panel_aggregate'});
   const [hoveredJudge, setHoveredJudge] = useState<string | null>(null);
 
   const shortCleanName = (name: string): string => {

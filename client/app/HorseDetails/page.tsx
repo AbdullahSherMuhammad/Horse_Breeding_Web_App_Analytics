@@ -49,7 +49,9 @@ const HorseDetailsComponenet = () => {
   const query = useSearchParams()
   const id = query.get('query')
 
-  const { data, loading } = useFetch<HorseData>(`horse_analysis?feif_id=eq.${id}`);
+  const { data, loading } = useFetch<HorseData>({
+    url: `horse_analysis?feif_id=eq.${id}`
+  });
 
   const tabsRef = useRef<HTMLDivElement | null>(null);
 

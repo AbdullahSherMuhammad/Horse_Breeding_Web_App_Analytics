@@ -42,7 +42,7 @@ const TopListDetailsContent = () => {
   const endpoint = query.get('name');
   const id = query.get('id');
   
-  const { data, loading, error } = useFetch<Data>(`${endpoint}?parent_id=eq.${id}`);
+  const { data, loading, error } = useFetch<Data>({url: `${endpoint}?parent_id=eq.${id}`});
 
   if (loading) return <div className="text-center mt-10">Loading...</div>;
   if (error || !data || data.length === 0) return <div className="text-center mt-10">No data available</div>;
