@@ -24,13 +24,13 @@ export const fetchFromView = async (url: string, limit: number, offset: number) 
 };
 
 // Fetch data with filters using the RPC function
-export const fetchWithFilters = async (filtrs: { [key: string]: string | number | null }) => {
+export const fetchWithFilters = async (filterUrl: string, filters: { [key: string]: string | number | null }) => {
   try {
-    const { data, error } = await supabase.rpc('get_total_results_dynamic', {
-      _gender_id: filtrs.gender_id ?? null,
-      _year: filtrs.year ?? null,
-      _show_id: filtrs.show_id ?? null,
-      _farm_id: filtrs.farm_id ?? null,
+    const { data, error } = await supabase.rpc(filterUrl, {
+      _gender_id: filters.gender_id ?? null,
+      _year: filters.year ?? null,
+      _show_id: filters.show_id ?? null,
+      _farm_id: filters.farm_id ?? null,
     });
 
     if (error) {
@@ -47,21 +47,23 @@ export const fetchWithFilters = async (filtrs: { [key: string]: string | number 
   }
 };
 
-// Main FetchApiData function to decide between the two based on filters
+// Main FetchApiData function to decide which endpoint to use
 export const FetchApiData = async <T>({
   url,
+  filterUrl,
   limit = 10,
   offset = 0,
   filters = {},
 }: {
   url: string;
+  filterUrl?: string;
   limit?: number;
   offset?: number;
   filters?: { [key: string]: string | number | null };
 }): Promise<{ data: T[]; totalRecords: number }> => {
   try {
-    if (Object.keys(filters).length > 0) {
-      const data = await fetchWithFilters(filters);
+    if (filterUrl && Object.keys(filters).length > 0) {
+      const data = await fetchWithFilters(filterUrl, filters);
       return { data, totalRecords: data.length };
     } else {
       const { data, totalRecords } = await fetchFromView(url, limit, offset);

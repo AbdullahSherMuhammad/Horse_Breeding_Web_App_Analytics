@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { CiFilter } from "react-icons/ci";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
@@ -47,7 +47,6 @@ const FilterComponent: React.FC<FilterComponentProps> = ({
   const [selectedFarm, setSelectedFarm] = useState<number | undefined>();
 
   const toggleFilter = () => {
-    clearFilters();
     setIsOpen(!isOpen);
   };
 
@@ -83,6 +82,10 @@ const FilterComponent: React.FC<FilterComponentProps> = ({
     });
   }, [selectedYear, availableShows]);
 
+  useEffect(() => {
+    setSelectedShow(undefined);
+  }, [selectedYear]);
+
   return (
     <div className="relative flex items-start gap-4">
       {/* Toggle Button */}
@@ -107,7 +110,10 @@ const FilterComponent: React.FC<FilterComponentProps> = ({
             {/* Year Filter */}
             <div className="w-full">
               <Select
-                onValueChange={(value) => setSelectedYear(Number(value))}
+                onValueChange={(value) => {
+                  setSelectedYear(Number(value));
+                  setSelectedShow(undefined);
+                }}
                 value={selectedYear?.toString()}
               >
                 <SelectTrigger className="w-full">
@@ -132,12 +138,16 @@ const FilterComponent: React.FC<FilterComponentProps> = ({
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Select show" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="w-[330px]">
                   {filteredShows.length > 0 ? (
                     filteredShows.map((show) => {
                       if (show.show_id) {
                         return (
-                          <SelectItem key={show.show_id} value={show.show_id.toString()}>
+                          <SelectItem 
+                            key={show.show_id} 
+                            value={show.show_id.toString()}
+                            className="border-b-2 py-2"
+                          >
                             {show.show_name}
                           </SelectItem>
                         );

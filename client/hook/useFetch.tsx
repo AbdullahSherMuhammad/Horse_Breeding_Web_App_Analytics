@@ -3,6 +3,7 @@ import { FetchApiData } from '@/lib/fetchApiData';
 
 interface UseFetchParams {
   url: string;
+  filterUrl?: string; 
   limit?: number;
   offset?: number;
   filters?: { [key: string]: any };
@@ -10,6 +11,7 @@ interface UseFetchParams {
 
 export function useFetch<T>({
   url,
+  filterUrl,
   limit = 10,
   offset = 0,
   filters = {},
@@ -27,6 +29,7 @@ export function useFetch<T>({
       try {
         const result = await FetchApiData<T>({
           url,
+          filterUrl,
           limit,
           offset,
           filters,

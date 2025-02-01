@@ -28,6 +28,8 @@ interface TotalResults {
   most_common_dam_name?: string;
   event_with_highest_score_name?: string;
   event_with_highest_score_avg: number;
+  total_panels: number;
+  avg_panel_score:number;
 }
 
 interface Gender {
@@ -65,12 +67,20 @@ const Dashboard: React.FC = () => {
 
   const { data: farms, loading: loadingFarms, error: errorFarms } = useFetch<Farm>({
     url: 'farm',
-    limit: 100,
+    limit: 1000000,
   });
+
+  const cleanedFarms = useMemo(() => {
+    if (!farms) return [];
+    return farms.map((farm) => ({
+      ...farm,
+      farm_name: farm.farm_name.replace(/frá/gi, '').trim(),
+    }));
+  }, [farms]);
 
   const { data: allShows, loading: loadingShows, error: errorShows } = useFetch<Show>({
     url: 'show',
-    limit: 1000,
+    limit: 1000000,
   });
 
   const availableYears: number[] = useMemo(() => {
@@ -79,23 +89,13 @@ const Dashboard: React.FC = () => {
     return Array.from(new Set(years)).sort((a, b) => b - a);
   }, [allShows]);
 
-  const { data: filteredShows } = useFetch<Show>({
-    url: 'show',
-    limit: 1000,
-    filters: filters.year
-      ? {
-          'start_date.gte': `${filters.year}-01-01`,
-          'start_date.lte': `${filters.year}-12-31`,
-        }
-      : {},
-  });
-  
-
   const { data: totalResultsData, loading: loadingTotalResults, error: errorTotalResults } = useFetch<TotalResults>({
     url: 'total_results',
+    filterUrl: 'get_total_results_dynamic',
     limit: 1,
     offset: 0,
     filters: {
+      ...(filters.year ? { year: filters.year } : {}),
       ...(filters.gender_id ? { gender_id: filters.gender_id } : {}),
       ...(filters.show_id ? { show_id: filters.show_id } : {}),
       ...(filters.farm_id ? { farm_id: filters.farm_id } : {}),
@@ -123,6 +123,8 @@ const Dashboard: React.FC = () => {
     most_common_dam_name: "N/A",
     event_with_highest_score_name: "N/A",
     event_with_highest_score_avg: 0,
+    total_panels: 0,
+    avg_panel_score:0,
   };
   
   const finalData = totalResultsData?.[0] || defaultData;
@@ -170,9 +172,9 @@ const Dashboard: React.FC = () => {
       {
         title: "Panels Overview",
         total_txt: "Total panels",
-        total: "51",
-        average_txt: "Average consistency score",
-        average: "121",
+        total: formatValue(finalData.total_panels),
+        average_txt: "Average score",
+        average: formatValue(finalData.avg_panel_score),
         icons: <MdEventSeat />,
       },
       {
@@ -285,8 +287,8 @@ const Dashboard: React.FC = () => {
           <FilterComponent
             availableYears={availableYears}
             availableGenders={genders || []}
-            availableShows={filteredShows || []}
-            availableFarms={farms || []}
+            availableShows={allShows || []}
+            availableFarms={cleanedFarms || []}
             onFilterChange={handleFilterChange}
           />
         </div>
@@ -355,7 +357,7 @@ const Dashboard: React.FC = () => {
 
         {/* Chart Section */}
         <div className="flex justify-center lg:w-1/2">
-          <RadarChartComponent />
+          <RadarChartComponent filters={filters} />
         </div>
       </Card>
 
