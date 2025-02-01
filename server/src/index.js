@@ -8,27 +8,11 @@ const { insertDataToSupabase } = require('../controllers/insertDataToSupabase');
 const { logMessage } = require('../utils/logger'); 
 const pLimit = require('p-limit');
 
-/**
- * Sleep for a specified number of milliseconds.
- * @param {number} ms - Milliseconds to sleep.
- * @returns {Promise}
- */
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 const CONCURRENT_REQUESTS = 10; // Sir Abdullah recommendation I wanted to do parallel Processing.
 const MAX_RETRIES = 3;  //I have capitalized we might make them environment variables.
-/**
- * Let's see how to explain this? If our request fails, 
- * I am trying three times if it doesnot pass any three time, 
- * I will log it into unsuccessful logs. 
- * They can be then manually inserted I believe for 1000 records, there would be like 20? 30? requests.
-*/
 
-/**
- * Writes data to a JSON file incrementally.
- * @param {string} filePath - Path to the JSON file.
- * @param {Object} data - Data to append.
- */
 const writeDataToJson = (filePath, data) => {
   // Read existing data
   let existingData = [];
@@ -42,10 +26,8 @@ const writeDataToJson = (filePath, data) => {
     }
   }
 
-  // Append new data
   existingData.push(data);
 
-  // Write back to file
   fs.writeFileSync(filePath, JSON.stringify(existingData, null, 2));
 };
 

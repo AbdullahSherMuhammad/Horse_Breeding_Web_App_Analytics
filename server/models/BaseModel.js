@@ -37,58 +37,62 @@ class BaseModel {
     }
   }
 
-  //I am making a function in baseModel so I can use it again and again, This function will fech data and put it in cache.
   async get(tableName, columns, options = {}) {
     try {
-      if (!tableName || typeof tableName !== 'string') {
-        throw new Error('Invalid table name provided.');
-      }
-  
-      if (!Array.isArray(columns) || columns.length === 0) {
-        throw new Error('Columns must be a non-empty array of strings.');
-      }
-  
-      const selectColumns = columns.join(',');
-  
-      let query = supabase.from(tableName).select(selectColumns);
-  
-      if (options.filters && typeof options.filters === 'object') {
-        for (const [key, value] of Object.entries(options.filters)) {
-          query = query.eq(key, value);
+        if (!tableName || typeof tableName !== 'string') {
+            throw new Error('Invalid table name provided.');
         }
-      }
-  
-      // Apply ordering if provided
-      if (options.order && Array.isArray(options.order) && options.order.length === 2) {
-        const [column, direction] = options.order;
-        if (['asc', 'desc'].includes(direction.toLowerCase())) {
-          query = query.order(column, { ascending: direction.toLowerCase() === 'asc' });
+
+        if (!Array.isArray(columns) || columns.length === 0) {
+            throw new Error('Columns must be a non-empty array of strings.');
         }
-      }
-  
-      // Apply limit if provided
-      if (options.limit && typeof options.limit === 'number') {
-        query = query.limit(options.limit);
-      }
-  
-      const { data, error } = await query;
-  
-      if (error) {
-        throw error;
-      }
-  
-      return { data, error: null };
+
+        const selectColumns = columns.join(',');
+        let allData = [];
+        let offset = 0;
+        const limit = 1000;
+
+        while (true) {
+            let query = supabase.from(tableName).select(selectColumns).range(offset, offset + limit - 1);
+
+            if (options.filters && typeof options.filters === 'object') {
+                for (const [key, value] of Object.entries(options.filters)) {
+                    console.log(`Applying filter: ${key} = ${value}`); 
+                    query = query.eq(key, value);
+                }
+            }
+
+            if (options.order && Array.isArray(options.order) && options.order.length === 2) {
+                const [column, direction] = options.order;
+                if (['asc', 'desc'].includes(direction.toLowerCase())) {
+                    query = query.order(column, { ascending: direction.toLowerCase() === 'asc' });
+                }
+            }
+            const { data, error } = await query;
+
+            if (error) {
+                console.error(`Query Error:`, error.message);
+                throw error;
+            }
+
+            if (data.length === 0) {
+                break; 
+            }
+
+            allData = allData.concat(data);
+            offset += limit;
+        }
+
+        return { data: allData, error: null };
     } catch (error) {
-      console.error(`Error fetching data from table "${tableName}":`, error.message);
-      return { data: null, error };
+        console.error(`Error fetching data from table "${tableName}":`, error.message);
+        return { data: null, error };
     }
-  }
-  
-  // Upsert a record (insert or update based on conflict fields)
+}
+
   async upsert(data, conflictFields, selectColumns = '*') {
     try {
       if (!Array.isArray(data) && data !== null && typeof data === 'object') {
-        // If a single object was passed in, wrap it in an array.
         data = [data];
       }
   
@@ -96,40 +100,36 @@ class BaseModel {
         console.log('No data to upsert.');
         return [];
       }
-      console.log(this.table)
       const { data: upsertedData, error } = await this.table
         .upsert(data, { onConflict: conflictFields })
-        .select(selectColumns); // <--- Use the optional columns
+        .select(selectColumns); 
   
       if (error) {
         throw error;
       }
       
-      console.log(`Record(s) upserted in "${this.table}":`, upsertedData);
       return upsertedData;
     } catch (error) {
-      console.error(`Error upserting record(s) in "${this.table}":`, error);
       throw error;
     }
   }
   
 
-  // Method to handle the insertion of gender and country and return their IDs
-  async getOrCreateGender(genderName) {
+  async getOrCreateGender(genderName, horse_id) {
     try {
       const gender = await this.lookupHelper.getOrCreateGender(genderName);
       return gender.gender_id; 
     } catch (error) {
-      console.error(`Error in getOrCreateGender for "${genderName}":`, error);
-      throw error;
+      console.error(`Error in getOrCreateGender for "${genderName} , for horse feif_id ${horse_id}":`, error);
+      return error;
     }
   }
-  async getOrCreateLocation(countryid) {
+  async getOrCreateLocation(countryid, horse_id) {
     try {
       const location = await this.lookupHelper.getOrCreateLocation(countryid);
       return location.location_id; 
     } catch (error) {
-      console.error(`Error in getOrCreatelocation for "${countryid}" , ${location_id}:`, error);
+      console.error(`Error in getOrCreatelocation for "${countryid}" , ${location_id}: , for horse feif_id ${horse_id}":`, error);
       throw error;
     }
   }
@@ -144,7 +144,6 @@ class BaseModel {
   }
   async getOrCreatePersonRole(personName, ID=null, countryname, roleType) {
     try {
-      // 1) Lookup or create the person
       const { data: existingPerson, error: findPersonError } = await supabase
         .from('person')
         .select('person_id')
@@ -207,31 +206,35 @@ class BaseModel {
       throw error;
     }
   }
-  removeDuplicatesAdvanced(array, fields, options = {}) {
+   removeDuplicatesAdvanced (array, fields, options = {}){
     const { caseInsensitive = false, keep = 'first' } = options;
     const seenKeys = new Map();
-
+    const duplicates = [];
+  
     array.forEach(item => {
-      // Generate composite key
       let key = fields.map(field => {
         let value = item[field] || '';
         value = String(value).trim();
         return caseInsensitive ? value.toLowerCase() : value;
       }).join('_');
-
+  
+      if (seenKeys.has(key)) {
+        duplicates.push(item);
+      }
+  
       if (keep === 'first') {
         if (!seenKeys.has(key)) {
           seenKeys.set(key, item);
         }
       } else if (keep === 'last') {
-        seenKeys.set(key, item); // Overwrite to keep the last occurrence
+        seenKeys.set(key, item); 
       }
     });
-
+    // These two are for debugging to check if theduplicates are infact duplicates, comment one of either.
+    console.log('Duplicates:', duplicates.length);
+    // console.log('Duplicates:', duplicates);
+  
     return Array.from(seenKeys.values());
   }
 }
-
-
-
 module.exports = BaseModel;

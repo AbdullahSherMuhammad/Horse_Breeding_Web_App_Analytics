@@ -6,7 +6,7 @@ const { logMessage } = require('../utils/logger'); // Adjust the path as necessa
 /**
  * Fetches horse data for a given FEIF ID with a timeout.
  * Logs successes and failures accordingly.
- * @param {string} feifId - The FEIF ID to fetch data for.
+ * @param {string} feifId - The FEIF ID to fetch data for
  * @returns {Object|null} - The fetched horse data or null if skipped.
  */
 const fetchHorseData = async (feifId) => {
