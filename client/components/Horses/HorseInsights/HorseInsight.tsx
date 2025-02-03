@@ -28,6 +28,8 @@ import { GoArrowUp } from "react-icons/go";
 import { GoArrowDown } from "react-icons/go";
 import { useFetch } from "@/hook/useFetch";
 import { useRouter } from "next/navigation";
+import { useSelector } from "react-redux";
+import { RootState } from "@/app/Store/store";
 
 const UpArrow = () => <span style={{ cursor: 'pointer', marginLeft: '5px' }}><GoArrowUp /></span>;
 const DownArrow = () => <span style={{ cursor: 'pointer', marginLeft: '5px' }}><GoArrowDown /></span>;
@@ -42,6 +44,8 @@ type Data = {
 };
 
 export function HorsesInsights() {
+
+  const filters = useSelector((state: RootState) => state.filters);
   const [currentPage, setCurrentPage] = useState(1);
   const [visiblePages, setVisiblePages] = useState(5);
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>('desc');
@@ -50,8 +54,15 @@ export function HorsesInsights() {
 
   const { data, totalRecords, loading, error } = useFetch<Data>({
     url: "all_horse_analysis",
+    filterUrl: 'all_horse_analysis',
     limit: itemsPerPage,
-    offset: (currentPage - 1) * itemsPerPage
+    offset: (currentPage - 1) * itemsPerPage,
+    filters: {
+      ...(filters.year ? { year: filters.year } : {}),
+      ...(filters.gender_id ? { gender_id: filters.gender_id } : {}),
+      ...(filters.show_id ? { show_id: filters.show_id } : {}),
+      ...(filters.farm_id ? { farm_id: filters.farm_id } : {}),
+    },
   });
 
   const totalPages = Math.ceil(totalRecords / itemsPerPage);

@@ -1,5 +1,5 @@
 'use client';
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { MdAnalytics, MdEventSeat, MdEmojiEvents } from "react-icons/md";
 import { GiHorseHead } from "react-icons/gi";
@@ -10,6 +10,8 @@ import PageNavigation from "@/components/layout/Navigation/Navigation";
 import SearchBar from "@/components/layout/SearchBar/SearchBar";
 import FilterComponent from "@/components/layout/Filter/Filter";
 import { useFetch } from "@/hook/useFetch";
+import { useSelector } from "react-redux";
+import { RootState } from "@/app/Store/store";
 
 interface SortedTraitAverages {
   trait: string;
@@ -53,12 +55,7 @@ const PulseLoader = () => (
 );
 
 const Dashboard: React.FC = () => {
-  const [filters, setFilters] = useState<{
-    year?: number;
-    gender_id?: number;
-    show_id?: number;
-    farm_id?: number;
-  }>({});
+  const filters = useSelector((state: RootState) => state.filters);
 
   const { data: genders, loading: loadingGenders, error: errorGenders } = useFetch<Gender>({
     url: 'gender',
@@ -102,14 +99,6 @@ const Dashboard: React.FC = () => {
     },
   });
 
-  const handleFilterChange = (newFilters: {
-    year?: number;
-    gender_id?: number;
-    show_id?: number;
-    farm_id?: number;
-  }) => {
-    setFilters(newFilters);
-  };
 
   const defaultData: TotalResults = {
     total_horses: 0,
@@ -289,7 +278,6 @@ const Dashboard: React.FC = () => {
             availableGenders={genders || []}
             availableShows={allShows || []}
             availableFarms={cleanedFarms || []}
-            onFilterChange={handleFilterChange}
           />
         </div>
       </div>

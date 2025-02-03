@@ -3,6 +3,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useFetch } from "@/hook/useFetch";
+import { useSelector } from "react-redux";
+import { RootState } from "@/app/Store/store";
 
 interface EventData {
   show_id: number;
@@ -14,7 +16,18 @@ interface EventData {
 
 const EventTable: React.FC = () => {
 
-  const { data, loading, error } = useFetch<EventData>({ url: 'events_analysis' });
+  const filters = useSelector((state: RootState) => state.filters);
+
+  const { data, loading, error } = useFetch<EventData>({ 
+    url: 'events_analysis',
+    filterUrl: 'events_analysis',
+    filters: {
+      ...(filters.year ? { year: filters.year } : {}),
+      ...(filters.gender_id ? { gender_id: filters.gender_id } : {}),
+      ...(filters.show_id ? { show_id: filters.show_id } : {}),
+      ...(filters.farm_id ? { farm_id: filters.farm_id } : {}),
+    },
+  });
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error loading events data: {error}</div>;

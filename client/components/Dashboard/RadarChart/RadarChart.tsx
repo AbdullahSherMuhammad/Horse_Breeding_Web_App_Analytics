@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/chart";
 import { useFetch } from "@/hook/useFetch";
 
-// Define the shape of the filters
 interface RadarChartFilters {
   year?: number;
   gender_id?: number;

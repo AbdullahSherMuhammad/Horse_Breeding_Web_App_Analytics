@@ -10,6 +10,8 @@ import Genetics from './Genetics/page';
 import Horses from './Horses/page';
 import Panels from './Panels/page';
 import Events from './Events/page';
+import { Provider } from 'react-redux';
+import { store } from './Store/store';
 
 const sections = [
   { id: 'Dashboard', Component: Dashboard },
@@ -49,7 +51,9 @@ const Page: React.FC = () => {
               id={id}
               className="scroll-mt-[150px] sm:p-5 rounded-[20px] mb-10 sm:bg-[#f4f4f4]"
             >
-              <Component />
+              <Provider store={store}>
+                <Component />
+              </Provider>
             </section>
           ))}
         </main>

@@ -4,6 +4,8 @@ import { Card } from "@/components/ui/card";
 import { useFetch } from '@/hook/useFetch';
 import { TopListGeneticData } from '@/components/Genetics/TopListData/TopList';
 import Loader from '@/components/Genetics/Loader/Loader';
+import { useSelector } from "react-redux";
+import { RootState } from "@/app/Store/store";
 
 type TopListData = {
   rank: number;
@@ -30,8 +32,18 @@ type Data = {
 
 
 const Genetics = () => {
+  const filters = useSelector((state: RootState) => state.filters);
 
-  const { data, loading } = useFetch<Data>({url: 'parent_offspring_summary'});
+  const { data, loading } = useFetch<Data>({
+    url: 'parent_offspring_summary',
+    filterUrl: 'parent_offspring_summary',
+    filters: {
+      ...(filters.year ? { year: filters.year } : {}),
+      ...(filters.gender_id ? { gender_id: filters.gender_id } : {}),
+      ...(filters.show_id ? { show_id: filters.show_id } : {}),
+      ...(filters.farm_id ? { farm_id: filters.farm_id } : {}),
+    },
+  });
 
   if (loading) {
     return <Loader/>

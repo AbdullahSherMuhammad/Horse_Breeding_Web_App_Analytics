@@ -24,14 +24,14 @@ export const fetchFromView = async (url: string, limit: number, offset: number) 
 };
 
 // Fetch data with filters using the RPC function
-export const fetchWithFilters = async (filterUrl: string, filters: { [key: string]: string | number | null }) => {
+export const fetchWithFilters = async (filterUrl: string, limit: number, offset:number, filters: { [key: string]: string | number | null }) => {
   try {
     const { data, error } = await supabase.rpc(filterUrl, {
       _gender_id: filters.gender_id ?? null,
       _year: filters.year ?? null,
       _show_id: filters.show_id ?? null,
       _farm_id: filters.farm_id ?? null,
-    });
+    }).limit(limit).range(offset, offset + limit - 1);
 
     if (error) {
       throw new Error(error.message);
@@ -63,7 +63,7 @@ export const FetchApiData = async <T>({
 }): Promise<{ data: T[]; totalRecords: number }> => {
   try {
     if (filterUrl && Object.keys(filters).length > 0) {
-      const data = await fetchWithFilters(filterUrl, filters);
+      const data = await fetchWithFilters(filterUrl,limit,offset, filters);
       return { data, totalRecords: data.length };
     } else {
       const { data, totalRecords } = await fetchFromView(url, limit, offset);

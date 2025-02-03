@@ -44,9 +44,8 @@ export const TopListGeneticData: React.FC<TopListGeneticData> = ({ top10Sires, t
   const [selectedData, setSelectedData] = useState<TopListData | null>(null);
 
   const currentList = showSire ? top10Sires : top10Dams;
-  const currentTitle = showSire ? "Top 10 Sires" : "Top 10 Dams";
+  const currentTitle = showSire ? `Top ${top10Sires ? top10Sires.length : '10' } Sires` : `Top ${top10Dams ? top10Dams.length : '10'} Dams`;
 
-  // Chart Data
   const chartData = selectedData
     ? [
         {

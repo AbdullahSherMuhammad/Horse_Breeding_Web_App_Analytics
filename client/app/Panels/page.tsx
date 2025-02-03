@@ -4,6 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import React, { useState } from 'react';
 import { useFetch } from '@/hook/useFetch';
+import { useSelector } from "react-redux";
+import { RootState } from "@/app/Store/store";
 
 type Judge = {
   name: string;
@@ -18,7 +20,17 @@ type PanelData = {
 };
 
 const Panels = () => {
-  const { data, loading } = useFetch<PanelData>({url: 'panel_aggregate'});
+  const filters = useSelector((state: RootState) => state.filters);
+  const { data, loading } = useFetch<PanelData>({
+    url: 'panel_aggregate',
+    filterUrl: 'panel_aggregate',
+    filters: {
+      ...(filters.year ? { year: filters.year } : {}),
+      ...(filters.gender_id ? { gender_id: filters.gender_id } : {}),
+      ...(filters.show_id ? { show_id: filters.show_id } : {}),
+      ...(filters.farm_id ? { farm_id: filters.farm_id } : {}),
+    },
+  });
   const [hoveredJudge, setHoveredJudge] = useState<string | null>(null);
 
   const shortCleanName = (name: string): string => {

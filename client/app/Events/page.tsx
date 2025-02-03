@@ -1,3 +1,4 @@
+'use client'
 import EvetnTable from '@/components/Events/EventsTabel/EventsTable'
 import React from 'react'
 

@@ -17,6 +17,8 @@ import {
 } from "@/components/ui/table";
 import { useFetch } from "@/hook/useFetch";
 import { useRouter } from "next/navigation";
+import { useSelector } from "react-redux";
+import { RootState } from "@/app/Store/store";
 
 
 type Data = {
@@ -54,7 +56,20 @@ export function TopList() {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const router = useRouter()
   const itemsPerPage = 10 ;
-  const { data, loading } = useFetch<Data>({url: selectedOption.endpoint, limit: itemsPerPage});
+
+  const filters = useSelector((state: RootState) => state.filters);
+
+  const { data, loading } = useFetch<Data>({
+    url: selectedOption.endpoint, 
+    filterUrl: selectedOption.endpoint, 
+    limit: itemsPerPage,
+    filters: {
+      ...(filters.year ? { year: filters.year } : {}),
+      ...(filters.gender_id ? { gender_id: filters.gender_id } : {}),
+      ...(filters.show_id ? { show_id: filters.show_id } : {}),
+      ...(filters.farm_id ? { farm_id: filters.farm_id } : {}),
+    },
+  });
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
