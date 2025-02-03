@@ -32,7 +32,7 @@ type Data = {
 
 
 const Genetics = () => {
-  const filters = useSelector((state: RootState) => state.filters);
+  const filters = useSelector((state: RootState) => state.filters) || {};
 
   const { data, loading } = useFetch<Data>({
     url: 'parent_offspring_summary',

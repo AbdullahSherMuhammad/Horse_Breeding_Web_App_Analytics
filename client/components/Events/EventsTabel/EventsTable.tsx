@@ -16,7 +16,7 @@ interface EventData {
 
 const EventTable: React.FC = () => {
 
-  const filters = useSelector((state: RootState) => state.filters);
+  const filters = useSelector((state: RootState) => state.filters) || {};
 
   const { data, loading, error } = useFetch<EventData>({ 
     url: 'events_analysis',

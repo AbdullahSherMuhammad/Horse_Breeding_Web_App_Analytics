@@ -1,4 +1,5 @@
 import "./globals.css";
+import ProviderWrapper from "./ProviderWrapper"; 
 
 export const metadata = {
   title: "Alendis Horse Breeding - Dashboard",
@@ -12,7 +13,9 @@ const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
   return (
     <html lang="en">
       <body>
-        {children}
+        <ProviderWrapper>
+          {children}
+        </ProviderWrapper>
       </body>
     </html>
   );

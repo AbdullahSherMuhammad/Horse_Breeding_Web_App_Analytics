@@ -55,7 +55,8 @@ const PulseLoader = () => (
 );
 
 const Dashboard: React.FC = () => {
-  const filters = useSelector((state: RootState) => state.filters);
+  const filters = useSelector((state: RootState) => state.filters) || {};
+
 
   const { data: genders, loading: loadingGenders, error: errorGenders } = useFetch<Gender>({
     url: 'gender',

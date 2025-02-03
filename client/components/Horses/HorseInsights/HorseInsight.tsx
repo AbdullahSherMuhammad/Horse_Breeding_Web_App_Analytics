@@ -45,7 +45,7 @@ type Data = {
 
 export function HorsesInsights() {
 
-  const filters = useSelector((state: RootState) => state.filters);
+  const filters = useSelector((state: RootState) => state.filters) || {};
   const [currentPage, setCurrentPage] = useState(1);
   const [visiblePages, setVisiblePages] = useState(5);
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>('desc');

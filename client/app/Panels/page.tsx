@@ -20,7 +20,7 @@ type PanelData = {
 };
 
 const Panels = () => {
-  const filters = useSelector((state: RootState) => state.filters);
+  const filters = useSelector((state: RootState) => state.filters) || {};
   const { data, loading } = useFetch<PanelData>({
     url: 'panel_aggregate',
     filterUrl: 'panel_aggregate',

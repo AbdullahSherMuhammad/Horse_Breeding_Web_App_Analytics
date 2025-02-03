@@ -17,7 +17,7 @@ type Data = {
 };
 
 const TableOffSpring = () => {
-  const filters = useSelector((state: RootState) => state.filters);
+  const filters = useSelector((state: RootState) => state.filters) || {};
   const { data, loading } = useFetch<Data>({
     url: 'top_10_parents_by_offspring_performance',
     filterUrl: 'top_10_parents_by_offspring_performance',

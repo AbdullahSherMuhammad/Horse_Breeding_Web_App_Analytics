@@ -10,8 +10,6 @@ import Genetics from './Genetics/page';
 import Horses from './Horses/page';
 import Panels from './Panels/page';
 import Events from './Events/page';
-import { Provider } from 'react-redux';
-import { store } from './Store/store';
 
 const sections = [
   { id: 'Dashboard', Component: Dashboard },
@@ -31,45 +29,43 @@ const Page: React.FC = () => {
 
 
   return (
-    <div className="flex min-h-screen overflow-hidden">
-      <div
-        className={`flex lg:hidden fixed top-0 left-0 z-[999] h-screen w-64 bg-gray-100 p-4 transition-transform duration-300 ease-in-out ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 overflow-y-auto`}
-      >
-        <Sidebar toggleSidebar={toggleSidebar} />
-      </div>
-
-      <div
-        className={`flex-1 transition-all duration-300 ${isSidebarOpen ? 'flex-1' : 'ml-0'
-          } md:ml-0 overflow-hidden`}
-      >
-        <Navbar toggleSidebar={toggleSidebar} />
-
-        <main className="flex-1 py-6 px-6 md:px-10 overflow-x-hidden">
-          {sections.map(({ id, Component }) => (
-            <section
-              key={id}
-              id={id}
-              className="scroll-mt-[150px] sm:p-5 rounded-[20px] mb-10 sm:bg-[#f4f4f4]"
-            >
-              <Provider store={store}>
-                <Component />
-              </Provider>
-            </section>
-          ))}
-        </main>
-
-        <Footer />
-      </div>
-
-      {isSidebarOpen && (
+      <div className="flex min-h-screen overflow-hidden">
         <div
-          className="fixed inset-0 z-[100] bg-black opacity-50 lg:hidden"
-          onClick={() => setIsSidebarOpen(false)}
-        />
-      )}
+          className={`flex lg:hidden fixed top-0 left-0 z-[999] h-screen w-64 bg-gray-100 p-4 transition-transform duration-300 ease-in-out ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 overflow-y-auto`}
+        >
+          <Sidebar toggleSidebar={toggleSidebar} />
+        </div>
 
-      <ScrollToTop />
-    </div>
+        <div
+          className={`flex-1 transition-all duration-300 ${isSidebarOpen ? 'flex-1' : 'ml-0'
+            } md:ml-0 overflow-hidden`}
+        >
+          <Navbar toggleSidebar={toggleSidebar} />
+
+          <main className="flex-1 py-6 px-6 md:px-10 overflow-x-hidden">
+            {sections.map(({ id, Component }) => (
+              <section
+                key={id}
+                id={id}
+                className="scroll-mt-[150px] sm:p-5 rounded-[20px] mb-10 sm:bg-[#f4f4f4]"
+              >
+                  <Component />
+              </section>
+            ))}
+          </main>
+
+          <Footer />
+        </div>
+
+        {isSidebarOpen && (
+          <div
+            className="fixed inset-0 z-[100] bg-black opacity-50 lg:hidden"
+            onClick={() => setIsSidebarOpen(false)}
+          />
+        )}
+
+        <ScrollToTop />
+      </div>
   );
 };
 
