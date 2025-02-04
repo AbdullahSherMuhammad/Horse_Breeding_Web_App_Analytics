@@ -24,15 +24,22 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { GoArrowUp } from "react-icons/go";
-import { GoArrowDown } from "react-icons/go";
+import { GoArrowUp, GoArrowDown } from "react-icons/go";
 import { useFetch } from "@/hook/useFetch";
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import { RootState } from "@/app/Store/store";
 
-const UpArrow = () => <span style={{ cursor: 'pointer', marginLeft: '5px' }}><GoArrowUp /></span>;
-const DownArrow = () => <span style={{ cursor: 'pointer', marginLeft: '5px' }}><GoArrowDown /></span>;
+const UpArrow = () => (
+  <span style={{ cursor: "pointer", marginLeft: "5px" }}>
+    <GoArrowUp />
+  </span>
+);
+const DownArrow = () => (
+  <span style={{ cursor: "pointer", marginLeft: "5px" }}>
+    <GoArrowDown />
+  </span>
+);
 
 type Data = {
   horse_id: number;
@@ -46,15 +53,22 @@ type Data = {
 export function HorsesInsights() {
 
   const filters = useSelector((state: RootState) => state.filters) || {};
+
+  const memoizedFilters = useMemo(() => filters, [JSON.stringify(filters)]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [memoizedFilters]);
+
   const [currentPage, setCurrentPage] = useState(1);
   const [visiblePages, setVisiblePages] = useState(5);
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>('desc');
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc" | null>("desc");
   const itemsPerPage = 10;
   const router = useRouter();
 
   const { data, totalRecords, loading, error } = useFetch<Data>({
     url: "all_horse_analysis",
-    filterUrl: 'all_horse_analysis',
+    filterUrl: "all_horse_analysis",
     limit: itemsPerPage,
     offset: (currentPage - 1) * itemsPerPage,
     filters: {
@@ -93,27 +107,37 @@ export function HorsesInsights() {
 
   const startPage = Math.max(
     1,
-    Math.min(totalPages - visiblePages + 1, currentPage - Math.floor(visiblePages / 2))
+    Math.min(
+      totalPages - visiblePages + 1,
+      currentPage - Math.floor(visiblePages / 2)
+    )
   );
   const endPage = Math.min(totalPages, startPage + visiblePages - 1);
 
   const sortedData = useMemo(() => {
     if (!data) return [];
-    if (sortOrder === 'asc') {
-      return [...data].sort((a, b) => a.number_of_shows - b.number_of_shows);
-    } else if (sortOrder === 'desc') {
-      return [...data].sort((a, b) => b.number_of_shows - a.number_of_shows);
+    if (sortOrder === "asc") {
+      return [...data].sort(
+        (a, b) => a.number_of_shows - b.number_of_shows
+      );
+    } else if (sortOrder === "desc") {
+      return [...data].sort(
+        (a, b) => b.number_of_shows - a.number_of_shows
+      );
     }
     return data;
   }, [data, sortOrder]);
 
   const handleSortAsc = () => {
-    setSortOrder('asc');
+    setSortOrder("asc");
   };
 
   const handleSortDesc = () => {
-    setSortOrder('desc');
+    setSortOrder("desc");
   };
+
+  const startRecord = totalRecords === 0 ? 0 : (currentPage - 1) * itemsPerPage + 1;
+  const endRecord = Math.min(currentPage * itemsPerPage, totalRecords);
 
   return (
     <div className="space-y-6">
@@ -139,13 +163,21 @@ export function HorsesInsights() {
                       <div className="flex items-center">
                         Number of Shows
                         <div className="flex ml-2">
-                          <button onClick={handleSortDesc} aria-label="Sort descending"
-                            className={`flex items-center text-xl ${sortOrder === 'asc' ? '' : 'text-blue-400'}`}
+                          <button
+                            onClick={handleSortDesc}
+                            aria-label="Sort descending"
+                            className={`flex items-center text-xl ${
+                              sortOrder === "asc" ? "" : "text-blue-400"
+                            }`}
                           >
                             <UpArrow />
                           </button>
-                          <button onClick={handleSortAsc} aria-label="Sort ascending"
-                            className={`flex items-center text-xl ${sortOrder === 'asc' ? 'text-blue-400' : ''}`}
+                          <button
+                            onClick={handleSortAsc}
+                            aria-label="Sort ascending"
+                            className={`flex items-center text-xl ${
+                              sortOrder === "asc" ? "text-blue-400" : ""
+                            }`}
                           >
                             <DownArrow />
                           </button>
@@ -159,15 +191,15 @@ export function HorsesInsights() {
                 <TableBody>
                   {sortedData.map((horse) => (
                     <TableRow
-                      key={horse?.horse_id}
+                      key={horse.horse_id}
                       className="hover:cursor-pointer hover:text-blue-400"
-                      onClick={() => clickHandler(horse?.feif_id)}
+                      onClick={() => clickHandler(horse.feif_id)}
                     >
-                      <TableCell>{horse?.name}</TableCell>
-                      <TableCell>{horse?.date_of_birth}</TableCell>
-                      <TableCell>{horse?.number_of_shows}</TableCell>
-                      <TableCell>{horse?.blup_score}</TableCell>
-                      <TableCell>{horse?.feif_id}</TableCell>
+                      <TableCell>{horse.name}</TableCell>
+                      <TableCell>{horse.date_of_birth}</TableCell>
+                      <TableCell>{horse.number_of_shows}</TableCell>
+                      <TableCell>{horse.blup_score}</TableCell>
+                      <TableCell>{horse.feif_id}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -181,7 +213,9 @@ export function HorsesInsights() {
         <PaginationContent>
           <PaginationItem>
             <PaginationPrevious
-              onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
+              onClick={() =>
+                handlePageChange(Math.max(1, currentPage - 1))
+              }
               disabled={currentPage === 1}
             />
           </PaginationItem>
@@ -201,12 +235,23 @@ export function HorsesInsights() {
           {endPage < totalPages && <PaginationEllipsis />}
           <PaginationItem>
             <PaginationNext
-              onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
+              onClick={() =>
+                handlePageChange(
+                  Math.min(totalPages, currentPage + 1)
+                )
+              }
               disabled={currentPage === totalPages}
             />
           </PaginationItem>
         </PaginationContent>
       </Pagination>
+
+      {/* Record Range Information */}
+      <div className="text-center text-sm text-gray-600">
+        {totalRecords > 0
+          ? `Showing ${startRecord} to ${endRecord} of ${totalRecords} Records`
+          : "No records found."}
+      </div>
     </div>
   );
 }

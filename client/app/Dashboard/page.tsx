@@ -1,5 +1,5 @@
 'use client';
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { MdAnalytics, MdEventSeat, MdEmojiEvents } from "react-icons/md";
 import { GiHorseHead } from "react-icons/gi";
@@ -34,21 +34,6 @@ interface TotalResults {
   avg_panel_score:number;
 }
 
-interface Gender {
-  gender_id: number;
-  gender_description: string;
-}
-
-interface Farm {
-  farm_id: number;
-  farm_name: string;
-}
-
-interface Show {
-  show_id: number;
-  show_name: string;
-  start_date: string;
-}
 
 const PulseLoader = () => (
   <span className="inline-block h-4 w-8 bg-gray-300 rounded-md animate-pulse"></span>
@@ -57,37 +42,7 @@ const PulseLoader = () => (
 const Dashboard: React.FC = () => {
   const filters = useSelector((state: RootState) => state.filters) || {};
 
-
-  const { data: genders, loading: loadingGenders, error: errorGenders } = useFetch<Gender>({
-    url: 'gender',
-    limit: 100,
-  });
-
-  const { data: farms, loading: loadingFarms, error: errorFarms } = useFetch<Farm>({
-    url: 'farm',
-    limit: 1000000,
-  });
-
-  const cleanedFarms = useMemo(() => {
-    if (!farms) return [];
-    return farms.map((farm) => ({
-      ...farm,
-      farm_name: farm.farm_name.replace(/frá/gi, '').trim(),
-    }));
-  }, [farms]);
-
-  const { data: allShows, loading: loadingShows, error: errorShows } = useFetch<Show>({
-    url: 'show',
-    limit: 1000000,
-  });
-
-  const availableYears: number[] = useMemo(() => {
-    if (!allShows) return [];
-    const years: number[] = allShows.map((show: Show): number => new Date(show.start_date).getFullYear());
-    return Array.from(new Set(years)).sort((a, b) => b - a);
-  }, [allShows]);
-
-  const { data: totalResultsData, loading: loadingTotalResults, error: errorTotalResults } = useFetch<TotalResults>({
+  const { data: totalResultsData, loading: loadingTotalResults } = useFetch<TotalResults>({
     url: 'total_results',
     filterUrl: 'get_total_results_dynamic',
     limit: 1,
@@ -128,18 +83,16 @@ const Dashboard: React.FC = () => {
   const truncateText = (text: string, maxLength: number = 12) => {
     return text.length > maxLength ? `${text.substring(0, maxLength)}...` : text;
   };
-
-  const formatValue = (
-    value: number | null | undefined,
-    decimals = 2
-  ) =>
-    (loadingTotalResults || loadingGenders || loadingFarms || loadingShows) ? (
+  const formatValue = useCallback((value: number | null | undefined, decimals = 2) => {
+    return loadingTotalResults ? (
       <PulseLoader />
     ) : value !== undefined && value !== null ? (
       parseFloat(value.toFixed(decimals))
     ) : (
       "N/A"
     );
+  }, [loadingTotalResults]);
+  
 
   const cardContent = useMemo(
     () => [
@@ -249,18 +202,6 @@ const Dashboard: React.FC = () => {
 
   return (
     <>
-      {/* Error Handling */}
-      {(errorGenders || errorFarms || errorShows || errorTotalResults) && (
-        <div
-          className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4"
-          role="alert"
-        >
-          <strong className="font-bold">Error: </strong>
-          <span className="block sm:inline">
-            {errorGenders || errorFarms || errorShows || errorTotalResults}
-          </span>
-        </div>
-      )}
 
       {/* Page Heading */}
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-6 space-y-4 lg:space-y-0 bg-[#f4f4f4] p-2 rounded-lg md:bg-transparent md:p-0 md:rounded-none">
@@ -275,10 +216,6 @@ const Dashboard: React.FC = () => {
         <div className="flex flex-col-reverse sm:flex-row gap-5 items-center w-full lg:w-auto">
           <SearchBar />
           <FilterComponent
-            availableYears={availableYears}
-            availableGenders={genders || []}
-            availableShows={allShows || []}
-            availableFarms={cleanedFarms || []}
           />
         </div>
       </div>

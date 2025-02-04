@@ -1,3 +1,4 @@
+'use client'
 import { useState, useMemo, useEffect } from "react";
 import { CiFilter } from "react-icons/ci";
 import { Button } from "@/components/ui/button";
@@ -6,13 +7,8 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@
 import { useDispatch, useSelector } from "react-redux";
 import { setFilters, resetFilters } from "@/app/Features/Filter/filterSlice";
 import { RootState } from "@/app/Store/store";
+import { useFetch } from "@/hook/useFetch";
 
-interface FilterComponentProps {
-  availableYears: number[];
-  availableGenders: Gender[];
-  availableShows: Show[];
-  availableFarms: Farm[];
-}
 
 interface Gender {
   gender_id: number;
@@ -30,12 +26,7 @@ interface Show {
   start_date: string;
 }
 
-const FilterComponent: React.FC<FilterComponentProps> = ({
-  availableYears,
-  availableGenders,
-  availableShows,
-  availableFarms,
-}) => {
+const FilterComponent: React.FC = () => {
   const dispatch = useDispatch();
   const filters = useSelector((state: RootState) => state.filters);
   const [isOpen, setIsOpen] = useState(false);
@@ -46,6 +37,36 @@ const FilterComponent: React.FC<FilterComponentProps> = ({
     show_id: filters.show_id,
     farm_id: filters.farm_id,
   });
+
+
+  const { data: genders } = useFetch<Gender>({
+    url: 'gender',
+    limit: 100,
+  });
+
+  const { data: farms } = useFetch<Farm>({
+    url: 'farm',
+    limit: 1000000,
+  });
+
+  const cleanedFarms = useMemo(() => {
+    if (!farms) return [];
+    return farms.map((farm) => ({
+      ...farm,
+      farm_name: farm.farm_name.replace(/frá/gi, '').trim(),
+    }));
+  }, [farms]);
+
+  const { data: allShows } = useFetch<Show>({
+    url: 'show',
+    limit: 1000000,
+  });
+
+  const availableYears: number[] = useMemo(() => {
+    if (!allShows) return [];
+    const years: number[] = allShows.map((show: Show): number => new Date(show.start_date).getFullYear());
+    return Array.from(new Set(years)).sort((a, b) => b - a);
+  }, [allShows]);
 
   const toggleFilter = () => setIsOpen(!isOpen);
 
@@ -67,9 +88,9 @@ const FilterComponent: React.FC<FilterComponentProps> = ({
   }, [tempFilters.year]);
 
   const filteredShows = useMemo(() => {
-    if (!tempFilters.year) return availableShows;
-    return availableShows.filter((show) => new Date(show.start_date).getFullYear() === tempFilters.year);
-  }, [tempFilters.year, availableShows]);
+    if (!tempFilters.year) return allShows;
+    return allShows ? allShows.filter((show) => new Date(show.start_date).getFullYear() === tempFilters.year) : [];
+  }, [tempFilters.year, allShows]);
 
   return (
     <div className="relative flex items-start gap-4">
@@ -78,9 +99,12 @@ const FilterComponent: React.FC<FilterComponentProps> = ({
       </Button>
 
       <Sheet open={isOpen} onOpenChange={toggleFilter}>
-        <SheetContent side="left" className="w-full max-w-sm">
+          <SheetContent side="left" className="w-full max-w-sm">
           <SheetHeader>
             <SheetTitle>Filters</SheetTitle>
+            <p id="filter-description" className="text-sm text-gray-500">
+              Select filters for refining search results.
+            </p>
           </SheetHeader>
 
           <div className="grid grid-cols-1 gap-4 mt-4">
@@ -108,7 +132,7 @@ const FilterComponent: React.FC<FilterComponentProps> = ({
                 <SelectValue placeholder="Select show" />
               </SelectTrigger>
               <SelectContent className="w-[330px]">
-                {filteredShows.length > 0 ? (
+                {filteredShows && filteredShows.length > 0 ? (
                   filteredShows.map((show) => (
                     <SelectItem key={show.show_id} value={show.show_id.toString()}>{show.show_name}</SelectItem>
                   ))
@@ -127,7 +151,7 @@ const FilterComponent: React.FC<FilterComponentProps> = ({
                 <SelectValue placeholder="Select gender" />
               </SelectTrigger>
               <SelectContent>
-                {availableGenders.map((gender) => (
+                {genders && genders.map((gender) => (
                   <SelectItem key={gender.gender_id} value={gender.gender_id.toString()}>{gender.gender_description}</SelectItem>
                 ))}
               </SelectContent>
@@ -142,7 +166,7 @@ const FilterComponent: React.FC<FilterComponentProps> = ({
                 <SelectValue placeholder="Select farm" />
               </SelectTrigger>
               <SelectContent>
-                {availableFarms.map((farm) => (
+                {cleanedFarms.map((farm) => (
                   <SelectItem key={farm.farm_id} value={farm.farm_id.toString()}>{farm.farm_name}</SelectItem>
                 ))}
               </SelectContent>
