@@ -1,4 +1,3 @@
-// BaseModel.js
 const { supabase } = require('../config/supabase'); // Ensure correct path
 const LookupHelper = require('./lookupHelper'); 
 
@@ -15,7 +14,6 @@ class BaseModel {
   }
 
    removeDateAfterComma(input) {
-    // Regex to match ", [optional words] til [number]-[number]"
     const regex = /,\s*(?:\w+\s+)*?(?:til\s+)?(?:0|[1-9]|[12]\d|30)\D+(?:0|[1-9]|[12]\d|30)/g;
     return input.replace(regex, '').trim();
   }

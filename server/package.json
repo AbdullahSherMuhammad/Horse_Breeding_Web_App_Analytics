@@ -15,7 +15,8 @@
     "dotenv": "^16.4.7",
     "fs": "0.0.1-security",
     "joi": "^17.13.3",
-    "p-limit": "^2.3.0"
+    "p-limit": "^2.3.0",
+    "path": "^0.12.7"
   },
   "devDependencies": {
     "@types/dotenv": "^6.1.1",
