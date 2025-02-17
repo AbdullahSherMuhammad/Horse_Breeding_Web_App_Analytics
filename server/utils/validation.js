@@ -4,12 +4,12 @@ function validateData(data) {
   const entries = Array.isArray(data) ? data : [data];
 
   const expectedKeyCounts = {
-    basic_info: 20, // Adjust this number based on your actual key count for `basic_info`
-    owner_info: 4, // Keys in a single owner object
-    breeder_info: 3, // Keys in a single breeder object
-    breeding_info: 8, // Keys in a single breeding_info object
-    blup_info: 30, // Adjust to match keys in `blup_info`
-    offspring_info: 2, // Keys in `offspring_info`
+    basic_info: 20, 
+    owner_info: 4, 
+    breeder_info: 3,
+    breeding_info: 8, 
+    blup_info: 30, 
+    offspring_info: 2,
   };
 
   entries.forEach((entry, index) => {

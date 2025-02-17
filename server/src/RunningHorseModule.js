@@ -1,4 +1,3 @@
-const fetchFeifIdsFromCSV = require("./fetchFeifId");
 const { fetchHorseDataModule } = require("./fetchHorseDataModule");
 
 

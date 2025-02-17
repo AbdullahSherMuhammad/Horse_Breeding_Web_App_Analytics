@@ -2,7 +2,6 @@ const BlupInfo = require("../models/blupModel")
 
 exports.blupInfo = async (rawDataArray) => {
   try {
-    // Create an instance of the BlupInfo model (which might load any lookup data if needed)
     const blupModel = new BlupInfo();
     
     const insertedBlups = await blupModel.getOrCreate(rawDataArray);

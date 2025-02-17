@@ -3,7 +3,6 @@ const path = require('path');
 const pLimit = require('p-limit');
 const fetchFeifIdsFromCSV = require('./fetchFeifId');  
 const fetchHorseData = require('./fetchHorseData');   
-// const { retrySkippedRequests } = require('./retryLogic'); // example
 const CONCURRENT_REQUESTS = 5;
 
 const logsDirectory = path.join(__dirname, 'logs');
@@ -107,7 +106,6 @@ const fetchHorseDataModule = async (csvFilePath) => {
     }
 
      
-    // Write summary
     writeSuccessfulSummary(logsDirectory, successfulCounter);
 
     console.log("=== Fetching Module Completed Successfully ===");

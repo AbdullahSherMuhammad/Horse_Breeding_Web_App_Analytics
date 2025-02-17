@@ -1,4 +1,3 @@
-// logger.js
 const fs = require('fs');
 const path = require('path');
 
@@ -10,7 +9,6 @@ const path = require('path');
 function logMessage(logType, message) {
   const logDirectory = path.join(__dirname, 'logs');
 
-  // Ensure the logs directory exists
   if (!fs.existsSync(logDirectory)) {
     fs.mkdirSync(logDirectory);
   }

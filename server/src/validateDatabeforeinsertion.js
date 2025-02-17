@@ -33,14 +33,14 @@ records.forEach((record) => {
   }
 });
 
-// fs.writeFileSync(
-//   'valid_records.json',
-//   JSON.stringify(validRecords, null, 2),
-//   'utf8'
-// );
+fs.writeFileSync(
+  './src/logs/valid_records.json',
+  JSON.stringify(validRecords, null, 2),
+  'utf8'
+);
 
 fs.writeFileSync(
-  'faulty_ids.json',
+  './src/logs/faulty_ids.json',
   JSON.stringify(faultyIds, null, 2),
   'utf8'
 );

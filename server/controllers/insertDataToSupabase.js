@@ -44,19 +44,19 @@ async function insertDataToSupabase(dataArray) {
     console.log("Inserting into 'horses'...");
     await horses(rawbasicinfo);
 
-    // console.log("Inserting into 'farms'...");
+    console.log("Inserting into 'farms'...");
     await farms(rawbasicinfo);
 
-    // console.log("Inserting into 'shows'...");
+    console.log("Inserting into 'shows'...");
     await shows(rawbreedinginfo);
 
-    // console.log("Inserting into 'horse_farm'...");
+    console.log("Inserting into 'horse_farm'...");
     await horse_farm(rawbasicinfo);
 
-    // console.log("Inserting into 'horse_show'...");
+    console.log("Inserting into 'horse_show'...");
     await horse_show(rawbreedinginfo);
 
-    // console.log("Inserting into 'blupInfo'...");
+    console.log("Inserting into 'blupInfo'...");
     await blupInfo(rawblupinfo);
 
     console.log("Inserting into 'show_participant'...");
