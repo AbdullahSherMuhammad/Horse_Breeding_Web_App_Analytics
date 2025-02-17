@@ -37,6 +37,7 @@ export const fetchWithFilters = async (
         _year: filters.year ?? null,
         _show_id: filters.show_id ?? null,
         _farm_id: filters.farm_id ?? null,
+        _feif_ids: filters.feif_ids ?? null,
       }, { count: 'exact' }) // This option tells Supabase to return the exact count.
       .limit(limit)
       .range(offset, offset + limit - 1);

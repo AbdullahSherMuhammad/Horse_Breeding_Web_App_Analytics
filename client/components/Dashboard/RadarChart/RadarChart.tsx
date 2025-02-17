@@ -15,6 +15,7 @@ interface RadarChartFilters {
   gender_id?: number;
   show_id?: number;
   farm_id?: number;
+  feif_ids?: string[] | null;
 }
 
 type Data = {
@@ -40,6 +41,7 @@ const RadarChartComponent: React.FC<RadarChartComponentProps> = ({ filters }) =>
       ...(filters.gender_id ? { gender_id: filters.gender_id } : {}),
       ...(filters.show_id ? { show_id: filters.show_id } : {}),
       ...(filters.farm_id ? { farm_id: filters.farm_id } : {}),
+      ...(filters.feif_ids? { feif_ids:filters.feif_ids} : {})
     },
   });
 

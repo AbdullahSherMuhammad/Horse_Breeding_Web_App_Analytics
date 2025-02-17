@@ -9,6 +9,8 @@ interface UseFetchParams {
   filters?: { [key: string]: any };
 }
 
+
+
 export function useFetch<T>({
   url,
   filterUrl,
@@ -16,6 +18,7 @@ export function useFetch<T>({
   offset = 0,
   filters = {},
 }: UseFetchParams) {
+  console.log(filters)
   const [data, setData] = useState<T[] | null>(null);
   const [totalRecords, setTotalRecords] = useState<number>(0);
   const [loading, setLoading] = useState(true);

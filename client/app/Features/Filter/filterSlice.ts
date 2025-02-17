@@ -5,6 +5,7 @@ interface FilterState {
   gender_id?: number;
   show_id?: number;
   farm_id?: number;
+  feif_ids?: string[] | null;
 }
 
 const initialState: FilterState = {};

@@ -9,18 +9,20 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 
 
+//This is my function to check Supabase filters at backed level before applying them to frontend side.
+
 async function callAllHorseAnalysis(
     genderId = null,
     year = null,
     showId = null,
     farmId = null,
   ) {
-    const { data, error } = await supabase.rpc('get_total_results_dynamic1', {
+    const { data, error } = await supabase.rpc('get_total_results_dynamic', {
       _gender_id: genderId,
       _year: year,
       _show_id: showId,
       _farm_id: farmId,
-      _feif_ids: ["IS2018101038"]
+      _feif_ids: null
     });
   
     if (error) {

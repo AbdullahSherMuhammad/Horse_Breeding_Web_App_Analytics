@@ -76,6 +76,7 @@ export function HorsesInsights() {
       ...(filters.gender_id ? { gender_id: filters.gender_id } : {}),
       ...(filters.show_id ? { show_id: filters.show_id } : {}),
       ...(filters.farm_id ? { farm_id: filters.farm_id } : {}),
+      ...(filters.feif_ids? { feif_ids:filters.feif_ids} : {})
     },
   });
 

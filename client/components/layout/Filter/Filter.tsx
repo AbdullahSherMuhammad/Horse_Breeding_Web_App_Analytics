@@ -9,7 +9,6 @@ import { setFilters, resetFilters } from "@/app/Features/Filter/filterSlice";
 import { RootState } from "@/app/Store/store";
 import { useFetch } from "@/hook/useFetch";
 
-
 interface Gender {
   gender_id: number;
   gender_description: string;
@@ -31,13 +30,13 @@ const FilterComponent: React.FC = () => {
   const filters = useSelector((state: RootState) => state.filters);
   const [isOpen, setIsOpen] = useState(false);
 
+  // Extend tempFilters with an eventId field
   const [tempFilters, setTempFilters] = useState({
     year: filters.year,
     gender_id: filters.gender_id,
     show_id: filters.show_id,
     farm_id: filters.farm_id,
-  });
-
+    eventId: "",   });
 
   const { data: genders } = useFetch<Gender>({
     url: 'gender',
@@ -70,13 +69,34 @@ const FilterComponent: React.FC = () => {
 
   const toggleFilter = () => setIsOpen(!isOpen);
 
-  const applyFilters = () => {
-    dispatch(setFilters(tempFilters));
+  const applyFilters = async () => {
+    let feifIds: string[] = [];
+    if (tempFilters.eventId) {
+      try {
+        const response = await fetch(`/api/sportfengur?eventId=${encodeURIComponent(tempFilters.eventId)}`);
+        if (response.ok) {
+          const result = await response.json();
+          feifIds = Array.isArray(result) ? result : result.feifIds || [];
+        } else {
+          console.error("Error fetching Feif_ids:", response.status);
+        }
+      } catch (error) {
+        console.error("Error fetching Feif_ids:", error);
+      }
+    }
+    
+    const feifIdsValue = feifIds.length > 0 ? feifIds : null;
+  
+    dispatch(setFilters({ 
+      ...tempFilters, 
+      feif_ids: feifIdsValue 
+    }));
     setIsOpen(false);
   };
-
+  
+  
   const clearFilters = () => {
-    setTempFilters({ year: undefined, gender_id: undefined, show_id: undefined, farm_id: undefined });
+    setTempFilters({ year: undefined, gender_id: undefined, show_id: undefined, farm_id: undefined, eventId: "" });
     dispatch(resetFilters());
     setIsOpen(false);
   };
@@ -99,7 +119,7 @@ const FilterComponent: React.FC = () => {
       </Button>
 
       <Sheet open={isOpen} onOpenChange={toggleFilter}>
-          <SheetContent side="left" className="w-full max-w-sm">
+        <SheetContent side="left" className="w-full max-w-sm">
           <SheetHeader>
             <SheetTitle>Filters</SheetTitle>
             <p id="filter-description" className="text-sm text-gray-500">
@@ -171,6 +191,21 @@ const FilterComponent: React.FC = () => {
                 ))}
               </SelectContent>
             </Select>
+
+            {/* Event ID Text Field */}
+            <div>
+              <label htmlFor="event-id" className="block text-sm font-medium text-gray-700">
+                Event ID
+              </label>
+              <input
+                type="text"
+                id="event-id"
+                placeholder="IS2022LM0191"
+                value={tempFilters.eventId}
+                onChange={(e) => setTempFilters({ ...tempFilters, eventId: e.target.value })}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm w-full h-[45px] border-2 border-black px-2"
+              />
+            </div>
           </div>
 
           {/* Buttons */}
