@@ -1,3 +1,4 @@
+const chalk = require('chalk');
 const { supabase } = require('../config/supabase');
 
 class LookupHelper {
@@ -7,12 +8,10 @@ class LookupHelper {
     }
   
     async loadInitialData() {
-      // Fetch all genders
       const { data: genders, error: genderError } = await supabase.from("gender").select("*");
       if (genderError) throw new Error(`Error loading genders: ${genderError.message}`);
       this.genders = genders;
   
-      // Fetch all countries
       const { data: countries, error: countryError } = await supabase.from("country").select("*");
       if (countryError) throw new Error(`Error loading countries: ${countryError.message}`);
       this.countries = countries;
@@ -22,8 +21,7 @@ class LookupHelper {
       this.locations = locations;
 
 
-      console.log(genders, countries, locations)
-      console.log("Initial data loaded for genders and countries.");
+      console.log(`Initial data loaded for genders ${genders.length},  countries ${countries.length} , and location ${locations.length}`);
     }
   
     async getOrCreateGender(genderName) {
@@ -43,9 +41,7 @@ class LookupHelper {
     }
 
     async getOrCreateLocation(countryId) {
-      console.log("here")
       let location = this.locations.find((loc) => loc.country_id === countryId);
-      console.log("Herex2")
       if (!location) {
         const { data: newLocation, error } = await supabase
           .from("location") 

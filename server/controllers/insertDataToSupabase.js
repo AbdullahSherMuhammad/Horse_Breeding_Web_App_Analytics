@@ -1,3 +1,4 @@
+const chalk = require("chalk");
 const { validateData } = require("../utils/validation");
 const { blupInfo } = require("./blupinfoToSupabase");
 const { horse_farm } = require("./horse_farmToSupabase");
@@ -41,32 +42,31 @@ async function insertDataToSupabase(dataArray) {
   }
   
   try {
-    console.log("Inserting into 'horses'...");
+    console.log(chalk.bgBlueBright ("Inserting into 'horses'..."));
     await horses(rawbasicinfo);
 
-    console.log("Inserting into 'farms'...");
+    console.log(chalk.bgBlueBright ("Inserting into 'farms'..."));
     await farms(rawbasicinfo);
 
-    console.log("Inserting into 'shows'...");
+    console.log(chalk.bgBlueBright ("Inserting into 'shows'..."));
     await shows(rawbreedinginfo);
 
-    console.log("Inserting into 'horse_farm'...");
+    console.log(chalk.bgBlueBright ("Inserting into 'horse_farm'..."));
     await horse_farm(rawbasicinfo);
 
-    console.log("Inserting into 'horse_show'...");
+    console.log(chalk.bgBlueBright ("Inserting into 'horse_show'..."));
     await horse_show(rawbreedinginfo);
 
-    console.log("Inserting into 'blupInfo'...");
+    console.log(chalk.bgBlueBright ("Inserting into 'blupInfo'..."));
     await blupInfo(rawblupinfo);
 
-    console.log("Inserting into 'show_participant'...");
+    console.log(chalk.bgBlueBright("Inserting into 'show_participant'..."));
     await show_participant(rawbreedinginfo);
 
-    console.log(("inserting data for Scores"))
+    console.log(chalk.bgBlueBright("inserting data for Scores"));
     await scoremodel(rawbreedinginfo);
 
     
-    console.log("All data inserted successfully.");
   } catch (error) {
     console.error('Error during sequential insertion:', error.message);
   }

@@ -1,6 +1,5 @@
 const fs = require('fs');
 
-
 const records = require('./logs/successful_horse_data.json');
 
 const essentialFields = [
@@ -11,6 +10,8 @@ const essentialFields = [
   "Dam"
 ];
 
+const feifIdCounts = {};
+
 const validRecords = [];
 const faultyIds = [];
 
@@ -20,14 +21,24 @@ records.forEach((record) => {
 
   for (const field of essentialFields) {
     const value = basicInfo[field];
-    if (value === undefined || value === null || (typeof value === 'string' && value.trim() === '')) {
+    if (
+      value === undefined ||
+      value === null ||
+      (typeof value === "string" && value.trim() === "")
+    ) {
       allFieldsPresent = false;
       break;
     }
   }
 
   if (allFieldsPresent) {
-    validRecords.push(record);
+    const feifId = basicInfo["FEIF ID"];
+    
+    feifIdCounts[feifId] = (feifIdCounts[feifId] || 0) + 1;
+
+    if (feifIdCounts[feifId] === 1) {
+      validRecords.push(record);
+    }
   } else {
     faultyIds.push(basicInfo["FEIF ID"] || "Unknown");
   }
@@ -45,5 +56,10 @@ fs.writeFileSync(
   'utf8'
 );
 
+const duplicates = Object.entries(feifIdCounts)
+  .filter(([_, count]) => count > 1) 
+  .map(([feifId, count]) => `${feifId} -> ${count}`);
+
 console.log("Valid records count:", validRecords.length);
 console.log("Faulty IDs count:", faultyIds.length);
+console.log("Duplicates (FEIF ID => total occurrences):", duplicates);

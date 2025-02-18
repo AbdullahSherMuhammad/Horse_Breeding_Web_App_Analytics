@@ -1,7 +1,7 @@
 const BaseModel = require('./BaseModel');
 
-// Import your helper functions. Adjust names if your utils differ.
 const { parseDate, parseDecimal } = require('../utils/dateChanger');
+const chalk = require('chalk');
 
 class BlupInfo extends BaseModel {
   constructor() {
@@ -59,18 +59,13 @@ class BlupInfo extends BaseModel {
           conformation: item['Conformation'],
           slow_tolt: item['Slow tölt'],
 
-          // Example: parse numeric fields
           total_score: parseDecimal(item['Total score']),
           ridden_abilities_wo_pace: parseDecimal(item['Ridden abilities w/o pace']),
           total_wo_pace: parseDecimal(item['Total w/o pace']),
 
-          // Use heightToInt if you want to store it as integer
-          // or parseDecimal if you want to keep the decimal part
-          // (depending on how your DB schema is set).
+   
           height_at_withers: parseDecimal(item['Height at withers']),
 
-          // Your DB column literally has quotes: "Accuracy (%)". 
-          // If you prefer a friendlier DB column name, rename it in the table.
           'Accuracy (%)': item['Accuracy (%)'],
 
           standard_deviation: item['Standard deviation (+/-)'],
@@ -81,7 +76,6 @@ class BlupInfo extends BaseModel {
           number_of_assessed_daughters_aged_6_yrs_or_older: item['Number of assessed daughters aged 6 yrs or older'],
           number_of_assessed_daughters: item['Number of assessed daughters'],
           
-          // Convert something like "2,7" to 2.7 
           ratio_of_assessed_daughters_aged_6_yrs_or_older_percent: parseDecimal(item['Ratio of assessed daughters aged 6 yrs or older (%)']),
           ratio_of_assessed_daughters_percent: parseDecimal(item['Ratio of assessed daughters (%)']),
           inbreeding_coefficient_percent: parseDecimal(item['Inbreeding coefficient (%)']),
@@ -90,8 +84,6 @@ class BlupInfo extends BaseModel {
           assessed_in: item['Assessed in'],
           year_of_the_assessment: item['Year of the assessment'],
 
-          // Convert date string (e.g., "11.09.2024 08:55:36.0") 
-          // into a DB-friendly format (e.g., "2024-09-11 08:55:36")
           latest_update: parseDate(item['Latest update'])
         };
   
@@ -101,7 +93,7 @@ class BlupInfo extends BaseModel {
       return blupToInsert;
     } catch (error) {
       console.error('Error in prepareData:', error);
-      throw error; // Re-throw after logging
+      throw error; 
     }
   }
   
@@ -113,13 +105,11 @@ class BlupInfo extends BaseModel {
   async getOrCreate(rawDataArray) {
     try {
       const blupToInsert = await this.prepareData(rawDataArray);
-      console.log(`Number of blups to upsert: ${blupToInsert.length}`);
+      console.log(chalk.blue(`Number of blups to upsert: ${blupToInsert.length}`));
 
-      // Adjust the constraint fields to match your unique columns
       const upsertedBlups = await this.upsert(blupToInsert, ['horse_id', 'feif_id'], '*');
-      console.log('Upserted Blups:', upsertedBlups);
+      console.log(chalk.green('Successful Upserted Blups:', upsertedBlups.length));
 
-      return upsertedBlups;
     } catch (error) {
       console.error('Error in getOrCreate:', error);
       throw error;

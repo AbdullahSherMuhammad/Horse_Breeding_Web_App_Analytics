@@ -1,5 +1,6 @@
 const BaseModel = require('./BaseModel');
 const { parseDate } = require('../utils/dateChanger');
+const chalk = require('chalk');
 
 class Farm extends BaseModel {
   constructor() {
@@ -32,11 +33,11 @@ class Farm extends BaseModel {
           area: rawdata["Area"] ? parseInt(rawdata["Area"], 10) : null
         });
       }
-      return (removeDuplicatesAdvanced(farmstoInsert, ["farm_number", "farm_name"], { caseInsensitive: true, keep: 'first' }))
+      return (this.removeDuplicatesAdvanced(farmstoInsert, ["farm_number", "farm_name"], { caseInsensitive: true, keep: 'first' }))
   
     } catch (error) {
       console.error('Error in prepareData:', error);
-      throw error; // Re-throw the error after logging it
+      throw error; 
     }
   }
   
@@ -49,8 +50,9 @@ class Farm extends BaseModel {
    */
   async getOrCreate(rawDataArray) {
     const farmstoInsert = await this.prepareData(rawDataArray)
-    console.log(farmstoInsert.length)
+    console.log(chalk.blue (`Preparing to upsert ${farmstoInsert.length} farms`));
     const upsertedfarms = await this.upsert(farmstoInsert, ['farm_number', 'farm_name'], '*');
+    console.log(chalk.green(`Successfully upserted ${farmstoInsert.length} farms`));
 
     return upsertedfarms;
   }
@@ -58,29 +60,7 @@ class Farm extends BaseModel {
 }
 
 
-function removeDuplicatesAdvanced(array, fields, options = {}) {
-  const { caseInsensitive = false, keep = 'first' } = options;
-  const seenKeys = new Map();
 
-  array.forEach(item => {
-    // Generate composite key
-    let key = fields.map(field => {
-      let value = item[field] || '';
-      value = String(value).trim();
-      return caseInsensitive ? value.toLowerCase() : value;
-    }).join('_');
-
-    if (keep === 'first') {
-      if (!seenKeys.has(key)) {
-        seenKeys.set(key, item);
-      }
-    } else if (keep === 'last') {
-      seenKeys.set(key, item); // Overwrite to keep the last occurrence
-    }
-  });
-
-  return Array.from(seenKeys.values());
-}
 
 
 

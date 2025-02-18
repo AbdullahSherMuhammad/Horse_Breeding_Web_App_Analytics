@@ -2,6 +2,7 @@
 
 const BaseModel = require('./BaseModel');
 const { parseDate } = require('../utils/dateChanger');
+const chalk = require('chalk');
 
 class Horse_Farm extends BaseModel {
     constructor() {
@@ -17,7 +18,7 @@ class Horse_Farm extends BaseModel {
     async getOrCreate(rawDataArray) {
       try {
         const horsefarmsToInsert = await this.prepareData(rawDataArray);
-        console.log(`Preparing to insert/upsert ${horsefarmsToInsert.length} associations.`)
+        console.log(chalk.blue (`Preparing to insert/upsert ${horsefarmsToInsert.length} horsefarms joins.`));
 
         const upsertedFarms = await this.upsert(
           horsefarmsToInsert,
@@ -44,11 +45,11 @@ class Horse_Farm extends BaseModel {
         
         let horsesResult = await this.get("horse", ["horse_id", "feif_id"]);
         let horses = horsesResult.data;
-        console.log(horses.length);
+        console.log(chalk.blue("Number of horses that will be inserted to farms", horses.length));
 
         let farmsResult = await this.get("farm", ["farm_id", "farm_name"]);
         let farms = farmsResult.data;
-        console.log(farms.length);
+        console.log(chalk.blue ("Number of farms", farms.length));
 
         const feifIdToHorseIdMap = new Map();
         horses.forEach(horse => {
@@ -79,8 +80,7 @@ class Horse_Farm extends BaseModel {
             farm_id,  
           });
         }    
-        console.log(farmsToInsert[179]);
-        return farmsToInsert; // Ensure data is returned
+        return farmsToInsert; 
       }
       catch(error)
       {

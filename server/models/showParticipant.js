@@ -1,3 +1,4 @@
+const chalk = require('chalk');
 const { supabase } = require('../config/supabase');
 const BaseModel = require('./BaseModel');
 
@@ -35,8 +36,8 @@ class Show_participant extends BaseModel {
         }
       });
 
-      console.log(`Initialized roleMap with ${this.roleMap.size} roles.`);
-      console.log(`Initialized personMap with ${this.personMap.size} persons having feif_id.`);
+      console.log(chalk.blue (`Initialized roleMap with ${this.roleMap.size} roles.`));
+      console.log(chalk.blue(`Initialized personMap with ${this.personMap.size} persons having feif_id.`));
     } catch (error) {
       console.error('Error initializing roles and persons:', error.message);
       throw error;
@@ -111,16 +112,17 @@ class Show_participant extends BaseModel {
     try {
       const showParticipantsData = await this.prepareData(rawDataArray);
 
-      console.log(
-        `Preparing to insert/upsert ${showParticipantsData.length} show_participant associations.`
-      );
+      console.log(chalk.blue(
+        `Preparing to insert/upsert ${showParticipantsData[0].length} show_participant associations.`
+      ));
 
       if (showParticipantsData.length === 0) {
         console.log('No valid associations to insert/upsert.');
         return [];
       }
       const upsertedparticipants =  await this.upsert(showParticipantsData[0], ['person_id', 'role_id', 'show_id', 'horse_id']);
-      console.log(showParticipantsData[1].length);
+      console.log(chalk.green(`Inserted/upserted ${upsertedparticipants[0].length} show_participant`));
+      console.log(chalk.blue (`Preparing to insert/upsert ${showParticipantsData[1].length} show_judge association`));
       const {data: showjudge, error: error} = await supabase.from("show_judge").upsert(
         showParticipantsData[1],
         {
@@ -128,6 +130,7 @@ class Show_participant extends BaseModel {
           returning: 'representation',
         }
       );
+      console.log(chalk.green(`Inserted/upserted ${upsertedparticipants[1].length} show_judge`))
       if (error) {
         console.error('Error upserting show_participant:', error.message);
         throw error;
@@ -143,17 +146,17 @@ class Show_participant extends BaseModel {
 
   async prepareData(assessmentData) {
     const flattenedData = assessmentData.flat();
-    console.log(`Flattened data length: ${flattenedData.length}`);
+    console.log(chalk.blue( `Flattened data length: ${flattenedData.length}`));
   
     const showParticipantEntries = [[], []];
   
     const horsesResult = await this.get('horse', ['horse_id', 'feif_id']);
     const horses = horsesResult.data || [];
-    console.log(`Fetched ${horses.length} horses.`);
+    console.log(chalk.blue(`Fetched ${horses.length} horses.`));
   
     const showsResult = await this.get('show', ['show_id', 'show_name']);
     const shows = showsResult.data || [];
-    console.log(`Fetched ${shows.length} shows.`);
+    console.log(chalk.blue(`Fetched ${shows.length} shows.`));
   
     const feifIdToHorseIdMap = new Map();
     horses.forEach((horse) => {
@@ -260,7 +263,7 @@ class Show_participant extends BaseModel {
       )
     ];
   
-    console.log(`Total combined entries after deduplication: ${uniqueEntries[0].length + uniqueEntries[1].length}`);
+    console.log(chalk.blue (`Total combined entries after deduplication: ${uniqueEntries[0].length + uniqueEntries[1].length}`));
 
   
     return uniqueEntries; 

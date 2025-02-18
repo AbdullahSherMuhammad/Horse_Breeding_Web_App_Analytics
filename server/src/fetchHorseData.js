@@ -1,8 +1,6 @@
-// fetchHorseData.js
 const axios = require("axios");
 require('dotenv').config(); 
-const { logMessage } = require('../utils/logger'); // Adjust the path as necessary
-
+const { logMessage } = require('../utils/logger');
 /**
  * Fetches horse data for a given FEIF ID with a timeout.
  * Logs successes and failures accordingly.
@@ -13,7 +11,7 @@ const fetchHorseData = async (feifId) => {
   const apiUrl = `${process.env.PYTHONANYWHEREURL}${feifId}&access_token=${process.env.ACCESSTOKEN1}`;
 
   try {
-    const response = await axios.get(apiUrl, { timeout: 15000 }); // 30,000 ms = 30 seconds
+    const response = await axios.get(apiUrl, { timeout: 15000 }); 
     const data = response.data;
     return data;
   } catch (error) {
@@ -22,7 +20,7 @@ const fetchHorseData = async (feifId) => {
     } else {
       logMessage('skipped_requests_cron_job', `Error for FEIF ID: ${feifId} - ${error.message}`);
     }
-    return null; // Indicate that the request was skipped or failed
+    return null; 
   }
 };
 

@@ -1,21 +1,17 @@
 const BaseModel = require('./BaseModel');
 const { parseDate } = require('../utils/dateChanger');
+const chalk = require('chalk');
 
 class Horse_Show extends BaseModel {
     constructor() {
-      super('horse_show'); // Specify the table name
+      super('horse_show'); 
     }
   
-    /**
-     * Retrieves existing associations or creates new ones based on raw data.
-     *
-     * @param {Array<Object>} rawDataArray - Array of raw assessment data objects.
-     * @returns {Promise<Array<Object>>} - Array of upserted associations.
-     */
+  
     async getOrCreate(rawDataArray) {
       try {
         const horseShowsToInsert = await this.prepareData(rawDataArray);
-        console.log(`Preparing to insert/upsert ${horseShowsToInsert.length} horse_shows assosiations.`)
+        console.log(chalk.blue(`Preparing to insert/upsert ${horseShowsToInsert.length} horse_shows assosiations.`));
         if (horseShowsToInsert.length === 0) {
           console.log('No valid associations to insert/upsert.');
           return [];
@@ -23,33 +19,25 @@ class Horse_Show extends BaseModel {
 
         const upsertedShows = await this.upsert(
           horseShowsToInsert,
-          ["horse_id", "show_id"], // Conflict columns
+          ["horse_id", "show_id"], 
           '*' 
         );
         return upsertedShows;
       } catch (error) {
         console.error('Error in getOrCreate:', error.message);
-        throw error; // Re-throw the error after logging
+        throw error; 
       }
     }
-    /**
-     * Prepares data for insertion into the horse_show table by mapping horse_feif_id
-     * to horse_id and processed show_name to show_id, then creates associations.
-     *
-     * @param {Array<Object>} assessmentData - Array of assessment data objects containing FEIF ID and Show Name.
-     * @returns {Array<Object>} - Array of unique associations ready to be inserted into horse_show.
-     */
     async prepareData(assessmentData) {
         const flattenedBreedingInfo = assessmentData.flat();
-        console.log(flattenedBreedingInfo.length);
       try {
         const horsesResult = await this.get("horse", ["horse_id", "feif_id"]);
         const horses = horsesResult.data;
-        console.log(`Fetched ${horses.length} horses.`);
+        console.log(chalk.blue(`Fetched ${horses.length} horses.`));
 
         const showsResult = await this.get("show", ["show_id", "show_name"]);
         const shows = showsResult.data;
-        console.log(`Fetched ${shows.length} shows.`);
+        console.log(chalk.blue(`Fetched ${shows.length} shows.`));
 
         const feifIdToHorseIdMap = new Map();
         horses.forEach(horse => {
@@ -67,7 +55,6 @@ class Horse_Show extends BaseModel {
 
 
 
-        // Step 3: Process each assessmentData entry to create associations
         const showsToInsert = [];
 
         for (const rawdata of flattenedBreedingInfo) {
@@ -83,60 +70,24 @@ class Horse_Show extends BaseModel {
           if (!show_id) {
             console.warn(`Show with name "${processedShowName}" not found. Skipping entry.`);
           }
-          if(horse_id == 824 && show_id == 15)
-          {
-            console.log(horseFeifId,rawShowName)
-          }
+          
           showsToInsert.push({
-            horse_id, // Integer
-            show_id,  // Integer
+            horse_id, 
+            show_id,  
           });
         }
         const array = this.removeDuplicatesAdvanced(showsToInsert, ["horse_id", "show_id"], { caseInsensitive: true, keep: 'first' })
 
 
-        return showsToInsert; // Ensure data is returned
+        return array; 
       }
       catch(error)
       {
         console.error("Got an error in prepareData:", error.message);
-        throw error; // Re-throw the error after logging
+        throw error; 
       }
     }
 
-    removeDuplicatesAdvanced(array, fields, options = {}) {
-      const { caseInsensitive = false, keep = 'first' } = options;
-      const seenKeys = new Map();
-      const duplicates = []; // Array to store duplicate items
-    
-      array.forEach(item => {
-        const key = fields.map(field => {
-          let value = item[field] || '';
-          value = String(value).trim();
-          return caseInsensitive ? value.toLowerCase() : value;
-        }).join('_');
-    
-        if (seenKeys.has(key)) {
-          duplicates.push(item);
-    
-          if (keep === 'last') {
-            seenKeys.set(key, item);
-          }
-        } else {
-          seenKeys.set(key, item);
-        }
-      });
-    
-      // Log duplicates for quick inspection
-      if (duplicates.length > 0) {
-        console.log(`Found ${duplicates.length} duplicate(s):`, duplicates);
-      } else {
-        console.log('No duplicates found.');
-      }
-    
-      // Return the deduplicated array
-      return Array.from(seenKeys.values());
-    }
     
   
 }

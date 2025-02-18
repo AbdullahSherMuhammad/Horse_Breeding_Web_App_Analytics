@@ -1,3 +1,4 @@
+const chalk = require("chalk");
 const { logMessage } = require("./logger");
 
 function handleNullFields(assessmentsArray) {
@@ -9,11 +10,11 @@ function handleNullFields(assessmentsArray) {
             if (assessment[key] === "") {
                 assessment[key] = null;
                 const logMsg = `Assessment at index ${index}: Field '${assessmentsArray[index]}' was empty and has been set to null.`;
-                console.log("nullentries in scores", logMsg);
-                logMessage("nullentries in scores", logMsg);
+                logMessage("nullentries_in_scores", logMsg);
             }
         });
     });
+    console.log(chalk.black(`A log message has been made at utils/logs/nullentries_in_scores you can check out if some data issue`));
     return assessmentsArray;
 }
 

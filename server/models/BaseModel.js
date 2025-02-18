@@ -1,4 +1,5 @@
-const { supabase } = require('../config/supabase'); // Ensure correct path
+const chalk = require('chalk');
+const { supabase } = require('../config/supabase');
 const LookupHelper = require('./lookupHelper'); 
 
 class BaseModel {
@@ -18,7 +19,6 @@ class BaseModel {
     return input.replace(regex, '').trim();
   }
   
-  // Get a record by a unique field
   async getByUniqueField(field, value) {
     try {
       const { data, error } = await this.table.select('*').eq(field, value).single();
@@ -122,6 +122,7 @@ class BaseModel {
       return error;
     }
   }
+
   async getOrCreateLocation(countryid, horse_id) {
     try {
       const location = await this.lookupHelper.getOrCreateLocation(countryid);

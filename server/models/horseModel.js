@@ -2,8 +2,8 @@
 const BaseModel = require('./BaseModel');
 const { supabase } = require('../config/supabase'); 
 const { logMessage } = require('../utils/logger'); 
-const deduplicateData = require('../utils/duplicate');
 const { parseDate } = require('../utils/dateChanger'); 
+const chalk = require('chalk');
 
 class Horse extends BaseModel {
   constructor() {
@@ -50,27 +50,6 @@ class Horse extends BaseModel {
       keep: 'first',        
     });
 
-    // const horseFeifIds = horsesData.map(horse => horse["FEIF ID"]).filter(id => id);
-    // const sireFeifIds = horsesData.map(horse => this.extractIdAndName(horse["Sire"]).id).filter(id => id);
-    // const damFeifIds = horsesData.map(horse => this.extractIdAndName(horse["Dam"]).id).filter(id => id);
-
-    // const { data: existingHorsesRes } = await this.get('horse', ['feif_id'], {
-    //   filters: { place_holder: true } 
-    // });
-
-    // const { data: existingSiresRes } = await this.get('horse', ['feif_id'], {
-    //   filters: { feif_id: sireFeifIds }
-    // });
-
-    // const { data: existingDamsRes } = await this.get('horse', ['feif_id'], {
-    //   filters: { feif_id: damFeifIds }
-    // });
-
-    // console.log(existingHorsesRes.length, "existing horses");
-
-    // const existingHorseFeifIds = new Set(existingHorsesRes.map(horse => horse.feif_id));
-    // const existingSireFeifIds = new Set(existingSiresRes.map(sire => sire.feif_id));
-    // const existingDamFeifIds = new Set(existingDamsRes.map(dam => dam.feif_id));
 
     for (const rawData of horsesData) {
       const horseFeifId = rawData["FEIF ID"];
@@ -116,48 +95,48 @@ class Horse extends BaseModel {
 
   async getOrCreate(rawDataArray) {
     try {
-      console.log(`Processing ${rawDataArray.length} horse records.`);
+      console.log(chalk.blue(`Processing ${rawDataArray.length} horse records.`));
       const { horsesToInsert, siresToInsert, damsToInsert, skippedHorses, skippedSires, skippedDams, parentMappings } = await this.prepareData(rawDataArray);
       const selectColumns = "horse_id, feif_id";
-      console.log(`Preparing to upsert ${siresToInsert.length} unique sires.`);
+      console.log(chalk.blue(`Preparing to upsert ${siresToInsert.length} unique sires.`));
       
       let upsertedSires = [];
       if (siresToInsert.length > 0) {
         upsertedSires = await this.upsert(siresToInsert, ['feif_id'], selectColumns);
-        console.log(`Successfully upserted ${upsertedSires.length} sires.`);
+        console.log(chalk.green(`Successfully upserted ${upsertedSires.length} sires.`));
       }
 
-      console.log(`Preparing to upsert ${damsToInsert.length} unique dams.`);
+      console.log(chalk.blue(`Preparing to upsert ${damsToInsert.length} unique dams.`));
       let upsertedDams = [];
       if (damsToInsert.length > 0) {
         upsertedDams = await this.upsert(damsToInsert, ['feif_id'], selectColumns);
-        console.log(`Successfully upserted ${upsertedDams.length} dams.`);
+        console.log(chalk.green(`Successfully upserted ${upsertedDams.length} dams.`));
       }
 
-      console.log(`Preparing to upsert ${horsesToInsert.length} unique horses.`);
+      console.log(chalk.blue(`Preparing to upsert ${horsesToInsert.length} unique horses.`));
       let upsertedHorses = [];
       if (horsesToInsert.length > 0) {
         upsertedHorses = await this.upsert(horsesToInsert, ['feif_id']);
-        console.log(`Successfully upserted ${upsertedHorses.length} horses.`);
+        console.log(chalk.green(`Successfully upserted ${upsertedHorses.length} horses.`));
       } else {
-        console.log('No new horses to upsert.');
+        console.log(chalk.red('No new horses to upsert.'));
       }
 
-      console.log('Populating parent_offspring relationships.');
-      this.populateParentOffspring(parentMappings);
+      console.log(chalk.blue('Populating parent_offspring relationships.'));
+      await this.populateParentOffspring(parentMappings);
       if (skippedHorses.length > 0) {
-        console.log(`${skippedHorses.length} horses were skipped due to duplicates.`);
+        console.log(chalk.yellowBright(`${skippedHorses.length} horses were skipped due to duplicates.`));
       }
       if (skippedSires.length > 0) {
-        console.log(`${skippedSires.length} sires were skipped due to duplicates.`);
+        console.log(chalk.yellowBright(`${skippedSires.length} sires were skipped due to duplicates.`));
       }
       if (skippedDams.length > 0) {
-        console.log(`${skippedDams.length} dams were skipped due to duplicates.`);
+        console.log(chalk.yellowBright(`${skippedDams.length} dams were skipped due to duplicates.`));
       }
 
       return { horses: upsertedHorses, sires: upsertedSires, dams: upsertedDams };
     } catch (error) {
-      console.error('Error in getOrCreate:', error);
+      console.log(chalk.red('Error in getOrCreate:', error));
       throw error;
     }
   }
@@ -165,10 +144,9 @@ class Horse extends BaseModel {
   async populateParentOffspring(parentMappings) {
     try {
       if (!parentMappings || parentMappings.length === 0) {
-        console.log('No parent-offspring relationships to insert.');
+        console.log(chalk.red('No parent-offspring relationships to insert.'));
         return;
       }
-      console.log(parentMappings)
       const relationshipsToInsert = [];
 
       const feifIds = [
@@ -191,13 +169,13 @@ class Horse extends BaseModel {
 
           if (!parentId) {
             const message = `Sire with FEIF ID ${sire_feif_id} not found in horse table. Skipping parent_offspring entry.`;
-            console.warn(message);
+            console.log(chalk.yellow(message));
             logMessage('error', message);
           }
 
           if (!offspringId) {
             const message = `Offspring with FEIF ID ${offspring_feif_id} not found in horse table. Skipping parent_offspring entry.`;
-            console.warn(message);
+            console.log(chalk.yellow(message));
             logMessage('error', message);
           }
 
@@ -218,13 +196,13 @@ class Horse extends BaseModel {
 
           if (!parentId) {
             const message = `Dam with FEIF ID ${dam_feif_id} not found in horse table. Skipping parent_offspring entry.`;
-            console.warn(message);
+            console.log(chalk.yellow(message));
             logMessage('error', message);
           }
 
           if (!offspringId) {
             const message = `Offspring with FEIF ID ${offspring_feif_id} not found in horse table. Skipping parent_offspring entry.`;
-            console.warn(message);
+            console.log(chalk.yellow(message));
             logMessage('error', message);
           }
 
@@ -239,10 +217,9 @@ class Horse extends BaseModel {
           }
         }
       });
-      console.log(relationshipsToInsert.length);
       const deduplicatedRelationships = this.removeDuplicatesAdvanced(relationshipsToInsert, ['parent_feif_id', 'offspring_feif_id', 'relationship_type']);
       if (deduplicatedRelationships.length === 0) {
-        console.log('No new parent_offspring relationships to insert.');
+        console.log(chalk.red('No new parent_offspring relationships to insert.'));
         return;
       }
 
@@ -256,7 +233,7 @@ class Horse extends BaseModel {
         throw insertError;
       }
 
-      console.log(`Successfully inserted ${insertedRelationships.length} parent_offspring relationships.`);
+      console.log(chalk.green(`Successfully inserted ${insertedRelationships.length} parent_offspring relationships.`));
     }
     catch (error) {
       console.error('Error populating parent_offspring:', error);

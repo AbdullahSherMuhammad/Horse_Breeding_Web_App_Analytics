@@ -18,7 +18,7 @@ const fetchFeifIdsFromCSV = (csvFilePath) => {
         }
       })
       .on("end", () => {
-        resolve(feifIds); // Sends the array with duplicates removed
+        resolve(feifIds);
       })
       .on("error", (err) => {
         reject(err);

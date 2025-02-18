@@ -1,6 +1,7 @@
 const BaseModel = require('./BaseModel');
 const { parseDate } = require('../utils/dateChanger'); 
 const { handleNullFields } = require('../utils/setemptytoNull');
+const chalk = require('chalk');
 
 class ScoreModel extends BaseModel {
     constructor() {
@@ -9,20 +10,43 @@ class ScoreModel extends BaseModel {
 
     async getOrCreate(rawDataArray) {
         try {
-            const assessmentsToInsert = await this.prepareData(rawDataArray);
-            console.log(`Preparing to insert/upsert ${assessmentsToInsert.length} assessment scores.`);
-
-            const { data, error } = await this.upsert(assessmentsToInsert, ['horse_show_id', 'assessment_category_id'], '*');
+          const assessmentsToInsert = await this.prepareData(rawDataArray);
+      
+          if (!assessmentsToInsert.length) {
+            return [];
+          }
+      
+          const chunkCount = 10;
+          const chunkSize = Math.ceil(assessmentsToInsert.length / chunkCount);
+          let counter=1
+          const results = [];
+          console.log(chalk.cyan (`As data is huge ${assessmentsToInsert.length} here Sending in 10 chunks` ));
+      
+          for (let i = 0; i < assessmentsToInsert.length; i += chunkSize) {
+            const chunk = assessmentsToInsert.slice(i, i + chunkSize);
+      
+            console.log(chalk.blue(`Preparing to insert/upsert ${counter} ${chunk.length} assessment scores...`));
+      
+            const { data, error } = await this.upsert(
+              chunk,
+              ['horse_show_id', 'assessment_category_id'],
+              '*'
+            );
             if (error) {
-                throw new Error(`Error upserting assessment scores: ${error.message}`);
+              throw new Error(`Error upserting assessment scores: ${error.message}`);
             }
-
-            return data;
+      
+      
+            console.log(chalk.green(`Successfully inserted/upserted ${chunk.length} assessment scores.`));
+            counter ++;
+          }
+      
         } catch (error) {
-            console.error('Error in getOrCreate:', error.message);
-            throw new Error (`Error in getOrCreate: ${error.message}`);
+          console.error('Error in getOrCreate:', error.message);
+          throw new Error(`Error in getOrCreate: ${error.message}`);
         }
-    }
+      }
+      
 
 
     async prepareData(rawDataArray) {
@@ -37,27 +61,27 @@ class ScoreModel extends BaseModel {
                     assessmentcategory
             */
             const flattenedData = rawDataArray.flat();
-            console.log(`Processing ${flattenedData.length} breeding_info entries.`);
+            console.log(chalk.blue(`Processing ${flattenedData.length} breeding_info entries.`));
 
             const horsesResult = await this.get("horse", ["horse_id", "feif_id"]);
             const horses = horsesResult.data;
-            console.log(`Fetched ${horses.length} horses.`);
+            console.log(chalk.blue(`Fetched ${horses.length} horses.`));
 
             const showsResult = await this.get("show", ["show_id", "show_name"]);
             const shows = showsResult.data;
-            console.log(`Fetched ${shows.length} shows.`);
+            console.log(chalk.blue(`Fetched ${shows.length} shows.`));
 
             let horseshowResult = await this.get("horse_show", ["horse_show_id", "horse_id", "show_id"]);
             let horseshow = horseshowResult.data;
-            console.log(`Fetched ${horseshow.length} horse_show associations.`);
+            console.log(chalk.blue(`Fetched ${horseshow.length} horse_show associations.`));
 
             let assessmenttypeResult = await this.get("assessment_type", ["assessment_type_id", "assessment_type_name"]);
             let assessmenttype = assessmenttypeResult.data;
-            console.log(`Fetched ${assessmenttype.length} assessment types.`);
+            console.log(chalk.blue(`Fetched ${assessmenttype.length} assessment types.`));
 
             let assessmentcategoryResult = await this.get("assessment_category", ["assessment_category_id", "category_name", "assessment_type_id"]);
             let assessmentcategory = assessmentcategoryResult.data;
-            console.log(`Fetched ${assessmentcategory.length} assessment categories.`);
+            console.log(chalk.blue(`Fetched ${assessmentcategory.length} assessment categories.`));
 
             const feifIdToHorseIdMap = new Map();
             horses.forEach(horse => {
@@ -266,9 +290,7 @@ class ScoreModel extends BaseModel {
                
             }
             const insertfields = handleNullFields(assessmentsToInsert);
-            console.log(insertfields.length);
             const finalarray  = this.removeDuplicatesAdvanced(insertfields, ["assessment_category_id", "horse_show_id" ] )
-            console.log(finalarray.length);
             return finalarray;
         }
        catch(error)
