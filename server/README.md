@@ -2,12 +2,17 @@
 As it is quite complex or I think it is, I will be explaning some part of code, and other things so it is easy to use. 
 A Node.js-based project to fetch, validate, and upload horse-related data (based on FEIF IDs) to a Supabase database. This project has three primary scripts:
 
-- **Fetch FEIF IDs** from the web (and parse the data) 
-- How it works? Basically First you need to do is put the Feif_ids in a file named feif_ids.json as an array. You can use anything to put them there, manually, Through a code. After you have put Feif_ids this part will take one and fetch its data from web using pythonanywhere provided.
-- **Validate the fetched data** to ensure correctness and integrity.
-- How it works? Basically After you have fetched all the data, over the course of week or month. You still need to validate all the data. This will make sure if there is any error field as it can cause issue it will stop it. It will write two files at the end of data, One faulty Feif_ids, you can check what issue it had, Second: valid_data.json. This data is nearly fine to be inserted (no BIG problems).
-- **Upload the validated data** to Supabase tables, This is where magic happens, We deconstruct and insert all the data.
+A Node.js-based project to fetch, validate, and upload horse-related data (based on FEIF IDs) to a Supabase database. This project has three primary scripts:
 
+Fetch FEIF IDs from the web (and parse the data)How it works?First, you need to place your list of FEIF IDs in a file named feif_ids.json (as an array). You can do this manually or via another script. After that, this script reads each ID and fetches its data from the web (using PythonAnywhere or any configured endpoint).
+
+Validate the fetched data to ensure correctness and integrity.How it works?After fetching data—whether it takes a few days, a week, or even a month—you’ll want to validate it. The validation checks for any missing or malformed fields (like missing name, sire, dam) and catches duplicate FEIF IDs so you’re not overwhelmed by repeated entries. Two files are produced at the end:
+
+faulty_ids.json, containing IDs that didn’t pass validation
+
+valid_records.json, containing the good data that’s ready to be inserted
+
+Upload the validated data to Supabase tables.How it works?This is where the real magic happens: the script takes valid_records.json, deconstructs it (for example, separating out horse info, farms, sire/dam relationships, shows, and so on), and upserts all of it into Supabase. This ensures new rows are created, and any existing rows (based on unique identifiers) get updated.
 ---
 
 ## ***Table of Contents***
