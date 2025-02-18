@@ -1,6 +1,5 @@
 # ***Project Title***
 As it is quite complex or I think it is, I will be explaning some part of code, and other things so it is easy to use. 
-A Node.js-based project to fetch, validate, and upload horse-related data (based on FEIF IDs) to a Supabase database. This project has three primary scripts:
 
 A Node.js-based project to fetch, validate, and upload horse-related data (based on FEIF IDs) to a Supabase database. This project has three primary scripts:
 
@@ -13,6 +12,8 @@ faulty_ids.json, containing IDs that didn’t pass validation
 valid_records.json, containing the good data that’s ready to be inserted
 
 Upload the validated data to Supabase tables.How it works?This is where the real magic happens: the script takes valid_records.json, deconstructs it (for example, separating out horse info, farms, sire/dam relationships, shows, and so on), and upserts all of it into Supabase. This ensures new rows are created, and any existing rows (based on unique identifiers) get updated.
+
+
 ---
 
 ## ***Table of Contents***
