@@ -1,10 +1,12 @@
 # ***Project Title***
-
+As it is quite complex or I think it is, I will be explaning some part of code, and other things so it is easy to use. 
 A Node.js-based project to fetch, validate, and upload horse-related data (based on FEIF IDs) to a Supabase database. This project has three primary scripts:
 
-- **Fetch FEIF IDs** from the web (and parse the data).
+- **Fetch FEIF IDs** from the web (and parse the data) 
+- How it works? Basically First you need to do is put the Feif_ids in a file named feif_ids.json as an array. You can use anything to put them there, manually, Through a code. After you have put Feif_ids this part will take one and fetch its data from web using pythonanywhere provided.
 - **Validate the fetched data** to ensure correctness and integrity.
-- **Upload the validated data** to Supabase tables.
+- How it works? Basically After you have fetched all the data, over the course of week or month. You still need to validate all the data. This will make sure if there is any error field as it can cause issue it will stop it. It will write two files at the end of data, One faulty Feif_ids, you can check what issue it had, Second: valid_data.json. This data is nearly fine to be inserted (no BIG problems).
+- **Upload the validated data** to Supabase tables, This is where magic happens, We deconstruct and insert all the data.
 
 ---
 
@@ -88,9 +90,12 @@ Ensure Supabase tables and schemas exist.
 **File:** `fetchFeifIdsData.js`
 
 **Purpose:**
+-Gets data from a feif_ids.json 
+-Fetch the data from websources
 - Fetch raw horse data from a web source.
 - Parse response into structured JSON.
 - Save fetched data to `logs/successful_horse_data.json`.
+- Takes logs if data is fetched not, how much etc.
 
 **Usage:**
 ```bash
@@ -109,6 +114,9 @@ Successfully saved to logs/successful_horse_data.json.
 **Purpose:**
 - Load and verify fetched data.
 - Remove duplicates.
+- Remove faulty data
+- logs each fault
+- logs faulty feif_ids
 - Separate valid and invalid records.
 
 **Usage:**
@@ -173,15 +181,6 @@ All data processed successfully.
 
 ---
 
-## ***Possible Edge Cases***
-
-- **Network Error:** Partial data saved, script can resume.
-- **Inconsistent Data:** Missing essential fields, flagged in logs.
-- **Duplicate FEIF IDs:** Logged and only the first occurrence is inserted.
-- **Supabase Constraints:** Violations result in failed upserts.
-- **Large Datasets:** Data processed in chunks to prevent timeouts.
-
----
 
 ## ***Results and Flow***
 
@@ -189,7 +188,8 @@ All data processed successfully.
 
 **Fetching:**
 ```csharp
-Fetched 1132 records from the web.
+Fetching data for 1132 feif_ids
+Fetched data for all feif_ids (You really need to be patient with it. It can take ALOT OF TIME)
 ```
 
 **Validation:**
@@ -197,14 +197,39 @@ Fetched 1132 records from the web.
 Valid records count: 1000
 Faulty IDs count: 132
 Duplicates: 180
+Duplicates can occur due to some issues or feif_ids repeated forexample the CSV you gave me had quite few feif_ids repeated again and again. And this created a huge issue As I wasn't expecting same feif_id to be repeated at csv level. I solved all kinds of duplication by creating a util and using it everywhere before insertion.
 ```
 
 **Uploading:**
 ```css
+Here you need to take atmost Care
+If you see there is a file in controllers insert data to Supabase. 
+This is where Every data is segregated and inserted into tables, You really don't need to follow inner logic. 
+Here there are console.logs(inserting data to "a table" ) 
+Then calling a function that inserts data to that table. 
+I have added an await with each, however I would recommend  you to go through it sequentially, Like comment all the other codes and only allow horse data to be uplaoded 
+Because supabase needs the foreign table to be populated before insertion. This way you can be ensure that the data is being populated in main tables first before seconday. 
+You can go through comments unblocking and upload all the data sequentially.
 Preparing to upsert 1132 horses.
 Successfully upserted 1132 horses.
 All data inserted successfully.
+Go to now Farms
+Then Horse_Farms
+Then Shows
+Then Horse_Shows
+Sequence REALLY REALLY MATTERS.
 ```
+You might ask there are 17 tables in supabase but only few here, That's because I am inserting Lookup tables at lookup helper, in one flow.
+Also If you want to know inner working 
+I have two class Models main 
+Base Model: It has all the important functions taht will be used again and again
+Lookuphelper Model: It has all the lookup inializied, Let's say A country table we know we will use it again and again and it has few entries most of entries will have same country SO I initialzied if first put it to cache, and if a country do not exist I simply put it in country table. 
+You can be carefree ,Everything is highly optimized, with maps, sets, And other DataStructures so Uploading data is as excuriating as possible. :) 
+At the end For even more simplicity I added three color schemes 
+Blue (I am about to do something)
+Green (Done)
+Red(Error)
+White(Just simple numbers) 
 
 **Final Database Contents:**
 - **Horses:** 1132 records
