@@ -1,4 +1,4 @@
-# ***Project Title***
+# ***Uploading Data To  Supabase Script with logs, and verifications.***
 
 As it is quite a complex system. And delicate, I will be explaining everything A little more than it should be at readme.md level. 
 
