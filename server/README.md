@@ -1,21 +1,24 @@
 # ***Project Title***
-As it is quite complex or I think it is, I will be explaning some part of code, and other things so it is easy to use. 
 
-A Node.js-based project to fetch, validate, and upload horse-related data (based on FEIF IDs) to a Supabase database. This project has three primary scripts:
+As it is quite a complex system. And delicate, I will be explaining everything A little more than it should be at readme.md level. 
 
-Fetch FEIF IDs from the web (and parse the data)How it works?First, you need to place your list of FEIF IDs in a file named feif_ids.json (as an array). You can do this manually or via another script. After that, this script reads each ID and fetches its data from the web (using PythonAnywhere or any configured endpoint).
+A Node.js-based project to **fetch**, **validate**, and **upload** horse-related data (based on FEIF IDs) to a Supabase database. This project has three primary scripts:
 
-Validate the fetched data to ensure correctness and integrity.How it works?After fetching data—whether it takes a few days, a week, or even a month—you’ll want to validate it. The validation checks for any missing or malformed fields (like missing name, sire, dam) and catches duplicate FEIF IDs so you’re not overwhelmed by repeated entries. Two files are produced at the end:
+1. **Fetch FEIF IDs** from the web (and parse the data)  
+   **How it works?**  
+   First, you need to place your list of FEIF IDs in a file named `feif_ids.json` (as an array). You can do this manually or via another script. After that, this script reads each ID and fetches its data from the web (using PythonAnywhere or any configured endpoint).
 
-faulty_ids.json, containing IDs that didn’t pass validation
+2. **Validate the fetched data** to ensure correctness and integrity.  
+   **How it works?**  
+   After fetching data—whether it takes a few days, a week, or even a month—you’ll want to validate it. The validation checks for any missing or malformed fields (like missing name, sire, dam) and catches duplicate FEIF IDs so you’re not overwhelmed by repeated entries. Two files are produced at the end:
+   - `faulty_ids.json`, containing IDs that didn’t pass validation
+   - `valid_records.json`, containing the good data that’s ready to be inserted
 
-valid_records.json, containing the good data that’s ready to be inserted
+3. **Upload the validated data** to Supabase tables.  
+   **How it works?**  
+   This is where the real magic happens: the script takes `valid_records.json`, deconstructs it (for example, separating out horse info, farms, sire/dam relationships, shows, and so on), and **upserts** all of it into Supabase. This ensures new rows are created, and any existing rows (based on unique identifiers) get updated.
 
-Upload the validated data to Supabase tables.How it works?This is where the real magic happens: the script takes valid_records.json, deconstructs it (for example, separating out horse info, farms, sire/dam relationships, shows, and so on), and upserts all of it into Supabase. This ensures new rows are created, and any existing rows (based on unique identifiers) get updated.
-
-
----
-
+----
 ## ***Table of Contents***
 
 1. [Overview](#overview)
@@ -245,5 +248,4 @@ White(Just simple numbers)
 ---
 
 
-**Thank you for using this project!** 🚀 If you have any suggestions, feel free to open an issue. Happy coding! 🎉
 
